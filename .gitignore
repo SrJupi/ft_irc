@@ -1,0 +1,6 @@
+ircserv
+runTests
+.vscode
+.idea
+*.o
+*.d
