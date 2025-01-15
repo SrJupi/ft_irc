@@ -22,10 +22,10 @@ Server::Server(const std::string& port, const std::string &password):
 Server::~Server()
 {
 	//CREATE CLEAN FUNCTIONS?
-	if (!_clientFdMap.empty()) {
-		for (std::map<int, Client *>::iterator it = _clientFdMap.begin(); it != _clientFdMap.end(); ) {
-			const int fd = it->first;
-			++it;
+	while (!_clientManager.empty())
+	{
+		const int fd = _clientManager.deleteClient();
+		if (fd >= 0) {
 			removeFromEpoll(fd);
 		}
 	}
@@ -68,10 +68,6 @@ int Server::removeFromEpoll(const int fd)
 {
     if (epoll_ctl(_epollfd, EPOLL_CTL_DEL, fd, NULL) == -1) {
 		return 1;
-	}
-	if (_clientFdMap.find(fd) != _clientFdMap.end()) {
-		delete _clientFdMap.at(fd);
-		_clientFdMap.erase(fd);
 	}
 	close(fd);
 	return 0;
@@ -125,8 +121,8 @@ int Server::addNewClient()
 		close (clientfd);
 		return 1;
 	}
-	_clientFdMap[clientfd] = new Client(clientfd);
-	std::cout << "Client added: " << _clientFdMap[clientfd]->getFd() << std::endl;
+	_clientManager.addNewClient(clientfd);
+	std::cout << "Client added: " << clientfd << std::endl;
 	return 0;
 }
 
@@ -137,9 +133,10 @@ int Server::parseIRC(const std::string &msg, const int clientfd) {
 		_isRunning =  false;
 	}
 	if (msg == "ping") {
-		send(clientfd, "pong\n", strlen("pong]\n"), 0);
+		send(clientfd, "pong\n", strlen("pong\n"), 0);
 	}
 	if (msg.find("CAP LS") != msg.npos) {
+		std::cout << "MESSAGE CAP SENT" << std::endl;
 		send(clientfd, "CAP * LS :\n", strlen("CAP * LS :\n"), 0);
 	}
 	return 0;
@@ -147,7 +144,7 @@ int Server::parseIRC(const std::string &msg, const int clientfd) {
 
 int Server::receiveMessage(int clientfd)
 {
-	Client *client = _clientFdMap.at(clientfd);
+	Client *client = _clientManager.getClient(clientfd);
 	std::string fullMsg = client->getStoredMsg();
 	if (readMessage(clientfd, fullMsg)) {
 		return 1;
@@ -181,7 +178,9 @@ int Server::readMessage(int clientfd, std::string &fullMsg) {
 		}
 		if (bytes == 0) {
 			std::cout << "client " << clientfd << " disconnected" << std::endl;
+
 			//create response to disconnection
+			_clientManager.removeClient(clientfd);
 			removeFromEpoll(clientfd);
 			return -1;
 		}

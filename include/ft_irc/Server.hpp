@@ -13,7 +13,6 @@
 #include <Client.hpp>
 #include <ClientManager.hpp>
 #include <NetworkManager.hpp>
-#include <map>
 #include <set>
 #include <vector>
 
@@ -42,7 +41,7 @@ private:
     bool _isRunning;
 
     //Clients data
-    std::map<int, Client *> _clientFdMap;
+
     std::set<int> _fdSendSet;
 
 
