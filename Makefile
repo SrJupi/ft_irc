@@ -3,12 +3,12 @@ CXX = c++
 
 MAIN_CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude -Isrc
 LDFLAGS = -L$(GTEST_LIB) -lgtest -lgtest_main -pthread
-MAIN_SRCS = src/main.cpp src/parseArguments.cpp src/Server.cpp src/Client.cpp src/NetworkManager.cpp src/ClientManager.cpp
+MAIN_SRCS = src/main.cpp src/parseArguments.cpp src/Server.cpp src/Client.cpp \
+src/NetworkManager.cpp src/ClientManager.cpp src/EpollManager.cpp src/MessageParser.cpp
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
-HEADERS = src/utils.hpp include/ft_irc/Server.hpp src/Client.hpp src/NetworkManager.hpp src/ClientManager.hpp
-
-
+HEADERS = src/utils.hpp include/ft_irc/Server.hpp src/Client.hpp src/NetworkManager.hpp \
+src/ClientManager.hpp src/EpollManager.hpp src/MessageParser.hpp
 
 all: $(NAME)
 

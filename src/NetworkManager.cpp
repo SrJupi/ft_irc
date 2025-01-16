@@ -1,4 +1,9 @@
 #include "NetworkManager.hpp"
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string>
+#include <fcntl.h>
+#include <unistd.h>
 
 NetworkManager::NetworkManager(): _addrInfo(NULL), _socketfd(-1)
 {
@@ -58,6 +63,19 @@ int	NetworkManager::startListen() const {
 int NetworkManager::getSocketFd()
 {
     return _socketfd;
+}
+
+int NetworkManager::acceptNewClient()
+{
+    int clientfd = accept(_socketfd, NULL, NULL); //add struct to track ip info
+	if (clientfd == -1) {
+		return -1;
+	}
+	if (fcntl(clientfd, F_SETFL, O_NONBLOCK) == -1) {
+		close (clientfd);
+		return -1;
+	}
+	return clientfd;
 }
 
 int NetworkManager::setNetwork(std::string &port)

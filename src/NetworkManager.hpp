@@ -3,11 +3,7 @@
 
 # define BACKLOG 128
 
-#include <sys/socket.h>
-#include <netdb.h>
 #include <string>
-#include <fcntl.h>
-#include <unistd.h>
 
 class NetworkManager
 {
@@ -28,6 +24,7 @@ public:
 
     int setNetwork(std::string &port);
     int getSocketFd();
+    int acceptNewClient();
 };
 
 #endif
