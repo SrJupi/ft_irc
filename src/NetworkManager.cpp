@@ -39,12 +39,18 @@ int	NetworkManager::createSocket()
 {
 	_socketfd = socket(_addrInfo->ai_family, _addrInfo->ai_socktype, _addrInfo->ai_protocol);
 	if (_socketfd == -1) {
-		return -1;
+		return -1; //TODO: retornar mensagem de erro
 	}
-	if (fcntl(_socketfd, F_SETFL, O_NONBLOCK) == -1){
+	if (fcntl(_socketfd, F_SETFL, O_NONBLOCK) == -1){ //@David: eh necessario se ja tem o epoll?
 		return 1;
 	}
 	const int enable = 1;
+	/*When a socket is closed, the operating system may keep its 
+	* resources allocated for a short time (e.g., in the TIME_WAIT state). 
+	* Without SO_REUSEADDR, binding to the same address and port during this
+	* time would fail. By setting this option, the socket can reuse the 
+	* address and port, avoiding the need to wait for the timeout to expire.
+	*/
 	if (setsockopt(_socketfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0) {
 		return 1;
 	}
@@ -78,6 +84,7 @@ int NetworkManager::acceptNewClient()
 	return clientfd;
 }
 
+//Create and set the socket, bind and start to listen
 int NetworkManager::setNetwork(std::string &port)
 {
     if (fillAddr(port)) {
