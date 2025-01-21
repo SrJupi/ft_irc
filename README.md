@@ -15,6 +15,10 @@
 [Making Minimalist Chat Server in C on Linux](https://www.youtube.com/watch?v=gGfTjKwLQxY)  
 [Making Minimalist Web Server in C on Linux](https://www.youtube.com/watch?v=2HrYIl6GpYg&list=WL)  
 
+### Epoll
+
+[What is epoll?](https://medium.com/@avocadi/what-is-epoll-9bbc74272f7c)  
+
 ### IRC Protocol
 
 [Modern IRC Client Protocol](https://modern.ircdocs.horse/)  
