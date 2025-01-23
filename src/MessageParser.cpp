@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cerrno>
 #include <sys/socket.h>
+#include <ft_irc/Server.hpp>
 
 
 MessageParser::MessageParser()
@@ -29,10 +30,11 @@ MessageParser&	MessageParser::operator=(const MessageParser& ref)
 }
 
 
-std::vector<std::string> MessageParser::getMessages(int clientfd, std::string &msg)
+std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server)
 {
     std::vector<std::string> msgs;
-    if (readMessage(clientfd, msg)) {
+	std::string msg = server.getClientManager().getClient(clientfd)->getStoredMsg();
+    if (readMessage(clientfd, msg, server)) {
 		return msgs;
 	}
 	std::size_t start = 0;
@@ -48,10 +50,11 @@ std::vector<std::string> MessageParser::getMessages(int clientfd, std::string &m
         msgs.push_back(msg.substr(start, pos - start));
 		start = pos + strlen(CRLF);
 	}
+	server.getClientManager().getClient(clientfd)->setStoredMsg(msg);
     return msgs;
 }
 
-int MessageParser::readMessage(int clientfd, std::string &fullMsg) {
+int MessageParser::readMessage(int clientfd, std::string &fullMsg, Server &server) {
 	while (true) {
 		char buf[BUFFER_SIZE] = {};
 		ssize_t bytes = recv(clientfd, buf, BUFFER_SIZE, 0);
@@ -63,13 +66,8 @@ int MessageParser::readMessage(int clientfd, std::string &fullMsg) {
 		}
 		if (bytes == 0) {
 			std::cout << "client " << clientfd << " disconnected" << std::endl;
-            /* 
-            CHECK THIS PART:
-			1. create response to disconnection (?)
-            2. how to access this methods? V
-			//_clientManager.removeClient(clientfd);
-			//_epollManager.removeFromEpoll(clientfd);
-             */
+			server.getClientManager().removeClient(clientfd);
+			server.getEpollManager().removeFromEpoll(clientfd);
 			return -1;
 		}
 		fullMsg.append(std::string(buf, bytes));

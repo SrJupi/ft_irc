@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+class Server;
+
 class MessageParser
 {
 private:
@@ -18,8 +20,8 @@ public:
     MessageParser();
     ~MessageParser();
 
-    std::vector<std::string>    getMessages(int clientfd, std::string &msg);
-    int                         readMessage(int clientfd, std::string &fullMsg);
+    std::vector<std::string>    getMessages(int clientfd, Server &server);
+    int                         readMessage(int clientfd, std::string &fullMsg, Server &server);
     int                         parseIRC(const std::string &msg, int clientfd);
 
 

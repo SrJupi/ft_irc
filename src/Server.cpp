@@ -1,16 +1,17 @@
 #include <ft_irc/Server.hpp>
 #include <cerrno>
 
-Server::Server()
+Server::Server(): _commandManager(this)
 {
 }
 
-Server::Server(const Server &ref)
+Server::Server(const Server &ref): _commandManager(this)
 {
 	*this = ref;
 }
 
 Server::Server(const std::string& port, const std::string &password):
+	_commandManager(this),
 	_port(port),
 	_password(password),
 	_isSet(false),
@@ -76,17 +77,8 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
 				std::cout << events[i].data.fd << " - Ready to send messages" << std::endl;
-				std::string msg = _clientManager.getClient(events[i].data.fd)->getStoredMsg();
-				std::vector<std::string> messages = _parser.getMessages(events[i].data.fd, msg);
-				_clientManager.getClient(events[i].data.fd)->setStoredMsg(msg);
-				for (size_t i = 0; i < messages.size(); i++)
-				{
-					std::cout << i << "  -> " << messages[i] << std::endl;
-					if (messages[i] == "exit") {
-						_isRunning = false;
-					}
-				}
-				
+				std::vector<std::string> messages = _parser.getMessages(events[i].data.fd, *this);
+				_commandManager.executeCommands(messages);	
 			}
 		}
 	}
@@ -112,7 +104,7 @@ int Server::startServer()
 	if (!_isSet) {
 		return 1;
 	}
-	_isRunning = true;
+	setIsRunning(true);
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
 		// change to variable
@@ -126,9 +118,22 @@ int Server::startServer()
 	return 0;
 }
 
+void Server::setIsRunning(bool value)
+{
+	_isRunning = value;
+}
+
 Server &Server::operator=(const Server &ref)
 {
 	if (this != &ref)
 		*this = ref;
 	return (*this);
+}
+
+ClientManager &Server::getClientManager() {
+	return _clientManager;
+}
+
+EpollManager &Server::getEpollManager() {
+	return _epollManager;
 }

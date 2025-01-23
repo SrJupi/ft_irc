@@ -7,11 +7,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <ServerReplyMessages.hpp>
-#include <Client.hpp>
-#include <ClientManager.hpp>
+#include <client/Client.hpp>
+#include <client/ClientManager.hpp>
 #include <NetworkManager.hpp>
 #include <EpollManager.hpp>
 #include <MessageParser.hpp>
+#include <command/CommandManager.hpp>
 #include <set>
 #include <vector>
 
@@ -32,6 +33,7 @@ private:
     EpollManager    _epollManager;
     ClientManager   _clientManager;
     MessageParser   _parser;
+    CommandManager  _commandManager;
     //ChannelManager _channelManager;
 
     std::string _port;
@@ -47,9 +49,6 @@ private:
     //Start server utils
     int manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]);
     int addNewClient();
-    int receiveMessage(int clientfd);
-    int readMessage(int clientfd, std::string &fullMsg);
-    int parseIRC(const std::string &msg, int clientfd);
 
 public:
     Server(const std::string& port, const std::string &password);
@@ -59,6 +58,12 @@ public:
     void    setPassword(const std::string &newPassword);
     int     setServer();
     int     startServer();
+
+    void    setIsRunning(bool value);
+
+    //GETTERS
+    ClientManager   &getClientManager();
+    EpollManager    &getEpollManager();
 };
 
 #endif

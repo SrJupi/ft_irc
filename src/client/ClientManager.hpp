@@ -1,7 +1,7 @@
 #ifndef CLIENTMANAGER_HPP
 # define CLIENTMANAGER_HPP
 
-#include <Client.hpp>
+#include <client/Client.hpp>
 #include <map>
 
 
