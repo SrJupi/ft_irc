@@ -11,7 +11,7 @@
 #include <client/ClientManager.hpp>
 #include <NetworkManager.hpp>
 #include <EpollManager.hpp>
-#include <MessageParser.hpp>
+#include <Parser.hpp>
 #include <command/CommandManager.hpp>
 #include <set>
 #include <vector>
@@ -32,7 +32,6 @@ private:
     NetworkManager  _networkManager;
     EpollManager    _epollManager;
     ClientManager   _clientManager;
-    MessageParser   _parser;
     CommandManager  _commandManager;
     //ChannelManager _channelManager;
 

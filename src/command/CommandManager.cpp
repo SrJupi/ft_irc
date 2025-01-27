@@ -6,6 +6,7 @@ CommandManager::CommandManager()
 {
 }
 
+
 CommandManager::CommandManager(const CommandManager& ref)
 {
     *this=ref;
@@ -19,15 +20,27 @@ CommandManager::~CommandManager()
 {
 }
 
-void CommandManager::executeCommands(std::vector<std::string> msgs)
+void CommandManager::executeCommands(std::vector<std::string> commands)
 {
-    for (size_t i = 0; i < msgs.size(); i++)
-    {
-        std::cout << i << "  -> " << msgs[i] << std::endl;
-        if (msgs[i] == "exit") {
-            server_ptr->setIsRunning(false);
-        }
+    for (std::vector<std::string>::const_iterator it = commands.begin(); it != commands.end(); it++) {
+        executeCommand(*it);
     }
+}
+
+void CommandManager::executeCommand(const std::string &command)
+{
+    std::string commandName;
+    std::vector<std::string> args;
+    if (!Parser::parseCommand(command, commandName, args)) {
+        return;
+    }
+    std::cout << "COMMAND RECEIVED: " << command << std::endl;
+    std::cout << "\tPARSED TO: " << commandName << std::endl;
+    std::cout << "\t\tARGS: " << args.size() << std::endl;
+    if (commandName == "exit") {
+        server_ptr->setIsRunning(false);
+    }
+
 }
 
 CommandManager&	CommandManager::operator=(const CommandManager& ref)

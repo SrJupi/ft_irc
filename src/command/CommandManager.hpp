@@ -9,17 +9,20 @@ class Server;
 class CommandManager
 {
 private:
+    Server *server_ptr;
+
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
     CommandManager();
-    Server *server_ptr;
+    
+    void    executeCommand(const std::string &command);
     
 
 public:
     CommandManager(Server *server);
     ~CommandManager();
 
-    void    executeCommands(std::vector<std::string> msgs);
+    void    executeCommands(std::vector<std::string> commands);
 
 };
 

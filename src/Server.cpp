@@ -78,7 +78,7 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
 				std::cout << events[i].data.fd << " - Client sent messages EPOLLIN" << std::endl;
-				std::vector<std::string> cmd_messages = _parser.getMessages(events[i].data.fd, *this);
+				std::vector<std::string> cmd_messages = Parser::getCommands(events[i].data.fd, *this);
 				_commandManager.executeCommands(cmd_messages);	
 			}
 		}
