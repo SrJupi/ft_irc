@@ -29,8 +29,8 @@ MessageParser&	MessageParser::operator=(const MessageParser& ref)
     return (*this);
 }
 
-//Print messagens sent by the client
-//Return msgs to be executed (commands)
+//Print messagens sent by the client -> Isso é só placeholder, ate ter a funcao de verdade
+//Return msgs to be executed (commands) -> Isso sim é o que faz :D
 std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server)
 {
     std::vector<std::string> msgs;
@@ -42,7 +42,7 @@ std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server
 	std::size_t pos = 0;
 	std::cout << "string received: " << msg << std::endl;
 	while (true) {		
-		pos = msg.find(CRLF, start); //@David: pedir um exemplo pro LL
+		pos = msg.find(CRLF, start); //@David: pedir um exemplo pro LL -> Esperando pedido de exemplo
 		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
 			std::cout << "Remaining: " << msg.substr(start, pos - start) << std::endl;
             msg = msg.substr(start, pos - start);
@@ -77,7 +77,7 @@ int MessageParser::readMessage(int clientfd, std::string &fullMsg, Server &serve
 	return 0;
 }
 
-// @LukiLoko: tamo usando isso?
+// @LukiLoko: tamo usando isso? No momento nao
 int MessageParser::parseIRC(const std::string &msg, const int clientfd) {
 	std::cout << "VVVVVVVVVVVVVVVVVVVV\nThis message should be parsed:\n>>>\t" << msg << "\nɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅ" << std::endl;
 	if (msg == "exit") {
