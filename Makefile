@@ -1,7 +1,7 @@
 NAME = ircserv
 CXX = c++
 
-MAIN_CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude -Isrc
+MAIN_CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude -Isrc -g
 LDFLAGS = -L$(GTEST_LIB) -lgtest -lgtest_main -pthread
 MAIN_SRCS = src/main.cpp src/parseArguments.cpp src/Server.cpp src/client/Client.cpp \
 src/NetworkManager.cpp src/client/ClientManager.cpp src/EpollManager.cpp src/MessageParser.cpp \

@@ -42,7 +42,6 @@ int ClientManager::deleteClient()
     const int fd = it->first;
     _clientFdMap.erase(fd);
     return fd;
-
 }
 
 bool ClientManager::empty()

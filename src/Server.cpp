@@ -63,6 +63,7 @@ int Server::setServer()
 	_isSet = true;
 	return 0;
 }
+
 int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 	for (int i = 0; i < nfds; i++) {
 		if (events[i].data.fd == _networkManager.getSocketFd()) {
@@ -73,12 +74,12 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 		else {
 			if (events[i].events & EPOLLOUT) {
 				_fdSendSet.insert(events[i].data.fd);
-				std::cout  << events[i].data.fd << " - Ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
+				std::cout  << events[i].data.fd << " - Client ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
-				std::cout << events[i].data.fd << " - Ready to send messages" << std::endl;
-				std::vector<std::string> messages = _parser.getMessages(events[i].data.fd, *this);
-				_commandManager.executeCommands(messages);	
+				std::cout << events[i].data.fd << " - Client sent messages EPOLLIN" << std::endl;
+				std::vector<std::string> cmd_messages = _parser.getMessages(events[i].data.fd, *this);
+				_commandManager.executeCommands(cmd_messages);	
 			}
 		}
 	}
@@ -101,10 +102,10 @@ int Server::addNewClient()
 
 int Server::startServer()
 {
-	if (!_isSet) {
+	if (!_isSet) { //@LukiLoko: pra que isso?
 		return 1;
 	}
-	setIsRunning(true);
+	setIsRunning(true); //@LukiLoko, sugiro manter o padrão de _isRunning = ... como vc faz abaixo
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
 		// change to variable

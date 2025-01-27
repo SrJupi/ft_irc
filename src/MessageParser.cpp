@@ -29,7 +29,8 @@ MessageParser&	MessageParser::operator=(const MessageParser& ref)
     return (*this);
 }
 
-
+//Print messagens sent by the client
+//Return msgs to be executed (commands)
 std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server)
 {
     std::vector<std::string> msgs;
@@ -40,9 +41,9 @@ std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server
 	std::size_t start = 0;
 	std::size_t pos = 0;
 	std::cout << "string received: " << msg << std::endl;
-	while (true) {
-		pos = msg.find(CRLF, start);
-		if (pos == std::string::npos) {
+	while (true) {		
+		pos = msg.find(CRLF, start); //@David: pedir um exemplo pro LL
+		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
 			std::cout << "Remaining: " << msg.substr(start, pos - start) << std::endl;
             msg = msg.substr(start, pos - start);
 			break;
@@ -54,6 +55,7 @@ std::vector<std::string> MessageParser::getMessages(int clientfd, Server &server
     return msgs;
 }
 
+//Read the message from the socket
 int MessageParser::readMessage(int clientfd, std::string &fullMsg, Server &server) {
 	while (true) {
 		char buf[BUFFER_SIZE] = {};
@@ -62,7 +64,7 @@ int MessageParser::readMessage(int clientfd, std::string &fullMsg, Server &serve
 			if (errno == EWOULDBLOCK) //check errors (?)
 				break ;
 			std::cerr << "recv failed: " << errno <<  std::endl;
-			return 1;
+			return -1;
 		}
 		if (bytes == 0) {
 			std::cout << "client " << clientfd << " disconnected" << std::endl;
@@ -75,6 +77,7 @@ int MessageParser::readMessage(int clientfd, std::string &fullMsg, Server &serve
 	return 0;
 }
 
+// @LukiLoko: tamo usando isso?
 int MessageParser::parseIRC(const std::string &msg, const int clientfd) {
 	std::cout << "VVVVVVVVVVVVVVVVVVVV\nThis message should be parsed:\n>>>\t" << msg << "\nɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅɅ" << std::endl;
 	if (msg == "exit") {
