@@ -58,7 +58,7 @@ public:
     int     setServer();
     int     startServer();
 
-    void    setIsRunning(bool value);
+    void    stopServer();
 
     //GETTERS
     ClientManager   &getClientManager();

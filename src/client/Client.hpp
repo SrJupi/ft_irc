@@ -12,7 +12,7 @@ private:
     std::string _username;
     std::set<std::string> _channelNamesSet;
 	std::string _storedMsg;
-	std::string _password;
+	bool    _isAuth;
     Client();
     Client(const Client& ref);
     Client&	operator=(const Client& ref);
@@ -24,8 +24,14 @@ public:
     void        setStoredMsg(const std::string &msg);
     std::string getStoredMsg();
 	bool		hasStoredMsg() const;
-
+    
 	int			getFd() const;
+
+    std::string getNickname();
+    void        setNickname(std::string nick);
+
+    void        setAuthenticationTrue();
+    bool        isAutenticated();
 
 };
 

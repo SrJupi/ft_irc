@@ -22,7 +22,7 @@ Server::Server(const std::string& port, const std::string &password):
 Server::~Server()
 {
 	//CREATE CLEAN FUNCTIONS?
-	while (!_clientManager.empty())
+	while (!_clientManager.isMapFdToClientEmpty())
 	{
 		const int fd = _clientManager.deleteClient();
 		if (fd >= 0) {
@@ -66,20 +66,21 @@ int Server::setServer()
 
 int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 	for (int i = 0; i < nfds; i++) {
-		if (events[i].data.fd == _networkManager.getSocketFd()) {
+		int currentFd = events[i].data.fd;
+		if (currentFd == _networkManager.getSocketFd()) {
 			if (addNewClient()) {
 				std::cerr << "Add new client failed" << std::endl;
 			}
 		}
 		else {
 			if (events[i].events & EPOLLOUT) {
-				_fdSendSet.insert(events[i].data.fd);
-				std::cout  << events[i].data.fd << " - Client ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
+				_fdSendSet.insert(currentFd);
+				std::cout  << currentFd << " - Client ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
-				std::cout << events[i].data.fd << " - Client sent messages EPOLLIN" << std::endl;
-				std::vector<std::string> cmd_messages = Parser::getCommands(events[i].data.fd, *this);
-				_commandManager.executeCommands(cmd_messages);	
+				std::cout << currentFd << " - Client sent messages EPOLLIN" << std::endl;
+				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
+				_commandManager.executeCommands(currentFd, cmd_messages);	
 			}
 		}
 	}
@@ -96,7 +97,7 @@ int Server::addNewClient()
 		return -1;
 	}
 	_clientManager.addNewClient(clientfd);
-	std::cout << "Client added: " << _clientManager.getClient(clientfd)->getFd() << std::endl;
+	std::cout << "Client added: " << _clientManager.getClientByFd(clientfd)->getFd() << std::endl;
 	return 0;
 }
 
@@ -106,13 +107,13 @@ int Server::startServer()
 	if (!_isSet) { 
 		return 1;
 	}
-	setIsRunning(true);
+	_isRunning = true;
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
 		// change to variable
-		const int nfds = epoll_wait(_epollManager.getEpoll(), events, MAX_EVENTS, -1); //set a timeout?
+		const int nfds = epoll_wait(_epollManager.getEpoll(), events, MAX_EVENTS, -1);
 		if (nfds == -1) {
-			setIsRunning(false);
+			_isRunning = false;
 			continue;
 		}
 		manageEvents(nfds, events);
@@ -120,9 +121,9 @@ int Server::startServer()
 	return 0;
 }
 
-void Server::setIsRunning(bool value)
+void Server::stopServer()
 {
-	_isRunning = value;
+	_isRunning = false;
 }
 
 Server &Server::operator=(const Server &ref)

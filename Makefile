@@ -10,7 +10,7 @@ MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
 HEADERS = include/ft_irc/Server.hpp src/client/Client.hpp src/NetworkManager.hpp \
 src/client/ClientManager.hpp src/EpollManager.hpp src/Parser.hpp src/command/CommandManager.hpp \
-src/channel/Channel.hpp
+src/ServerReplyMessages.hpp src/channel/Channel.hpp
 
 all: $(NAME)
 

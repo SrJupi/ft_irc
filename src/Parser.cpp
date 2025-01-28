@@ -35,7 +35,7 @@ Parser&	Parser::operator=(const Parser& ref)
 std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
 {
     std::vector<std::string> msgs;
-	std::string msg = server.getClientManager().getClient(clientfd)->getStoredMsg();
+	std::string msg = server.getClientManager().getClientByFd(clientfd)->getStoredMsg();
     if (readMessage(clientfd, msg, server)) {
 		return msgs;
 	}
@@ -43,7 +43,7 @@ std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
 	std::size_t pos = 0;
 	std::cout << "string received: " << msg << std::endl;
 	while (true) {		
-		pos = msg.find(CRLF, start); //@David: pedir um exemplo pro LL -> Esperando pedido de exemplo
+		pos = msg.find(CRLF, start);
 		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
             msg = msg.substr(start, pos - start);
 			std::cout << "Remaining: [" << msg << "]" << std::endl;
@@ -52,7 +52,7 @@ std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
         msgs.push_back(msg.substr(start, pos - start));
 		start = pos + strlen(CRLF);
 	}
-	server.getClientManager().getClient(clientfd)->setStoredMsg(msg);
+	server.getClientManager().getClientByFd(clientfd)->setStoredMsg(msg);
     return msgs;
 }
 
@@ -122,14 +122,26 @@ bool    Parser::parseArguments(const int argc, char *argv[]) {
 
 bool Parser::parseCommand(const std::string &command, std::string &commandName, std::vector<std::string> &args)
 {
-	std::istringstream iss(command);
-	if (!(iss >> commandName)) {
-		return false;
-	}
+    std::istringstream iss(command);
+    if (!(iss >> commandName)) {
+        return false;
+    }
 
-	std::string arg;
-	while (iss >> arg) {
-		args.push_back(arg);
-	}
-	return true;
+    size_t pos = command.find(':');
+    if (pos != std::string::npos) {
+        std::istringstream preMessageStream(command.substr(0, pos));
+        std::string arg;
+        while (preMessageStream >> arg) {
+            if (arg != commandName) {
+                args.push_back(arg);
+            }
+        }
+        args.push_back(command.substr(pos + 1));
+    } else {
+        std::string arg;
+        while (iss >> arg) {
+            args.push_back(arg);
+        }
+    }
+    return true;
 }

@@ -3,26 +3,36 @@
 
 #include <vector>
 #include <string>
+#include <map>
 
 class Server;
 
 class CommandManager
 {
 private:
+    typedef void (CommandManager::*CommandHandler)(int fd, const std::vector<std::string>& args);
     Server *server_ptr;
+    std::map<std::string, CommandHandler> _commandHandlers;
 
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
     CommandManager();
     
-    void    executeCommand(const std::string &command);
+    void    executeCommand(int originClient, const std::string &command);
+
+    //Handlers
+    void    handleCap(int fd, const std::vector<std::string>& args);
+    void    handlePass(int fd, const std::vector<std::string>& args);
+    void    handleNick(int fd, const std::vector<std::string>& args);
+    void    handleQuit(int fd, const std::vector<std::string>& args);
+    void    handlePrivmsg(int fd, const std::vector<std::string>& args);
     
 
 public:
     CommandManager(Server *server);
     ~CommandManager();
 
-    void    executeCommands(std::vector<std::string> commands);
+    void    executeCommands(int originClient, std::vector<std::string> commands);
 
 };
 

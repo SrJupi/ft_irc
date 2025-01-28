@@ -10,16 +10,24 @@ class ClientManager
 private:
     ClientManager(const ClientManager& ref);
     ClientManager&	operator=(const ClientManager& ref);
-    std::map<int, Client *> _clientFdMap;
+    std::map<int, Client *> _mapFdToClient;
+    std::map<std::string, Client *> _mapNicknameToClient; //keep only this one?
+    std::set<std::string> _nicknames; //delete this one?
     
 public:
     ClientManager();
     ~ClientManager();
-    int addNewClient(int clientfd);
+    
+    int     addNewClient(int clientfd);
     int     removeClient(int clientfd);
-    Client *getClient(int clientfd);
+    Client  *getClientByFd(int clientfd);
+    Client  *getClientByNick(std::string const &nick);
     int     deleteClient();
-    bool    empty();
+    
+    void    addNicknameToFd(std::string nick, int fd);
+
+    bool    isMapFdToClientEmpty();
+    bool    existsNickname(const std::string &nick);
     
 };
 

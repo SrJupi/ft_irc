@@ -16,11 +16,7 @@ Client::~Client()
 Client&	Client::operator=(const Client& ref)
 {
     if (this != &ref) {
-        this->_fd = ref._fd;
-        this->_channelNamesSet = ref._channelNamesSet;
-        this->_nickname = ref._nickname;
-        this->_username = ref._username;
-        this->_storedMsg = ref._storedMsg;
+        *this = ref;
     }
     return (*this);
 }
@@ -42,7 +38,27 @@ int Client::getFd() const {
     return _fd;
 }
 
-Client::Client(const int fd): _fd(fd)
+std::string Client::getNickname()
+{
+    return _nickname;
+}
+
+void Client::setNickname(std::string nick)
+{
+    _nickname = nick;
+}
+
+void Client::setAuthenticationTrue()
+{
+    _isAuth = true;
+}
+
+bool Client::isAutenticated()
+{
+    return _isAuth;
+}
+
+Client::Client(const int fd): _fd(fd), _isAuth(false)
 {
 }
 
