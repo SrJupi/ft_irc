@@ -102,13 +102,11 @@ int Server::addNewClient()
 
 int Server::startServer()
 {
-	if (!_isSet) { //@LukiLoko: pra que isso?
-					//Porque em teoria alguem pode pegar essa classe, instanciar e fazer startServer direto sem fazer set :D
+	//isSet is false if something goes wrong in ircServer.setServer()
+	if (!_isSet) { 
 		return 1;
 	}
-	setIsRunning(true); //@LukiLoko, sugiro manter o padrão de _isRunning = ... como vc faz abaixo
-						//@David, pronto agora embaixo nao tem mais _isRunning = ...
-						//Fiz isso porque precisava desativar o isRunning em outras classes. Podia criar duas funcoes (isRunning e stopRunning), nao sei o que fica melhor
+	setIsRunning(true);
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
 		// change to variable
