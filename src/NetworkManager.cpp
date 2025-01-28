@@ -41,7 +41,7 @@ int	NetworkManager::createSocket()
 	if (_socketfd == -1) {
 		return -1; //TODO: retornar mensagem de erro
 	}
-	if (fcntl(_socketfd, F_SETFL, O_NONBLOCK) == -1){ //@David: eh necessario se ja tem o epoll?
+	if (fcntl(_socketfd, F_SETFL, O_NONBLOCK) == -1){
 		return 1;
 	}
 	const int enable = 1;

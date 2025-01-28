@@ -45,8 +45,8 @@ std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
 	while (true) {		
 		pos = msg.find(CRLF, start); //@David: pedir um exemplo pro LL -> Esperando pedido de exemplo
 		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
-			std::cout << "Remaining: " << msg.substr(start, pos - start) << std::endl;
             msg = msg.substr(start, pos - start);
+			std::cout << "Remaining: [" << msg << "]" << std::endl;
 			break;
 		}
         msgs.push_back(msg.substr(start, pos - start));

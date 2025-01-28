@@ -36,6 +36,7 @@ int EpollManager::addToEpoll(const uint32_t events, const int fd) const {
     struct epoll_event	ev = {};
 	ev.data.fd = fd;
 	ev.events = events;
+	//Add the fd socket to the epoll instance
 	if (epoll_ctl(_epollfd, EPOLL_CTL_ADD, fd, &ev) == -1) {
 		return 1;
 	}
