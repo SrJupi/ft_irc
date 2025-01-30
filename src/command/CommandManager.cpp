@@ -22,7 +22,7 @@ CommandManager::CommandManager(Server *server): server_ptr(server)
     _commandHandlers["PASS"] = &CommandManager::handlePass;
     _commandHandlers["QUIT"] = &CommandManager::handleQuit;
     _commandHandlers["PRIVMSG"] = &CommandManager::handlePrivmsg;
-
+    _commandHandlers["JOIN"] = &CommandManager::handleJoin;
 }
 
 CommandManager::~CommandManager()
@@ -43,6 +43,7 @@ void CommandManager::executeCommand(int originClient, const std::string &command
     if (!Parser::parseCommand(command, commandName, args)) {
         return;
     }
+    std::cout << "Command name: " << commandName << std::endl;
     std::map<std::string, CommandHandler>::iterator it = _commandHandlers.find(commandName);
     if (it == _commandHandlers.end()) {
         // Handle unknown command
@@ -148,10 +149,43 @@ void CommandManager::handlePrivmsg(int fd, const std::vector<std::string> &args)
     }
 }
 
+bool isValidChannelName(const std::string& str) {
+    std::cout << str << std::endl;
+    return str.size() >= 2 && str[0] == '#';
+}
 
+//TODO: as vezes, quando o hexchat ja esta aberto com um usuario ali, o sistema nao pega o nickname e fica vazio
+void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args) {
+    Client *client = server_ptr->getClientManager().getClientByFd(fd);
+    const std::string nick = client->getNickname();
 
-CommandManager &CommandManager::operator=(const CommandManager &ref)
-{
+    std::string response;
+
+    // Validate arguments
+    if (args.size() < 1) {
+        response = ERR_NORECIPIENT(nick, "JOIN");
+    } else if (!isValidChannelName(args[0])) {
+        response = ERR_NOSUCHCHANNEL(nick, args[0]);
+    } else {
+        const std::string &channelName = args[0].substr(1);
+        Channel *channel = server_ptr->getChannelManager().addChannel(channelName);
+        channel->addClient(client->getNickname());
+        std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl;
+        client->addChannel(channelName);
+        channel->listClients();
+        response = RPL_TOPIC(channelName, "topic_temp------------");
+        send(fd, response.c_str(), response.length(), 0);
+        response = RPL_NAMREPLY(channelName, "davifern likuta juan diego @test");
+        // send(fd, response.c_str(), response.length(), 0);
+        // response = "";
+    }
+
+    if (!response.empty()) {
+        send(fd, response.c_str(), response.length(), 0);
+    }
+}
+
+CommandManager &CommandManager::operator=(const CommandManager &ref) {
     if (this != &ref) {
         *this=ref;
     }

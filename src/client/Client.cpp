@@ -30,6 +30,14 @@ std::string Client::getStoredMsg() {
     return _storedMsg;
 }
 
+void    Client::addChannel(const std::string &channelName) {
+    _channels.insert(channelName);
+}
+
+void    Client::removeChannel(const std::string &channelName) {
+    _channels.erase(channelName);
+}
+
 bool Client::hasStoredMsg() const {
     return !_storedMsg.empty();
 }

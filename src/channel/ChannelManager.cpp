@@ -1,58 +1,75 @@
 #include <channel/ChannelManager.hpp>
 
-ChannelManager::ChannelManager()
-{
-}
+ChannelManager::ChannelManager() {}
 
-ChannelManager::ChannelManager(const ChannelManager& ref)
-{
+ChannelManager::ChannelManager(const ChannelManager& ref) {
     *this=ref;
 }
 
-ChannelManager::~ChannelManager()
-{
+ChannelManager::~ChannelManager() {
+    // for (std::map<std::string, Channel*>::iterator it = _mapNameToChannels.begin(); it != _mapNameToChannels.end(); ++it) {
+    //     delete it->second; // ✅ Free memory
+    // }
+    // _mapNameToChannels.clear();
+
 }
+#include <iostream>
+Channel     *ChannelManager::addChannel(const std::string &channelName) {
+    // // _channels[channelName] = new Channel(channelName);
+    // // return 0;
+    // if (_channels.find(channelName) == _channels.end()) {
+    //     _channels[channelName] = new Channel(channelName);
+    //     return 0;
+    // }
+    // return -1; // Channel already exists 
 
-int ChannelManager::addNewChannel(int channelfd)
-{
-	_channelFdMap[channelfd] = new Channel(channelfd);
-
-    return 0;
-}
-
-int ChannelManager::removeChannel(int channelfd)
-{
-    delete _channelFdMap.at(channelfd);
-    _channelFdMap.erase(channelfd);
-    return 0;
-}
-
-Channel *ChannelManager::getChannel(int channelfd)
-{
-    return _channelFdMap.at(channelfd);
-}
-
-int ChannelManager::deleteChannel()
-{
-    std::map<int, Channel *>::iterator it = _channelFdMap.begin();
-    if (it == _channelFdMap.end()) {
-        return -1;
+    if (_channels.find(channelName) == _channels.end()) { // ✅ Prevent duplicate entries
+        _channels[channelName] = new Channel(channelName); // ✅ Store pointer correctly
+        std::cout << "Channel created: " << channelName << " at " << _channels[channelName] << std::endl;
+    } else {
+        std::cout << "Channel already exists: " << channelName << " at " << _channels[channelName] << std::endl;
     }
-    delete it->second;
-    const int fd = it->first;
-    _channelFdMap.erase(fd);
-    return fd;
+    return _channels.at(channelName); // _channels[channelName]
+
 }
 
-bool ChannelManager::empty()
-{
-    return _channelFdMap.empty();
+int     ChannelManager::removeChannel(const std::string &channelName) {
+    (void)channelName;
+    return 0;
 }
 
-ChannelManager&	ChannelManager::operator=(const ChannelManager& ref)
-{
+int     ChannelManager::isChannelExists(const std::string &channelName) {
+    std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
+    if (it == _channels.end()) {
+        return 0;
+    }
+    return 1;
+}
+
+Channel* ChannelManager::getChannelByName(const std::string &channelName) {
+    // std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
+    // if (it == _channels.end()) {
+    //     return NULL; //Channel not found
+    // }
+    // return it->second;
+
+    std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
+    if (it != _channels.end()) {
+        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl; // ✅ Debug output
+        return it->second; // ✅ Return the correct channel pointer
+    }
+    std::cout << "Channel not found: " << channelName << std::endl; // ❌ Should never happen
+    return NULL;
+}
+
+// bool ChannelManager::isEmpty()
+// {
+//     return _channelFdMap.empty();
+// }
+
+ChannelManager&	ChannelManager::operator=(const ChannelManager& ref) {
     if (this != &ref) {
-        *this=ref;
+        _channels = ref._channels;
     }
-    return (*this);
+    return *this;
 }

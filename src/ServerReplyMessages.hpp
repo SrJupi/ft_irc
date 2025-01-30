@@ -3,13 +3,22 @@
 
 #define RPL_WELCOME(client, network, nick, user, host) \
     "001 " + (client) + " :Welcome to the " + (network) + \
-    " Network, " + (nick) + "!" + (user) + "@" + (host)
+    " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
+
+#define  RPL_TOPIC(channel, topic) \
+    "332 #" + (channel) + " :" + (topic) + "\r\n"
+
+#define RPL_NAMREPLY(channel, nicks) \
+    "353 #" + (channel) + " :" + (nicks) + "\r\n"
 
 #define ERR_NEEDMOREPARAMS(nick, command) \
     "461 " + nick + " " + command + " :Not enough parameters\r\n"
 
 #define ERR_NOSUCHNICK(nick, receiver) \
     "401 " + (nick) + " " + (receiver) + " :No such nick/channel\r\n"
+
+#define ERR_NOSUCHCHANNEL(nick, channelName) \
+    "403 " + (nick) + " " + (channelName) + " :No such channel\r\n"    
 
 #define ERR_CANNOTSENDTOCHAN(nick, channel) \
     "404 " + (nick) + " " + (channel) + " :Cannot send to channel\r\n"

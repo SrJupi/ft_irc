@@ -1,11 +1,11 @@
 #include <ft_irc/Server.hpp>
 #include <cerrno>
 
-Server::Server(): _commandManager(this)
+Server::Server(): _commandManager(this), _channelManager()
 {
 }
 
-Server::Server(const Server &ref): _commandManager(this)
+Server::Server(const Server &ref): _commandManager(this), _channelManager()
 {
 	*this = ref;
 }
@@ -139,4 +139,8 @@ ClientManager &Server::getClientManager() {
 
 EpollManager &Server::getEpollManager() {
 	return _epollManager;
+}
+
+ChannelManager &Server::getChannelManager() {
+	return _channelManager;
 }

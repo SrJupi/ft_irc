@@ -9,6 +9,8 @@
 #include <ServerReplyMessages.hpp>
 #include <client/Client.hpp>
 #include <client/ClientManager.hpp>
+#include <channel/Channel.hpp>
+#include <channel/ChannelManager.hpp>
 #include <NetworkManager.hpp>
 #include <EpollManager.hpp>
 #include <Parser.hpp>
@@ -33,7 +35,7 @@ private:
     EpollManager    _epollManager;
     ClientManager   _clientManager;
     CommandManager  _commandManager;
-    //ChannelManager _channelManager;
+    ChannelManager  _channelManager;
 
     std::string _port;
     std::string _password;
@@ -63,6 +65,7 @@ public:
     //GETTERS
     ClientManager   &getClientManager();
     EpollManager    &getEpollManager();
+    ChannelManager  &getChannelManager();
 };
 
 #endif

@@ -10,7 +10,7 @@ private:
     int _fd;
     std::string _nickname;
     std::string _username;
-    std::set<std::string> _channelNamesSet;
+    std::set<std::string> _channels;
 	std::string _storedMsg;
 	bool    _isAuth;
     Client();
@@ -32,6 +32,9 @@ public:
 
     void        setAuthenticationTrue();
     bool        isAutenticated();
+
+    void        addChannel(const std::string &channelName);
+    void        removeChannel(const std::string &channelName);
 
 };
 

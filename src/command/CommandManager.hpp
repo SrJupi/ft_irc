@@ -26,6 +26,7 @@ private:
     void    handleNick(int fd, const std::vector<std::string>& args);
     void    handleQuit(int fd, const std::vector<std::string>& args);
     void    handlePrivmsg(int fd, const std::vector<std::string>& args);
+    void    handleJoin(int fd, const std::vector<std::string>& args);
     
 
 public:
