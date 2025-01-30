@@ -5,11 +5,14 @@
     "001 " + (client) + " :Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
-#define  RPL_TOPIC(channel, topic) \
-    "332 #" + (channel) + " :" + (topic) + "\r\n"
+#define RPL_TOPIC(channel, topic) \
+    "332 " + (channel) + " :" + (topic) + "\r\n"
 
 #define RPL_NAMREPLY(channel, nicks) \
-    "353 #" + (channel) + " :" + (nicks) + "\r\n"
+    "353 = " + (channel) + " :" + (nicks) + "\r\n"
+
+#define RPL_ENDOFNAMES(channel) \
+    "366 " + (channel) + " :End of /NAMES list.\r\n"
 
 #define ERR_NEEDMOREPARAMS(nick, command) \
     "461 " + nick + " " + command + " :Not enough parameters\r\n"
@@ -39,6 +42,11 @@
 // Forwarded message format for PRIVMSG
 #define PRIVMSG(sender, receiver, message) \
     ":" + (sender) + " PRIVMSG " + (receiver) + " :" + (message) + "\r\n"
+
+// Join Reply
+#define RPL_JOIN(nick, channel) \
+    ":" + (nick) + " JOIN " + (channel) + "\r\n"
+
 
 
 #endif

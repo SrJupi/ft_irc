@@ -167,17 +167,16 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
     } else if (!isValidChannelName(args[0])) {
         response = ERR_NOSUCHCHANNEL(nick, args[0]);
     } else {
-        const std::string &channelName = args[0].substr(1);
+        const std::string &channelName = args[0];
         Channel *channel = server_ptr->getChannelManager().addChannel(channelName);
         channel->addClient(client->getNickname());
         std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl;
         client->addChannel(channelName);
         channel->listClients();
-        response = RPL_TOPIC(channelName, "topic_temp------------");
-        send(fd, response.c_str(), response.length(), 0);
-        response = RPL_NAMREPLY(channelName, "davifern likuta juan diego @test");
-        // send(fd, response.c_str(), response.length(), 0);
-        // response = "";
+        response = RPL_JOIN(client->getNickname(), channelName);
+        response += RPL_TOPIC(channelName, "topic_temp------------");
+        response += RPL_NAMREPLY(channelName, "davifern likuta juan diego @test");
+        response += RPL_ENDOFNAMES(channelName);
     }
 
     if (!response.empty()) {
