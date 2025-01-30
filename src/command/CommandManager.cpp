@@ -156,6 +156,7 @@ bool isValidChannelName(const std::string& str) {
 
 //TODO: as vezes, quando o hexchat ja esta aberto com um usuario ali, o sistema nao pega o nickname e fica vazio
 void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args) {
+    std::string serverName = "br.server.irc";
     Client *client = server_ptr->getClientManager().getClientByFd(fd);
     const std::string nick = client->getNickname();
 
@@ -174,11 +175,10 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
         client->addChannel(channelName);
         channel->listClients();
         response = RPL_JOIN(client->getNickname(), channelName);
-        response += RPL_TOPIC(channelName, "topic_temp------------");
-        response += RPL_NAMREPLY(channelName, "davifern likuta juan diego @test");
-        response += RPL_ENDOFNAMES(channelName);
+        response += RPL_TOPIC(serverName, client->getNickname(), channelName, "topic_temp------------");
+        response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, "davifern likuta juan diego @test");
+        response += RPL_ENDOFNAMES(serverName, client->getNickname(),channelName);
     }
-
     if (!response.empty()) {
         send(fd, response.c_str(), response.length(), 0);
     }
