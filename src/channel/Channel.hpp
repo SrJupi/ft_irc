@@ -8,6 +8,7 @@ class Channel
 {
 private:
     std::string _channelName;
+    std::string _channelTopic;
     std::set<std::string> _clientsConnected;
     std::set<std::string> _channelOperators;
     std::string     topic;
@@ -28,6 +29,9 @@ public:
 
     void        setChannelName(const std::string &);
     std::string getChannelName();
+    void        setTopic(const std::string &topic);
+    std::string getChannelTopic();
+    std::string getClientsConnectedList();
     void        addClient(const std::string &clientName);
     void        removeClient(const std::string &clientName);
     void        listClients() const;

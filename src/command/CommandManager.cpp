@@ -175,8 +175,8 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
         client->addChannel(channelName);
         channel->listClients();
         response = RPL_JOIN(client->getNickname(), channelName);
-        response += RPL_TOPIC(serverName, client->getNickname(), channelName, "topic_temp------------");
-        response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, "davifern likuta juan diego @test");
+        response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
+        response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
         response += RPL_ENDOFNAMES(serverName, client->getNickname(),channelName);
     }
     if (!response.empty()) {
