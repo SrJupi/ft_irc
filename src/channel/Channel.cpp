@@ -72,5 +72,15 @@ void Channel::listClients() const {
     }
 }
 
+void Channel::broadcastMessage(const std::string& message) {
+    (void)message;
+    for (std::set<std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+        // if (*it != exclude) {
+            // Option 1: Use a helper sendMessage method if available.
+            // (*it)->sendMessage(message);
 
-
+            // Option 2: Use the raw socket send.
+            // send((*it)->getFd(), message.c_str(), message.length(), 0);
+        // }
+    }
+}

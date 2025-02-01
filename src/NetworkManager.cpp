@@ -84,6 +84,8 @@ int NetworkManager::acceptNewClient()
 	return clientfd;
 }
 
+//TODO: remover o print e o include
+#include <iostream>
 //Create and set the socket, bind and start to listen
 int NetworkManager::setNetwork(std::string &port)
 {
@@ -94,6 +96,7 @@ int NetworkManager::setNetwork(std::string &port)
 		return 2;
 	}
 	if (bindPort()) {
+		std::cout << "Bind error" << std::endl;
 		return 3;
 	}
 	if (startListen()) {

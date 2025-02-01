@@ -15,7 +15,7 @@ private:
     Channel();
     Channel(const Channel& ref);
     Channel&	operator=(const Channel& ref);
-    int modes; 
+    // int modes; 
     //CRIAR MODES COMO FLAGS?
     //if(modes & 1 && !channel.isInvited(nick)) -> deny
     //+i 1
@@ -35,6 +35,8 @@ public:
     void        addClient(const std::string &clientName);
     void        removeClient(const std::string &clientName);
     void        listClients() const;
+    void        broadcastMessage(const std::string& message);
+
 };
 
 #endif

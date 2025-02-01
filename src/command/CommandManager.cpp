@@ -174,14 +174,38 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
         std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl;
         client->addChannel(channelName);
         channel->listClients();
+        //TODO: enviar a lista de clientes para todos que ja estao no grupo
         response = RPL_JOIN(client->getNickname(), channelName);
         response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
         response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
-        response += RPL_ENDOFNAMES(serverName, client->getNickname(),channelName);
+        response += RPL_ENDOFNAMES(serverName, client->getNickname(), channelName);
     }
     if (!response.empty()) {
         send(fd, response.c_str(), response.length(), 0);
     }
+
+    //enviar para todos os users do canal (para seus fds) a mensagem de que o client atual se juntou ao canal (":davifern3!user3@localhost JOIN :#waka\r\n")
+    response = ":" + client->getNickname() + "!user3@localhost JOIN :#waka\r\n";
+    if (client->getFd() == 5) {
+        send(6, response.c_str(), response.length(), 0);
+        send(7, response.c_str(), response.length(), 0);
+    }
+    if (client->getFd() == 6) {
+        send(5, response.c_str(), response.length(), 0);
+        send(7, response.c_str(), response.length(), 0);
+    }
+    if (client->getFd() == 7) {
+        send(5, response.c_str(), response.length(), 0);
+        send(6, response.c_str(), response.length(), 0);
+    }
+    
+    // Now, build the JOIN message for broadcast to other clients
+    const std::string &channelName = args[0];
+    std::string joinMessage = ":" + client->getNickname() + "!" + client->getUsername() +
+                            "@localhost JOIN :" + channelName + "\r\n";
+
+    // // Broadcast the JOIN message to all clients in the channel except the joining client
+    // channel->broadcastMessage(joinMessage, client);
 }
 
 CommandManager &CommandManager::operator=(const CommandManager &ref) {
