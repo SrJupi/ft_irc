@@ -16,7 +16,7 @@ CommandManager::CommandManager(const CommandManager& ref)
 }
 
 CommandManager::CommandManager(Server *server): server_ptr(server)
-{
+{                           
     _commandHandlers["CAP"] = &CommandManager::handleCap;
     _commandHandlers["NICK"] = &CommandManager::handleNick;   
     _commandHandlers["PASS"] = &CommandManager::handlePass;
@@ -156,7 +156,6 @@ bool isValidChannelName(const std::string& str) {
 
 //TODO: as vezes, quando o hexchat ja esta aberto com um usuario ali, o sistema nao pega o nickname e fica vazio
 void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args) {
-    std::string serverName = "br.server.irc";
     Client *client = server_ptr->getClientManager().getClientByFd(fd);
     const std::string nick = client->getNickname();
 
@@ -165,47 +164,34 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
     // Validate arguments
     if (args.size() < 1) {
         response = ERR_NORECIPIENT(nick, "JOIN");
+        send(fd, response.c_str(), response.length(), 0);
     } else if (!isValidChannelName(args[0])) {
         response = ERR_NOSUCHCHANNEL(nick, args[0]);
-    } else {
-        const std::string &channelName = args[0];
-        Channel *channel = server_ptr->getChannelManager().addChannel(channelName);
-        channel->addClient(client->getNickname());
-        std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl;
-        client->addChannel(channelName);
-        channel->listClients();
-        //TODO: enviar a lista de clientes para todos que ja estao no grupo
-        response = RPL_JOIN(client->getNickname(), channelName);
-        response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
-        response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
-        response += RPL_ENDOFNAMES(serverName, client->getNickname(), channelName);
-    }
-    if (!response.empty()) {
         send(fd, response.c_str(), response.length(), 0);
+    } else {
+        addClientToChannel(args[0], fd, client);
     }
+}
 
-    //enviar para todos os users do canal (para seus fds) a mensagem de que o client atual se juntou ao canal (":davifern3!user3@localhost JOIN :#waka\r\n")
-    response = ":" + client->getNickname() + "!user3@localhost JOIN :#waka\r\n";
-    if (client->getFd() == 5) {
-        send(6, response.c_str(), response.length(), 0);
-        send(7, response.c_str(), response.length(), 0);
-    }
-    if (client->getFd() == 6) {
-        send(5, response.c_str(), response.length(), 0);
-        send(7, response.c_str(), response.length(), 0);
-    }
-    if (client->getFd() == 7) {
-        send(5, response.c_str(), response.length(), 0);
-        send(6, response.c_str(), response.length(), 0);
-    }
-    
-    // Now, build the JOIN message for broadcast to other clients
-    const std::string &channelName = args[0];
-    std::string joinMessage = ":" + client->getNickname() + "!" + client->getUsername() +
-                            "@localhost JOIN :" + channelName + "\r\n";
+void CommandManager::addClientToChannel(const std::string &channelName, int fd, Client *client)
+{
+    Channel *channel = server_ptr->getChannelManager().addChannel(channelName);
+    channel->addClient(fd, client->getNickname());
+    std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl; //TODO: remover
+    client->addChannel(channelName);
+    channel->listClients(); //TODO: remover
+    std::string response = createResponseMessage(client, channelName, channel);
+    send(fd, response.c_str(), response.length(), 0);
+    std::string joinMessage = ":" + client->getNickname() + "!" + client->getUsername() + "@localhost JOIN :" + channelName + "\r\n";
+    channel->broadcastMessage(joinMessage, client->getFd());
+}
 
-    // // Broadcast the JOIN message to all clients in the channel except the joining client
-    // channel->broadcastMessage(joinMessage, client);
+std::string CommandManager::createResponseMessage(Client *client, const std::string &channelName, Channel *channel){
+    std::string response;
+    response = RPL_JOIN(client->getNickname(), channelName);
+    response += RPL_TOPIC(SERVER_NAME, client->getNickname(), channelName, channel->getChannelTopic());
+    response += RPL_NAMREPLY(SERVER_NAME, client->getNickname(), channelName, channel->getClientsConnectedList());
+    response += RPL_ENDOFNAMES(SERVER_NAME, client->getNickname(), channelName);
 }
 
 CommandManager &CommandManager::operator=(const CommandManager &ref) {

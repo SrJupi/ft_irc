@@ -2,14 +2,16 @@
 # define CHANNEL_HPP
 
 #include <set>
+#include <map>
 #include <string>
+#include <sys/socket.h> //tmp to test send, see where it fits better!
 
 class Channel
 {
 private:
     std::string _channelName;
     std::string _channelTopic;
-    std::set<std::string> _clientsConnected;
+    std::map<int, std::string> _clientsConnected;
     std::set<std::string> _channelOperators;
     std::string     topic;
     Channel();
@@ -32,10 +34,10 @@ public:
     void        setTopic(const std::string &topic);
     std::string getChannelTopic();
     std::string getClientsConnectedList();
-    void        addClient(const std::string &clientName);
-    void        removeClient(const std::string &clientName);
-    void        listClients() const;
-    void        broadcastMessage(const std::string& message);
+    void        addClient(int fd, const std::string &clientName);
+    void        removeClient(int fd);
+    void        listClients();
+    void        broadcastMessage(const std::string& message, int exclude);
 
 };
 

@@ -13,6 +13,7 @@ private:
     typedef void (CommandManager::*CommandHandler)(int fd, const std::vector<std::string>& args);
     Server *server_ptr;
     std::map<std::string, CommandHandler> _commandHandlers;
+    static const std::string SERVER_NAME;
 
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
@@ -27,8 +28,10 @@ private:
     void    handleNick(int fd, const std::vector<std::string>& args);
     void    handleQuit(int fd, const std::vector<std::string>& args);
     void    handlePrivmsg(int fd, const std::vector<std::string>& args);
-    void    handleJoin(int fd, const std::vector<std::string>& args);
-    
+    void    handleJoin(int fd, const std::vector<std::string> &args);
+
+    void addClientToChannel(const std::string &channelName, int fd, Client *client);
+    std::string createResponseMessage(Client *client, const std::string &channelName, Channel *channel);
 
 public:
     CommandManager(Server *server);
@@ -37,5 +40,8 @@ public:
     void    executeCommands(int originClient, std::vector<std::string> commands);
 
 };
+
+const std::string CommandManager::SERVER_NAME = "br.ft_irc.server";
+
 
 #endif

@@ -38,49 +38,44 @@ std::string Channel::getChannelTopic() {
     return _channelTopic;
 }
 
-void Channel::addClient(const std::string &clientName) {
-    _clientsConnected.insert(clientName);
+void Channel::addClient(int fd, const std::string &clientName) {
+    _clientsConnected[fd] = clientName;
 }
 
-void Channel::removeClient(const std::string &clientName) {
-    _clientsConnected.erase(clientName);
+void Channel::removeClient(int fd) {
+    _clientsConnected.erase(fd);
 }
 
 // Join the users into a single string
 std::string Channel::getClientsConnectedList() {
     std::string userList;
-    for (std::set<std::string>::const_iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
         if (!userList.empty()) {
             userList += " ";
         }
-        userList += *it;
+        userList += it->second;
     }
     return userList;
 }
 
 #include <iostream>
-void Channel::listClients() const {
+void Channel::listClients() {
     if (_clientsConnected.empty()) {
         std::cout << "No clients connected to " << _channelName << std::endl;
         return;
     }
 
     std::cout << "Total Clients in the channel " << _channelName << " (" << _clientsConnected.size() << ") at address " << this << ":" << std::endl;
-    std::set<std::string>::const_iterator it;
+    std::map<int, std::string>::iterator it;
     for (it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
-        std::cout << *it << std::endl;
+        std::cout << it->second << std::endl;
     }
 }
 
-void Channel::broadcastMessage(const std::string& message) {
-    (void)message;
-    for (std::set<std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
-        // if (*it != exclude) {
-            // Option 1: Use a helper sendMessage method if available.
-            // (*it)->sendMessage(message);
-
-            // Option 2: Use the raw socket send.
-            // send((*it)->getFd(), message.c_str(), message.length(), 0);
-        // }
+//Send a broadcast message to all users except to the exclude
+void Channel::broadcastMessage(const std::string& message, int exclude) {
+    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+        if (it->first != exclude)
+            send(it->first, message.c_str(), message.length(), 0);
     }
 }
