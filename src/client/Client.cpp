@@ -1,28 +1,21 @@
 #include "Client.hpp"
 
-Client::Client()
-{
-}
+Client::Client() {}
 
-Client::Client(const Client& ref)
-{
+Client::Client(const Client& ref) {
     (void)ref;
 }
 
-Client::~Client()
-{
-}
+Client::~Client() {}
 
-Client&	Client::operator=(const Client& ref)
-{
+Client&	Client::operator=(const Client& ref) {
     if (this != &ref) {
         *this = ref;
     }
     return (*this);
 }
 
-void Client::setStoredMsg(const std::string &msg)
-{
+void Client::setStoredMsg(const std::string &msg) {
     _storedMsg = msg;
 }
 
@@ -46,28 +39,30 @@ int Client::getFd() const {
     return _fd;
 }
 
-std::string Client::getNickname()
-{
+std::string Client::getNickname() {
     return _nickname;
 }
 
-void Client::setNickname(std::string nick)
-{
+void Client::setNickname(std::string nick) {
     _nickname = nick;
 }
 
-void Client::setAuthenticationTrue()
-{
+std::string Client::getUsername() {
+    return _username;
+}
+
+void Client::setUsername(std::string user) {
+    _username = user;
+}
+
+void Client::setAuthenticationTrue() {
     _isAuth = true;
 }
 
-bool Client::isAutenticated()
-{
+bool Client::isAutenticated() {
     return _isAuth;
 }
 
-Client::Client(const int fd): _fd(fd), _isAuth(false)
-{
-}
-
+Client::Client(const int fd): _fd(fd), _username("user_name_temp"), _isAuth(false) //TODO: remover ou alterar 
+{}
 

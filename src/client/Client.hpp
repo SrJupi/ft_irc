@@ -30,12 +30,14 @@ public:
     std::string getNickname();
     void        setNickname(std::string nick);
 
+    std::string getUsername();
+    void        setUsername(std::string username);
+
     void        setAuthenticationTrue();
     bool        isAutenticated();
 
     void        addChannel(const std::string &channelName);
     void        removeChannel(const std::string &channelName);
-
 };
 
 #endif

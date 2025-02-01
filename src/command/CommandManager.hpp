@@ -21,6 +21,7 @@ private:
     void    executeCommand(int originClient, const std::string &command);
 
     //Handlers
+    //TODO implementar handleUser (USER cammand)
     void    handleCap(int fd, const std::vector<std::string>& args);
     void    handlePass(int fd, const std::vector<std::string>& args);
     void    handleNick(int fd, const std::vector<std::string>& args);
