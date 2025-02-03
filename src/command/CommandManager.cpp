@@ -108,6 +108,7 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args)
     (void)fd;
 }
 
+//fd is from the client that sent the message
 void CommandManager::handlePrivmsg(int fd, const std::vector<std::string> &args)
 {
     Client *client = server_ptr->getClientManager().getClientByFd(fd);
@@ -122,28 +123,29 @@ void CommandManager::handlePrivmsg(int fd, const std::vector<std::string> &args)
     } else {
         const std::string &receiver = args[0];
         const std::string &message = args[1];
-
-/*         if (server_ptr->getClientManager().isChannel(receiver)) {
+        if (server_ptr->getChannelManager().isChannelExists(receiver)) {
             // Handle channel message
-            if (!server_ptr->getChannelManager().canSendMessage(fd, receiver)) {
+            if (!server_ptr->getChannelManager().canSendMessage(fd, receiver)) {//TODO @David: implement this function
                 response = ERR_CANNOTSENDTOCHAN(nick, receiver);
             } else {
                 std::string broadcastMessage = PRIVMSG(nick, receiver, message);
-                server_ptr->getChannelManager().broadcastMessage(fd, receiver, broadcastMessage);
+                Channel *channel = server_ptr->getChannelManager().getChannelByName(receiver);
+                channel->broadcastMessage(broadcastMessage, fd);
+                // server_ptr->getChannelManager().broadcastMessage(fd, receiver, broadcastMessage);
                 return; // Message successfully broadcasted
             }
-        } else { */
-            // Handle private message
-        Client *target = server_ptr->getClientManager().getClientByNick(receiver);
-        if (!target) {
-            response = ERR_NOSUCHNICK(nick, receiver);
         } else {
-            std::string privateMessage = PRIVMSG(nick, receiver, message);
-            send(target->getFd(), privateMessage.c_str(), privateMessage.length(), 0);
-            return; // Message successfully delivered
+            // Handle private message
+            Client *target = server_ptr->getClientManager().getClientByNick(receiver);
+            if (!target) {
+                response = ERR_NOSUCHNICK(nick, receiver);
+            } else {
+                std::string privateMessage = PRIVMSG(nick, receiver, message);
+                send(target->getFd(), privateMessage.c_str(), privateMessage.length(), 0);
+                return; // Message successfully delivered
+            }
         }
     }
-
     if (!response.empty()) {
         send(fd, response.c_str(), response.length(), 0);
     }

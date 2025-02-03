@@ -38,6 +38,7 @@ int     ChannelManager::removeChannel(const std::string &channelName) {
     return 0;
 }
 
+//Check if the channel is already created in the cannels map
 int     ChannelManager::isChannelExists(const std::string &channelName) {
     std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
     if (it == _channels.end()) {
