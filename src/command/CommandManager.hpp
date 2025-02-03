@@ -4,8 +4,10 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <client/Client.hpp>
+#include <channel/Channel.hpp>
 
-class Server;
+class Server; //@Lucas: por que não usou include?
 
 class CommandManager
 {
@@ -13,7 +15,6 @@ private:
     typedef void (CommandManager::*CommandHandler)(int fd, const std::vector<std::string>& args);
     Server *server_ptr;
     std::map<std::string, CommandHandler> _commandHandlers;
-    static const std::string SERVER_NAME;
 
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
@@ -40,8 +41,5 @@ public:
     void    executeCommands(int originClient, std::vector<std::string> commands);
 
 };
-
-const std::string CommandManager::SERVER_NAME = "br.ft_irc.server";
-
 
 #endif

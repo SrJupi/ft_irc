@@ -188,10 +188,12 @@ void CommandManager::addClientToChannel(const std::string &channelName, int fd, 
 
 std::string CommandManager::createResponseMessage(Client *client, const std::string &channelName, Channel *channel){
     std::string response;
+    std::string serverName = "br.ft_irc.server";
     response = RPL_JOIN(client->getNickname(), channelName);
-    response += RPL_TOPIC(SERVER_NAME, client->getNickname(), channelName, channel->getChannelTopic());
-    response += RPL_NAMREPLY(SERVER_NAME, client->getNickname(), channelName, channel->getClientsConnectedList());
-    response += RPL_ENDOFNAMES(SERVER_NAME, client->getNickname(), channelName);
+    response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
+    response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
+    response += RPL_ENDOFNAMES(serverName, client->getNickname(), channelName);
+    return response;
 }
 
 CommandManager &CommandManager::operator=(const CommandManager &ref) {
