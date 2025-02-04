@@ -38,6 +38,7 @@ public:
     void        removeClient(int fd);
     void        listClients();
     void        broadcastMessage(const std::string& message, int exclude);
+    int         canSendMessage(int fdSenter);
 
 };
 

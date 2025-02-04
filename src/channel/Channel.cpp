@@ -72,6 +72,16 @@ void Channel::listClients() {
     }
 }
 
+//TODO: talvez tenha outros motivos que invibializem que o cliente possa enviar mensagem para o canal
+int Channel::canSendMessage(int fdSenter) {
+    //Check if the user (fdSenter) is in the channel
+    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+        if (it->first == fdSenter)
+            return 1;
+    }
+    return 0;
+}
+
 //Send a broadcast message to all users except to the exclude
 void Channel::broadcastMessage(const std::string& message, int exclude) {
     for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
