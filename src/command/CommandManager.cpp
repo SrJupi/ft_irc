@@ -21,6 +21,7 @@ CommandManager::CommandManager(Server *server): server_ptr(server)
     _commandHandlers["NICK"] = &CommandManager::handleNick;   
     _commandHandlers["PASS"] = &CommandManager::handlePass;
     _commandHandlers["QUIT"] = &CommandManager::handleQuit;
+    _commandHandlers["KICK"] = &CommandManager::handleKick;
     _commandHandlers["PRIVMSG"] = &CommandManager::handlePrivmsg;
     _commandHandlers["JOIN"] = &CommandManager::handleJoin;
 }
@@ -102,11 +103,56 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
     server_ptr->getClientManager().addNicknameToFd(args[0], fd);
 }
 
+
 void CommandManager::handleQuit(int fd, const std::vector<std::string> &args)
 {
     (void)args;
     (void)fd;
+    //chamar o handleKick
+    //TODO: remover o cliente dos canais em que ele esta
+    // Client *client = server_ptr->getClientManager().getClientByFd(fd);
+    // client->removeFromAllChannels()
+    //para cada canal do cliente
+    //remova-me do canal
 }
+
+//args[0]: channel
+//args[1]: lista de usuarios
+//args[2]: comentario
+void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
+    // ERR_NEEDMOREPARAMS (461)
+    // ERR_NOSUCHCHANNEL (403)
+    //TODO: check if the client can kick users    // ERR_CHANOPRIVSNEEDED (482)
+    //The fdClient must be in the channel // ERR_NOTONCHANNEL (442)
+    //The users must be in the channel // ERR_USERNOTINCHANNEL (441)
+    Client *userKicker = server_ptr->getClientManager().getClientByFd(fd);
+    Channel *channel = server_ptr->getChannelManager().getChannelByName(args[0]);
+    Client *userKicked = server_ptr->getClientManager().getClientByNick(args[1]);
+    
+    std::string response = ":" + userKicker->getNickname() + "!" + userKicker->getUsername() + "@127.0.0.1 KICK " +
+    channel->getChannelName() + " " + userKicked->getNickname() + " :Spamming is not allowed MF!!\r\n";
+
+    send(fd, response.c_str(), response.length(), 0);
+
+    // Send to all users in the channel (including Paco before removing him)
+    channel->broadcastMessage(response, fd);
+
+    // // Now, remove Paco from the channel in the server's internal structure
+    channel->removeClient(userKicked->getFd());
+
+    //createKickResponseMessage(client, channelName, channel);
+    // send(fd, response.c_str(), response.length(), 0);
+}
+
+// std::string CommandManager::createKickResponseMessage(Client *client, const std::string &channelName, Channel *channel){
+//     std::string response;
+//     std::string serverName = "br.ft_irc.server";
+//     response = RPL_JOIN(client->getNickname(), channelName);
+//     response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
+//     response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
+//     response += RPL_ENDOFNAMES(serverName, client->getNickname(), channelName);
+//     return response;
+// }
 
 void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> &args) {
     Client *client = server_ptr->getClientManager().getClientByFd(fdSenter);
@@ -192,13 +238,13 @@ void CommandManager::addClientToChannel(const std::string &channelName, int fd, 
     std::cout << "Cliente " << client->getNickname() << " adicionado ao canal " << channelName << std::endl; //TODO: remover
     client->addChannel(channelName);
     channel->listClients(); //TODO: remover
-    std::string response = createResponseMessage(client, channelName, channel);
+    std::string response = createJoinResponseMessage(client, channelName, channel);
     send(fd, response.c_str(), response.length(), 0);
     std::string joinMessage = ":" + client->getNickname() + "!" + client->getUsername() + "@localhost JOIN :" + channelName + "\r\n";
     channel->broadcastMessage(joinMessage, client->getFd());
 }
 
-std::string CommandManager::createResponseMessage(Client *client, const std::string &channelName, Channel *channel){
+std::string CommandManager::createJoinResponseMessage(Client *client, const std::string &channelName, Channel *channel){
     std::string response;
     std::string serverName = "br.ft_irc.server";
     response = RPL_JOIN(client->getNickname(), channelName);

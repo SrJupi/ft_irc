@@ -28,11 +28,12 @@ private:
     void    handlePass(int fd, const std::vector<std::string>& args);
     void    handleNick(int fd, const std::vector<std::string>& args);
     void    handleQuit(int fd, const std::vector<std::string>& args);
-    void     handlePrivmsg(int fd, const std::vector<std::string> &args);
+    void    handleKick(int fd, const std::vector<std::string>& args);
+    void    handlePrivmsg(int fd, const std::vector<std::string> &args);
     void    handleJoin(int fd, const std::vector<std::string> &args);
 
     void addClientToChannel(const std::string &channelName, int fd, Client *client);
-    std::string createResponseMessage(Client *client, const std::string &channelName, Channel *channel);
+    std::string createJoinResponseMessage(Client *client, const std::string &channelName, Channel *channel);
     
     int     handlePrivateMessage(int fdSenter, const std::string &nickSenter, const std::string &receiver, const std::string &message);
     int     handleChannelMessage(int fdSenter, const std::string &nickSenter, const std::string &receiver, const std::string &message);
