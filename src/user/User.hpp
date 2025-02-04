@@ -1,10 +1,10 @@
-#ifndef CLIENT_HPP
-# define CLIENT_HPP
+#ifndef USER_HPP
+# define USER_HPP
 
 #include <set>
 #include <string>
 
-class Client
+class User
 {
 private:
     int _fd;
@@ -13,13 +13,13 @@ private:
     std::set<std::string> _channels;
 	std::string _storedMsg;
 	bool    _isAuth;
-    Client();
-    Client(const Client& ref);
-    Client&	operator=(const Client& ref);
+    User();
+    User(const User& ref);
+    User&	operator=(const User& ref);
 
 public:
-    explicit Client(int fd);
-    ~Client();
+    explicit User(int fd);
+    ~User();
 
     void        setStoredMsg(const std::string &msg);
     std::string getStoredMsg();

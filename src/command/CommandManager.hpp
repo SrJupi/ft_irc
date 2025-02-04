@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <client/Client.hpp>
+#include <user/User.hpp>
 #include <channel/Channel.hpp>
 
 class Server; //@Lucas: por que não usou include?
@@ -32,13 +32,14 @@ private:
     void    handlePrivmsg(int fd, const std::vector<std::string> &args);
     void    handleJoin(int fd, const std::vector<std::string> &args);
     void    handlePart(int fd, const std::vector<std::string>& args);
+    void    handleMode(int fd, const std::vector<std::string>& args);
 
-    void addClientToChannel(const std::string &channelName, int fd, Client *client);
-    std::string createJoinResponseMessage(Client *client, const std::string &channelName, Channel *channel);
-    void    removeClientFromChannel(Client *client, const std::string &channelName, const std::string &leaveMessage);
+    void addClientToChannel(const std::string &channelName, int fd, User *client);
+    std::string createJoinResponseMessage(User *client, const std::string &channelName, Channel *channel);
+    void    removeClientFromChannel(User *client, const std::string &channelName, const std::string &leaveMessage);
     
-    int     handlePrivateMessage(int fdSenter, const std::string &nickSenter, const std::string &receiver, const std::string &message);
-    int     handleChannelMessage(int fdSenter, const std::string &nickSenter, const std::string &receiver, const std::string &message);
+    int     handlePrivateMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
+    int     handleChannelMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
 
 public:
     CommandManager(Server *server);

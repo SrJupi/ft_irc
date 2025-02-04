@@ -15,9 +15,9 @@ private:
 public:
     ChannelManager();
     ~ChannelManager();
-    Channel *addChannel(const std::string &channelName);
+    Channel *createChannel(const std::string &channelName, int fd);
     int     removeChannel(const std::string &channelName);
-    int     isChannelExists(const std::string &channelName);
+    int     doesChannelExists(const std::string &channelName);
     Channel *getChannelByName(const std::string &channelName);
     
     // bool    isEmpty();

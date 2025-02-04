@@ -12,21 +12,25 @@ private:
     std::string _channelName;
     std::string _channelTopic;
     std::map<int, std::string> _clientsConnected;
-    std::set<std::string> _channelOperators;
+    std::set<int> _channelOperators;
     std::string     topic;
     Channel();
     Channel(const Channel& ref);
     Channel&	operator=(const Channel& ref);
-    // int modes; 
-    //CRIAR MODES COMO FLAGS?
-    //if(modes & 1 && !channel.isInvited(nick)) -> deny
-    //+i 1
-    //+t 2
-    //+k 4
-    //+l 8
+    int _usersCounter;
+
+    //Invite List
+    std::set<int> _invitedUsers; 
+
+    //MODES
+    bool        _isInviteOnly;
+    bool        _isTopicLocked; 
+    int         _userLimit;
+    std::string _password;
+
 
 public:
-    explicit Channel(const std::string &); //@David: preciso de explicit?
+    explicit Channel(const std::string &channelName, int fd); //@David: preciso de explicit?
     ~Channel();
 
     void        setChannelName(const std::string &);
@@ -38,7 +42,24 @@ public:
     void        removeClient(int fd);
     void        listClients();
     void        broadcastMessage(const std::string& message, int exclude);
-    int         canSendMessage(int fdSenter);
+    bool        canSendMessage(int fdSenter);
+
+    int         getAmountOfUsers();
+
+    //Operator Methods
+    bool        isUserFdChanOperator(int fd);
+    void        inviteUser(int fd);
+    bool        isUserInvited(int fd);
+
+    //Modes Get and Set
+    void        setInviteMode(bool mode);
+    bool        getInviteMode();
+    void        setLockedTopicMode(bool mode);
+    bool        getLockedTopicMode();
+    void        setUserLimitMode(int num);
+    int         getUserLimitMode();
+    void        setChannelPassword(const std::string &password);
+    std::string getChannelPassword();
 
 };
 

@@ -2,7 +2,10 @@
 
 Channel::Channel() {}
 
-Channel::Channel(const std::string& name) : _channelName(name), _channelTopic("TOPIC SIN TOPICO") {}
+Channel::Channel(const std::string& name, int fd) : _channelName(name), _usersCounter(0), _isInviteOnly(false), 
+_isTopicLocked(false), _userLimit(-1) {
+    _channelOperators.insert(fd);
+}
 
 Channel::Channel(const Channel& ref) {
     this->_channelName = ref._channelName;
@@ -39,6 +42,7 @@ std::string Channel::getChannelTopic() {
 }
 
 void Channel::addClient(int fd, const std::string &clientName) {
+    _usersCounter += 1;
     _clientsConnected[fd] = clientName;
 }
 
@@ -73,13 +77,73 @@ void Channel::listClients() {
 }
 
 //TODO: talvez tenha outros motivos que invibializem que o cliente possa enviar mensagem para o canal
-int Channel::canSendMessage(int fdSenter) {
+bool Channel::canSendMessage(int fdSenter) {
     //Check if the user (fdSenter) is in the channel
-    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    /* for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
         if (it->first == fdSenter)
             return 1;
-    }
-    return 0;
+    } */
+    return _clientsConnected.find(fdSenter) != _clientsConnected.end();
+}
+
+int Channel::getAmountOfUsers()
+{
+    return _usersCounter;
+}
+
+bool Channel::isUserFdChanOperator(int fd)
+{
+    return _channelOperators.find(fd) != _channelOperators.end();
+}
+
+void Channel::inviteUser(int fd)
+{
+    _invitedUsers.insert(fd);
+}
+
+bool Channel::isUserInvited(int fd)
+{
+    return _invitedUsers.find(fd) != _invitedUsers.end();
+}
+
+void Channel::setInviteMode(bool mode)
+{
+    _isInviteOnly = mode;
+}
+
+bool Channel::getInviteMode()
+{
+    return _isInviteOnly;
+}
+
+void Channel::setLockedTopicMode(bool mode)
+{
+    _isTopicLocked = mode;
+}
+
+bool Channel::getLockedTopicMode()
+{
+    return _isTopicLocked;
+}
+
+void Channel::setUserLimitMode(int num)
+{
+    _userLimit = num;
+}
+
+int Channel::getUserLimitMode()
+{
+    return _userLimit;
+}
+
+void Channel::setChannelPassword(const std::string &password)
+{
+    _password = password;
+}
+
+std::string Channel::getChannelPassword()
+{
+    return _password;
 }
 
 //Send a broadcast message to all users except to the exclude

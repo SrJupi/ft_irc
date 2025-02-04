@@ -7,8 +7,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ServerReplyMessages.hpp>
-#include <client/Client.hpp>
-#include <client/ClientManager.hpp>
+#include <user/User.hpp>
+#include <user/UserManager.hpp>
 #include <channel/Channel.hpp>
 #include <channel/ChannelManager.hpp>
 #include <NetworkManager.hpp>
@@ -17,6 +17,7 @@
 #include <command/CommandManager.hpp>
 #include <set>
 #include <vector>
+#include <ServerConstants.hpp>
 
 # define MAX_EVENTS 128
 # define BUFFER_SIZE 512
@@ -33,7 +34,7 @@ private:
     //helper Classes
     NetworkManager  _networkManager;
     EpollManager    _epollManager;
-    ClientManager   _clientManager;
+    UserManager   _clientManager;
     CommandManager  _commandManager;
     ChannelManager  _channelManager;
 
@@ -63,7 +64,7 @@ public:
     void    stopServer();
 
     //GETTERS
-    ClientManager   &getClientManager();
+    UserManager   &getClientManager();
     EpollManager    &getEpollManager();
     ChannelManager  &getChannelManager();
 };

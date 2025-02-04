@@ -3,13 +3,13 @@ CXX = c++
 
 MAIN_CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude -Isrc -g
 LDFLAGS = -L$(GTEST_LIB) -lgtest -lgtest_main -pthread
-MAIN_SRCS = src/main.cpp src/Server.cpp src/client/Client.cpp \
-src/NetworkManager.cpp src/client/ClientManager.cpp src/EpollManager.cpp src/Parser.cpp \
+MAIN_SRCS = src/main.cpp src/Server.cpp src/user/User.cpp \
+src/NetworkManager.cpp src/user/UserManager.cpp src/EpollManager.cpp src/Parser.cpp \
 src/command/CommandManager.cpp src/channel/Channel.cpp src/channel/ChannelManager.cpp
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
-HEADERS = include/ft_irc/Server.hpp src/client/Client.hpp src/NetworkManager.hpp \
-src/client/ClientManager.hpp src/EpollManager.hpp src/Parser.hpp src/command/CommandManager.hpp \
+HEADERS = include/ft_irc/Server.hpp src/user/User.hpp src/NetworkManager.hpp \
+src/user/UserManager.hpp src/EpollManager.hpp src/Parser.hpp src/command/CommandManager.hpp \
 src/ServerReplyMessages.hpp src/channel/Channel.hpp src/channel/ChannelManager.hpp
 
 all: $(NAME)

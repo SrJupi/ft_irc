@@ -75,10 +75,10 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 		else {
 			if (events[i].events & EPOLLOUT) {
 				_fdSendSet.insert(currentFd);
-				std::cout  << currentFd << " - Client ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
+				std::cout  << currentFd << " - User ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
-				std::cout << currentFd << " - Client sent messages EPOLLIN" << std::endl;
+				std::cout << currentFd << " - User sent messages EPOLLIN" << std::endl;
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
 				_commandManager.executeCommands(currentFd, cmd_messages);	
 			}
@@ -97,7 +97,7 @@ int Server::addNewClient()
 		return -1;
 	}
 	_clientManager.addNewClient(clientfd);
-	std::cout << "Client added: " << _clientManager.getClientByFd(clientfd)->getFd() << std::endl;
+	std::cout << "User added: " << _clientManager.getClientByFd(clientfd)->getFd() << std::endl;
 	return 0;
 }
 
@@ -133,7 +133,7 @@ Server &Server::operator=(const Server &ref)
 	return (*this);
 }
 
-ClientManager &Server::getClientManager() {
+UserManager &Server::getClientManager() {
 	return _clientManager;
 }
 

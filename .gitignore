@@ -4,3 +4,5 @@ runTests
 .idea
 *.o
 *.d
+.DS_Store
+.devcontainer

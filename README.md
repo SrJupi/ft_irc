@@ -8,6 +8,7 @@
 ### C++ project structure
 
 [C++ application development ( Part 1 — Project structure )](https://medium.com/heuristics/c-application-development-part-1-project-structure-454b00f9eddc)  
+[Video Orthdox Format](https://www.youtube.com/watch?v=GBoP8btm4go)  
 
 ### Network Programming
 

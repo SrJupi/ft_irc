@@ -14,14 +14,14 @@
 #define RPL_ENDOFNAMES(server, nick, channel) \
     ":" + (server) + " 366 " + (nick) + " " + (channel) + " :End of /NAMES list.\r\n"
 
-#define ERR_NEEDMOREPARAMS(nick, command) \
-    "461 " + nick + " " + command + " :Not enough parameters\r\n"
+#define RPL_NICK(oldNick, newNick) \
+    ":" + (oldNick) + " NICK :" + (newNick) + "\r\n"
 
 #define ERR_NOSUCHNICK(nick, receiver) \
     "401 " + (nick) + " " + (receiver) + " :No such nick/channel\r\n"
 
-#define ERR_NOSUCHCHANNEL(nick, channelName) \
-    "403 " + (nick) + " " + (channelName) + " :No such channel\r\n"    
+#define ERR_NOSUCHCHANNEL(server, nick, channel) \
+    ":" + (server) + " 403 " + (nick) + " " + (channel) + " :No such channel\r\n"   
 
 #define ERR_CANNOTSENDTOCHAN(nick, channel) \
     "404 " + (nick) + " " + (channel) + " :Cannot send to channel\r\n"
@@ -32,11 +32,27 @@
 #define ERR_NOTEXTTOSEND(nick) \
     "412 " + (nick) + " :No text to send\r\n"
 
+#define ERR_NONICKNAMEGIVEN(server) \
+    ":" + (server) + " 431 :No nickname given\r\n"
+
+#define ERR_NICKNAMEINUSE(server, nick) \
+    ":" + (server) + " 433 " + (nick) + " :Nickname is already in use\r\n"
+
+#define ERR_NOTREGISTERED(server) \
+    ":" + (server) + " 451 :You have not registered\r\n"
+
+#define ERR_NEEDMOREPARAMS(server, nick, command) \
+    ":" + (server) + " 461 " + (nick) + " " + (command) + " :Not enough parameters\r\n"
+
 #define ERR_ALREADYREGISTRED(nick) \
     "462 " + nick + " :You may not reregister\r\n"
 
 #define ERR_PASSWDMISMATCH(nick, command) \
     "464 " + (nick) + " " + (command) + " :Password incorrect\r\n"
+
+#define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
+    ":" + (server) + " 482 " + (nick) + " " + (channel) + " :You're not a channel operator\r\n"
+
 
 
 // Forwarded message format for PRIVMSG

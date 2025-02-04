@@ -1,4 +1,5 @@
 #include <channel/ChannelManager.hpp>
+#include <iostream>
 
 ChannelManager::ChannelManager() {}
 
@@ -13,8 +14,7 @@ ChannelManager::~ChannelManager() {
     // _mapNameToChannels.clear();
 
 }
-#include <iostream>
-Channel     *ChannelManager::addChannel(const std::string &channelName) {
+Channel     *ChannelManager::createChannel(const std::string &channelName, int fd) {
     // // _channels[channelName] = new Channel(channelName);
     // // return 0;
     // if (_channels.find(channelName) == _channels.end()) {
@@ -23,12 +23,12 @@ Channel     *ChannelManager::addChannel(const std::string &channelName) {
     // }
     // return -1; // Channel already exists 
 
-    if (_channels.find(channelName) == _channels.end()) { // ✅ Prevent duplicate entries
-        _channels[channelName] = new Channel(channelName); // ✅ Store pointer correctly
+/*     if (_channels.find(channelName) == _channels.end()) { // ✅ Prevent duplicate entries
         std::cout << "Channel created: " << channelName << " at " << _channels[channelName] << std::endl;
     } else {
         std::cout << "Channel already exists: " << channelName << " at " << _channels[channelName] << std::endl;
-    }
+    } */
+    _channels[channelName] = new Channel(channelName, fd); // ✅ Store pointer correctly
     return _channels.at(channelName); // _channels[channelName]
 
 }
@@ -39,7 +39,7 @@ int     ChannelManager::removeChannel(const std::string &channelName) {
 }
 
 //Check if the channel is already created in the cannels map
-int     ChannelManager::isChannelExists(const std::string &channelName) {
+int     ChannelManager::doesChannelExists(const std::string &channelName) {
     std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
     if (it == _channels.end()) {
         return 0;
@@ -59,7 +59,7 @@ Channel* ChannelManager::getChannelByName(const std::string &channelName) {
         std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl; // ✅ Debug output
         return it->second; // ✅ Return the correct channel pointer
     }
-    std::cout << "Channel not found: " << channelName << std::endl; // ❌ Should never happen
+    std::cout << "Channel not found: " << channelName << std::endl; // ❌ Should never happen -> @David: NOW IT WILL HAPPEN! xD
     return NULL;
 }
 
