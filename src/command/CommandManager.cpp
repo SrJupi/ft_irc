@@ -25,6 +25,7 @@ CommandManager::CommandManager(Server *server): server_ptr(server)
     _commandHandlers["JOIN"] = &CommandManager::handleJoin;
     _commandHandlers["PART"] = &CommandManager::handlePart;
     _commandHandlers["MODE"] = &CommandManager::handleMode;
+    _commandHandlers["TOPIC"] = &CommandManager::handleTopic;
     _commandHandlers["PRIVMSG"] = &CommandManager::handlePrivmsg;
 }
 
@@ -144,6 +145,16 @@ void CommandManager::handleMode(int fd, const std::vector<std::string> &args)
     } else {
         //handle mode changes
     }
+}
+
+//I AM A SIMPLE METHOD, I DO NOT CHECK FOR ERRORS. I JUST WANT TO SET SOME TOPICS, PLEASE SEND THE COMMAND CORRECTLY!!!
+void CommandManager::handleTopic(int fd, const std::vector<std::string> &args)
+{
+    Channel *channel = server_ptr->getChannelManager().getChannelByName(args[0]);
+    if (channel->getLockedTopicMode() && !channel->isUserFdChanOperator(fd)) {
+        //ERROR... Sad =()
+    }
+    channel->setTopic(args[1]);
 }
 
 void    CommandManager::removeClientFromChannel(User *client, const std::string &channelName, const std::string &leaveMessage) {

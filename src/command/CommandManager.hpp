@@ -33,6 +33,7 @@ private:
     void    handleJoin(int fd, const std::vector<std::string> &args);
     void    handlePart(int fd, const std::vector<std::string>& args);
     void    handleMode(int fd, const std::vector<std::string>& args);
+    void    handleTopic(int fd, const std::vector<std::string>& args);
 
     void addClientToChannel(const std::string &channelName, int fd, User *client);
     std::string createJoinResponseMessage(User *client, const std::string &channelName, Channel *channel);
