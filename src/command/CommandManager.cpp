@@ -24,6 +24,7 @@ CommandManager::CommandManager(Server *server): server_ptr(server)
     _commandHandlers["KICK"] = &CommandManager::handleKick;
     _commandHandlers["PRIVMSG"] = &CommandManager::handlePrivmsg;
     _commandHandlers["JOIN"] = &CommandManager::handleJoin;
+    _commandHandlers["PART"] = &CommandManager::handlePart;
 }
 
 CommandManager::~CommandManager()
@@ -103,26 +104,48 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
     server_ptr->getClientManager().addNicknameToFd(args[0], fd);
 }
 
+void    CommandManager::handlePart(int fd, const std::vector<std::string>& args) {
+    std::cout << "----PART PARAMS:" << std::endl;
+    for(std::vector<std::string>::const_iterator it = args.begin(); it != args.end(); it++) {
+        std::cout << *it << std::endl;
+    }
+    //TODO 01: implementar quando enviar a mensagem default e quando a padronizada, quando sair de um canal ou de todos, quando eh quit e quando eh param
+    //if (args[0] != "Leaving") eh porque o client ta deixando um canal somente ou de todos??
+    
+    //if (args[0] == "Leaving"): remover o cliente de todos s canais em que ele esta e enviar a mensagem args[1]
+    Client *client = server_ptr->getClientManager().getClientByFd(fd);
+    std::set<std::string> clientChannels = client->getChannels();
+    for (std::set<std::string>::iterator it = clientChannels.begin(); it != clientChannels.end(); it++) {
+        removeClientFromChannel(client, *it, args[1]);
+    }
+}
 
-void CommandManager::handleQuit(int fd, const std::vector<std::string> &args)
-{
+void    CommandManager::removeClientFromChannel(Client *client, const std::string &channelName, const std::string &leaveMessage) {
+    Channel *channel;
+    channel = server_ptr->getChannelManager().getChannelByName(channelName);
+    channel->removeClient(client->getFd());
+    client->removeChannel(channelName);
+    channel->listClients();
+    //informar aos outros usuarios que o cliente saiu
+    std::string response = ":" + client->getNickname() + "!" + client->getUsername() + "@127.0.0.1 PART " +
+    channel->getChannelName() + " :" + leaveMessage + "\r\n";
+    // std::string response = ":paco!Robson@127.0.0.1 PART #waka3 :Goodbye everyone!\r\n";
+    channel->broadcastMessage(response, client->getFd());
+}
+
+void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
     (void)args;
-    (void)fd;
-    //chamar o handleKick
-    //TODO: remover o cliente dos canais em que ele esta
-    // Client *client = server_ptr->getClientManager().getClientByFd(fd);
-    // client->removeFromAllChannels()
-    //para cada canal do cliente
-    //remova-me do canal
+    handlePart(fd, args);    
 }
 
 //args[0]: channel
 //args[1]: lista de usuarios
 //args[2]: comentario
+//TODO: implementar os checks abaixo
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
-    // ERR_NEEDMOREPARAMS (461)
-    // ERR_NOSUCHCHANNEL (403)
-    //TODO: check if the client can kick users    // ERR_CHANOPRIVSNEEDED (482)
+    //Check if there are minimum params // ERR_NEEDMOREPARAMS (461)
+    //Check if the channel exists // ERR_NOSUCHCHANNEL (403)
+    //Check if the client can kick users    // ERR_CHANOPRIVSNEEDED (482)
     //The fdClient must be in the channel // ERR_NOTONCHANNEL (442)
     //The users must be in the channel // ERR_USERNOTINCHANNEL (441)
     Client *userKicker = server_ptr->getClientManager().getClientByFd(fd);
@@ -139,20 +162,7 @@ void    CommandManager::handleKick(int fd, const std::vector<std::string>& args)
 
     // // Now, remove Paco from the channel in the server's internal structure
     channel->removeClient(userKicked->getFd());
-
-    //createKickResponseMessage(client, channelName, channel);
-    // send(fd, response.c_str(), response.length(), 0);
 }
-
-// std::string CommandManager::createKickResponseMessage(Client *client, const std::string &channelName, Channel *channel){
-//     std::string response;
-//     std::string serverName = "br.ft_irc.server";
-//     response = RPL_JOIN(client->getNickname(), channelName);
-//     response += RPL_TOPIC(serverName, client->getNickname(), channelName, channel->getChannelTopic());
-//     response += RPL_NAMREPLY(serverName, client->getNickname(), channelName, channel->getClientsConnectedList());
-//     response += RPL_ENDOFNAMES(serverName, client->getNickname(), channelName);
-//     return response;
-// }
 
 void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> &args) {
     Client *client = server_ptr->getClientManager().getClientByFd(fdSenter);

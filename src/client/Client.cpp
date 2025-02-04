@@ -43,6 +43,10 @@ std::string Client::getNickname() {
     return _nickname;
 }
 
+std::set<std::string>   Client::getChannels() const {
+    return _channels;
+}
+
 void Client::setNickname(std::string nick) {
     _nickname = nick;
 }
