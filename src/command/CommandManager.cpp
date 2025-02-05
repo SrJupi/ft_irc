@@ -114,19 +114,25 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
     }
 }
 
+//(quando ele manda part)
+//args[0]: channel 
+//args[1]: comentario do usuario ou Leaving
+//(quando quit)
+//args[0]: Leaving
 void    CommandManager::handlePart(int fd, const std::vector<std::string>& args) {
     std::cout << "----PART PARAMS:" << std::endl;
     for(std::vector<std::string>::const_iterator it = args.begin(); it != args.end(); it++) {
         std::cout << *it << std::endl;
     }
-    //TODO 01: implementar quando enviar a mensagem default e quando a padronizada, quando sair de um canal ou de todos, quando eh quit e quando eh param
-    //if (args[0] != "Leaving") eh porque o user ta deixando um canal somente ou de todos??
-    
-    //if (args[0] == "Leaving"): remover o user de todos s canais em que ele esta e enviar a mensagem args[1]
     User *user = server_ptr->getUserManager().getUserByFd(fd);
-    std::set<std::string> userChannels = user->getChannels();
-    for (std::set<std::string>::iterator it = userChannels.begin(); it != userChannels.end(); it++) {
-        removeUserFromChannel(user, *it, args[1]);
+    if (args[0] == "Leaving") { //user quit
+        std::set<std::string> userChannels = user->getChannels();
+        for (std::set<std::string>::iterator it = userChannels.begin(); it != userChannels.end(); it++) {
+            removeUserFromChannel(user, *it, "Leaving");
+        }
+    }
+    else { //user leaves a channel
+        removeUserFromChannel(user, args[0], args[1]);
     }
 }
 
@@ -157,17 +163,24 @@ void CommandManager::handleTopic(int fd, const std::vector<std::string> &args)
     channel->setTopic(args[1]);
 }
 
+//Remove from the channel and broadcast the message to the other users
 void    CommandManager::removeUserFromChannel(User *user, const std::string &channelName, const std::string &leaveMessage) {
+    if (!server_ptr->getChannelManager().doesChannelExists(channelName)) {
+        std::string message = ERR_NOSUCHCHANNEL(SERVER_NAME, user->getNickname(), channelName);
+        send(user->getFd(), message.c_str(), message.length(), 0);
+        return;
+    }
     Channel *channel;
     channel = server_ptr->getChannelManager().getChannelByName(channelName);
+    //informar a todos os usuarios que o user saiu
+    std::string response = ":" + user->getNickname() + "!" + user->getUsername() + "@127.0.0.1 PART " +
+    channel->getChannelName() + " :" + leaveMessage + "\r\n";
+    channel->broadcastMessage(response, -1);
+
+    //Agora sim posso remover o usuario do sistema
     channel->removeUser(user->getFd());
     user->removeChannel(channelName);
     channel->listUsers();
-    //informar aos outros usuarios que o usere saiu
-    std::string response = ":" + user->getNickname() + "!" + user->getUsername() + "@127.0.0.1 PART " +
-    channel->getChannelName() + " :" + leaveMessage + "\r\n";
-    // std::string response = ":paco!Robson@127.0.0.1 PART #waka3 :Goodbye everyone!\r\n";
-    channel->broadcastMessage(response, user->getFd());
 }
 
 void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {

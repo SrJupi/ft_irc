@@ -63,8 +63,11 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		ssize_t bytes = recv(userFd, buf, BUFFER_SIZE, 0);
 		if (bytes == -1) {
 			if (errno == EWOULDBLOCK) //check errors (?)
-				break ;
-			std::cerr << "recv failed: " << errno <<  std::endl;
+				break ; 
+            else if (errno == ECONNRESET) //check errors (?)
+                std::cerr << "Connection reset by peer (HexChat user quit)" <<  std::endl;
+            else
+			    std::cerr << "recv failed: " << errno <<  std::endl;
 			return -1;
 		}
 		if (bytes == 0) {
