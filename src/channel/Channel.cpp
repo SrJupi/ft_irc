@@ -9,7 +9,7 @@ _isTopicLocked(false), _userLimit(-1) {
 
 Channel::Channel(const Channel& ref) {
     this->_channelName = ref._channelName;
-    this->topic = ref._channelTopic;
+    this->_topic = ref._channelTopic;
     this->_usersConnected = ref._usersConnected;
 }
 
@@ -89,6 +89,11 @@ bool Channel::canSendMessage(int fdSenter) {
 int Channel::getAmountOfUsers()
 {
     return _usersCounter;
+}
+
+bool Channel::isUserInChannel(int fd)
+{
+    return _usersConnected.find(fd) != _usersConnected.end();
 }
 
 bool Channel::isUserFdChanOperator(int fd)

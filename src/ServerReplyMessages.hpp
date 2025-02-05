@@ -38,6 +38,9 @@
 #define ERR_NICKNAMEINUSE(server, nick) \
     ":" + (server) + " 433 " + (nick) + " :Nickname is already in use\r\n"
 
+#define ERR_NOTONCHANNEL(server, nick, channel) \
+    ":" + (server) + " 442 " + (nick) + " " + (channel) + " :You're not on that channel\r\n"
+
 #define ERR_NOTREGISTERED(server) \
     ":" + (server) + " 451 :You have not registered\r\n"
 
@@ -49,6 +52,9 @@
 
 #define ERR_PASSWDMISMATCH(nick, command) \
     "464 " + (nick) + " " + (command) + " :Password incorrect\r\n"
+
+#define ERR_UNKNOWNMODE(server, nick, mode) \
+    ":" + (server) + " 472 " + (nick) + " " + (mode) + " :is unknown mode char to me\r\n"
 
 #define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
     ":" + (server) + " 482 " + (nick) + " " + (channel) + " :You're not a channel operator\r\n"

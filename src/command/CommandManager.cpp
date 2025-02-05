@@ -144,12 +144,43 @@ void CommandManager::handleMode(int fd, const std::vector<std::string> &args)
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
     } else if (args[0][0] != '#' || !server_ptr->getChannelManager().getChannelByName(args[0])){
         response = ERR_NOSUCHCHANNEL(SERVER_NAME ,nick, args[0]);
+    } else if (!server_ptr->getChannelManager().getChannelByName(args[0])->isUserInChannel(fd)) {
+        response = ERR_NOTONCHANNEL(SERVER_NAME, nick, args[0]);
     } else if (!server_ptr->getChannelManager().getChannelByName(args[0])->isUserFdChanOperator(fd)){
         response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, args[0]);
-    } else if (false /* check if user is in channel (change order with previous) */) {
-        // send ERR_NOTONCHANNEL
+    } else if (args[1].size() != 2 || (args[1][0] != '-' && args[1][0 != '+'])) {
+        response = ERR_UNKNOWNMODE(SERVER_NAME, nick, args[1]);
     } else {
-        //handle mode changes
+        bool addMode = args[1][0] == '+';
+        char mode = args[1][1];
+        switch (mode) {
+            case 'i': {
+                server_ptr->getChannelManager().getChannelByName(args[0])->setInviteMode(addMode);
+                //create response
+                break;
+            }
+            case 't': {
+                server_ptr->getChannelManager().getChannelByName(args[0])->setLockedTopicMode(addMode);
+                //create response
+                break;
+            }
+            case 'k': {
+                //handle passkey
+                break;
+            }
+            case 'o': {
+                //handle operator
+                break;
+            }
+            case 'l': {
+                //handle limit
+                break;
+            }
+            default: {
+                response = ERR_UNKNOWNMODE(SERVER_NAME, nick, args[1]);
+                break;
+            }
+        }
     }
 }
 

@@ -12,8 +12,8 @@ private:
     std::string _channelName;
     std::string _channelTopic;
     std::map<int, std::string> _usersConnected;
-    std::set<int> _channelOperators;
-    std::string     topic;
+    std::set<int>   _channelOperators;
+    std::string     _topic;
     Channel();
     Channel(const Channel& ref);
     Channel&	operator=(const Channel& ref);
@@ -45,6 +45,7 @@ public:
     bool        canSendMessage(int fdSenter);
 
     int         getAmountOfUsers();
+    bool        isUserInChannel(int fd);
 
     //Operator Methods
     bool        isUserFdChanOperator(int fd);
