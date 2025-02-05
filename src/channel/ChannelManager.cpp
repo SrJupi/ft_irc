@@ -28,6 +28,7 @@ Channel     *ChannelManager::createChannel(const std::string &channelName, int f
     } else {
         std::cout << "Channel already exists: " << channelName << " at " << _channels[channelName] << std::endl;
     } */
+   //@LL: mas se você não confere se o canal já existe, você vai criar um novo canal com o mesmo nome e sobrescrever o anterior, não?
     _channels[channelName] = new Channel(channelName, fd); // ✅ Store pointer correctly
     return _channels.at(channelName); // _channels[channelName]
 
@@ -60,6 +61,7 @@ Channel* ChannelManager::getChannelByName(const std::string &channelName) {
         return it->second; // ✅ Return the correct channel pointer
     }
     std::cout << "Channel not found: " << channelName << std::endl; // ❌ Should never happen -> @David: NOW IT WILL HAPPEN! xD
+    //@LL: não sei pq caraiii o chat disse Should never happen, mas é bem possível que aconteça, não? Não sei... Conversamos amanhã.
     return NULL;
 }
 

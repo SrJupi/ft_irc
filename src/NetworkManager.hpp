@@ -24,7 +24,7 @@ public:
 
     int setNetwork(std::string &port);
     int getSocketFd();
-    int acceptNewClient();
+    int acceptNewUser();
 };
 
 #endif

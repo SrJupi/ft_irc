@@ -14,72 +14,72 @@ UserManager::~UserManager()
 {
 }
 
-int UserManager::addNewClient(int clientfd)
+int UserManager::addNewUser(int userfd)
 {
-	_mapFdToClient[clientfd] = new User(clientfd);
+	_mapFdToUser[userfd] = new User(userfd);
 
     return 0;
 }
 
-int UserManager::removeClient(int clientfd)
+int UserManager::removeUser(int userfd)
 {
-    std::string const &nick = getClientByFd(clientfd)->getNickname();
+    std::string const &nick = getUserByFd(userfd)->getNickname();
     _nicknames.erase(nick);
-    _mapNicknameToClient.erase(nick);
-    delete _mapFdToClient.at(clientfd);
-    _mapFdToClient.erase(clientfd);
+    _mapNicknameToUser.erase(nick);
+    delete _mapFdToUser.at(userfd);
+    _mapFdToUser.erase(userfd);
     return 0;
 }
 
-User *UserManager::getClientByFd(int clientfd)
+User *UserManager::getUserByFd(int userfd)
 {
-    return _mapFdToClient.at(clientfd);
+    return _mapFdToUser.at(userfd);
 }
 
-User *UserManager::getClientByNick(std::string const &nick)
+User *UserManager::getUserByNick(std::string const &nick)
 {
-    std::map<std::string, User *>::iterator it = _mapNicknameToClient.find(nick);
-    if (it == _mapNicknameToClient.end()) {
+    std::map<std::string, User *>::iterator it = _mapNicknameToUser.find(nick);
+    if (it == _mapNicknameToUser.end()) {
         return NULL;
     }
     return it->second;
 }
 
-int UserManager::deleteClient()
+int UserManager::deleteUser()
 {
-    std::map<int, User *>::iterator it = _mapFdToClient.begin();
-    if (it == _mapFdToClient.end()) {
+    std::map<int, User *>::iterator it = _mapFdToUser.begin();
+    if (it == _mapFdToUser.end()) {
         return -1;
     }
     delete it->second;
     const int fd = it->first;
-    _mapFdToClient.erase(fd);
+    _mapFdToUser.erase(fd);
     return fd;
 }
 
 void UserManager::addNicknameToFd(std::string nick, int fd)
 {
-    std::map<int, User *>::iterator it = _mapFdToClient.find(fd);
-    if (it == _mapFdToClient.end()) {
+    std::map<int, User *>::iterator it = _mapFdToUser.find(fd);
+    if (it == _mapFdToUser.end()) {
         return ;
     }
     std::string oldNick = it->second->getNickname();
     if (!oldNick.empty()) {
         _nicknames.erase(oldNick);
-        _mapNicknameToClient.erase(oldNick);
+        _mapNicknameToUser.erase(oldNick);
     }
     it->second->setNickname(nick);
     _nicknames.insert(nick);
-    _mapNicknameToClient[nick] = it->second;
+    _mapNicknameToUser[nick] = it->second;
     std::cout << "User added nickname. Current set:\n"; //REMOVE
     for (std::set<std::string>::iterator it = _nicknames.begin(); it != _nicknames.end(); it++) {
         std::cout << *it << std::endl;
     }
 }
 
-bool UserManager::isMapFdToClientEmpty()
+bool UserManager::isMapFdToUserEmpty()
 {
-    return _mapFdToClient.empty();
+    return _mapFdToUser.empty();
 }
 
 bool UserManager::existsNickname(const std::string &nick)

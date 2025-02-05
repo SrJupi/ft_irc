@@ -22,9 +22,9 @@ Server::Server(const std::string& port, const std::string &password):
 Server::~Server()
 {
 	//CREATE CLEAN FUNCTIONS?
-	while (!_clientManager.isMapFdToClientEmpty())
+	while (!_userManager.isMapFdToUserEmpty())
 	{
-		const int fd = _clientManager.deleteClient();
+		const int fd = _userManager.deleteUser();
 		if (fd >= 0) {
 			_epollManager.removeFromEpoll(fd);
 		}
@@ -68,8 +68,8 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 	for (int i = 0; i < nfds; i++) {
 		int currentFd = events[i].data.fd;
 		if (currentFd == _networkManager.getSocketFd()) {
-			if (addNewClient()) {
-				std::cerr << "Add new client failed" << std::endl;
+			if (addNewUser()) {
+				std::cerr << "Add new user failed" << std::endl;
 			}
 		}
 		else {
@@ -87,17 +87,17 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 	return 0;
 }
 
-int Server::addNewClient()
+int Server::addNewUser()
 {
-	int clientfd = _networkManager.acceptNewClient(); 
-	if (clientfd == -1) {
+	int userFd = _networkManager.acceptNewUser(); 
+	if (userFd == -1) {
 		return -1;
 	}
-	if (_epollManager.addToEpoll(EPOLLIN | EPOLLOUT | EPOLLET, clientfd)) {
+	if (_epollManager.addToEpoll(EPOLLIN | EPOLLOUT | EPOLLET, userFd)) {
 		return -1;
 	}
-	_clientManager.addNewClient(clientfd);
-	std::cout << "User added: " << _clientManager.getClientByFd(clientfd)->getFd() << std::endl;
+	_userManager.addNewUser(userFd);
+	std::cout << "User added: " << _userManager.getUserByFd(userFd)->getFd() << std::endl;
 	return 0;
 }
 
@@ -133,8 +133,8 @@ Server &Server::operator=(const Server &ref)
 	return (*this);
 }
 
-UserManager &Server::getClientManager() {
-	return _clientManager;
+UserManager &Server::getUserManager() {
+	return _userManager;
 }
 
 EpollManager &Server::getEpollManager() {

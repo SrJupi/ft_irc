@@ -10,7 +10,7 @@ _isTopicLocked(false), _userLimit(-1) {
 Channel::Channel(const Channel& ref) {
     this->_channelName = ref._channelName;
     this->topic = ref._channelTopic;
-    this->_clientsConnected = ref._clientsConnected;
+    this->_usersConnected = ref._usersConnected;
 }
 
 Channel::~Channel() {}
@@ -20,7 +20,7 @@ Channel&	Channel::operator=(const Channel& ref)
     if (this != &ref) {
         this->_channelName = ref._channelName;
         this->_channelTopic = ref._channelTopic;
-        this->_clientsConnected = ref._clientsConnected;
+        this->_usersConnected = ref._usersConnected;
     }
     return (*this);
 }
@@ -41,19 +41,19 @@ std::string Channel::getChannelTopic() {
     return _channelTopic;
 }
 
-void Channel::addClient(int fd, const std::string &clientName) {
+void Channel::addUser(int fd, const std::string &userName) {
     _usersCounter += 1;
-    _clientsConnected[fd] = clientName;
+    _usersConnected[fd] = userName;
 }
 
-void Channel::removeClient(int fd) {
-    _clientsConnected.erase(fd);
+void Channel::removeUser(int fd) {
+    _usersConnected.erase(fd);
 }
 
 // Join the users into a single string
-std::string Channel::getClientsConnectedList() {
+std::string Channel::getUsersConnectedList() {
     std::string userList;
-    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    for (std::map<int, std::string>::iterator it = _usersConnected.begin(); it != _usersConnected.end(); ++it) {
         if (!userList.empty()) {
             userList += " ";
         }
@@ -63,27 +63,27 @@ std::string Channel::getClientsConnectedList() {
 }
 
 #include <iostream>
-void Channel::listClients() {
-    if (_clientsConnected.empty()) {
-        std::cout << "No clients connected to " << _channelName << std::endl;
+void Channel::listUsers() {
+    if (_usersConnected.empty()) {
+        std::cout << "No users connected to " << _channelName << std::endl;
         return;
     }
 
-    std::cout << "Total Clients in the channel " << _channelName << " (" << _clientsConnected.size() << ") at address " << this << ":" << std::endl;
+    std::cout << "Total users in the channel " << _channelName << " (" << _usersConnected.size() << ") at address " << this << ":" << std::endl;
     std::map<int, std::string>::iterator it;
-    for (it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    for (it = _usersConnected.begin(); it != _usersConnected.end(); ++it) {
         std::cout << it->second << std::endl;
     }
 }
 
-//TODO: talvez tenha outros motivos que invibializem que o cliente possa enviar mensagem para o canal
+//TODO: talvez tenha outros motivos que invibializem que o usere possa enviar mensagem para o canal
 bool Channel::canSendMessage(int fdSenter) {
     //Check if the user (fdSenter) is in the channel
-    /* for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    /* for (std::map<int, std::string>::iterator it = _usersConnected.begin(); it != _usersConnected.end(); ++it) {
         if (it->first == fdSenter)
             return 1;
     } */
-    return _clientsConnected.find(fdSenter) != _clientsConnected.end();
+    return _usersConnected.find(fdSenter) != _usersConnected.end();
 }
 
 int Channel::getAmountOfUsers()
@@ -148,7 +148,7 @@ std::string Channel::getChannelPassword()
 
 //Send a broadcast message to all users except to the exclude
 void Channel::broadcastMessage(const std::string& message, int exclude) {
-    for (std::map<int, std::string>::iterator it = _clientsConnected.begin(); it != _clientsConnected.end(); ++it) {
+    for (std::map<int, std::string>::iterator it = _usersConnected.begin(); it != _usersConnected.end(); ++it) {
         if (it->first != exclude)
             send(it->first, message.c_str(), message.length(), 0);
     }

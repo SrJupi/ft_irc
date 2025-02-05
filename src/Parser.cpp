@@ -30,13 +30,13 @@ Parser&	Parser::operator=(const Parser& ref)
     return (*this);
 }
 
-//Print messagens sent by the client -> Isso é só placeholder, ate ter a funcao de verdade
+//Print messagens sent by the user -> Isso é só placeholder, ate ter a funcao de verdade
 //Return msgs to be executed (commands) -> Isso sim é o que faz :D
-std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
+std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 {
     std::vector<std::string> msgs;
-	std::string msg = server.getClientManager().getClientByFd(clientfd)->getStoredMsg();
-    if (readMessage(clientfd, msg, server)) {
+	std::string msg = server.getUserManager().getUserByFd(userFd)->getStoredMsg();
+    if (readMessage(userFd, msg, server)) {
 		return msgs;
 	}
 	std::size_t start = 0;
@@ -52,15 +52,15 @@ std::vector<std::string> Parser::getCommands(int clientfd, Server &server)
         msgs.push_back(msg.substr(start, pos - start));
 		start = pos + strlen(CRLF);
 	}
-	server.getClientManager().getClientByFd(clientfd)->setStoredMsg(msg);
+	server.getUserManager().getUserByFd(userFd)->setStoredMsg(msg);
     return msgs;
 }
 
 //Read the message from the socket
-int Parser::readMessage(int clientfd, std::string &fullMsg, Server &server) {
+int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 	while (true) {
 		char buf[BUFFER_SIZE] = {};
-		ssize_t bytes = recv(clientfd, buf, BUFFER_SIZE, 0);
+		ssize_t bytes = recv(userFd, buf, BUFFER_SIZE, 0);
 		if (bytes == -1) {
 			if (errno == EWOULDBLOCK) //check errors (?)
 				break ;
@@ -68,9 +68,9 @@ int Parser::readMessage(int clientfd, std::string &fullMsg, Server &server) {
 			return -1;
 		}
 		if (bytes == 0) {
-			std::cout << "client " << clientfd << " disconnected" << std::endl;
-			server.getClientManager().removeClient(clientfd);
-			server.getEpollManager().removeFromEpoll(clientfd);
+			std::cout << "user " << userFd << " disconnected" << std::endl;
+			server.getUserManager().removeUser(userFd);
+			server.getEpollManager().removeFromEpoll(userFd);
 			return -1;
 		}
 		fullMsg.append(std::string(buf, bytes));

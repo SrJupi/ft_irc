@@ -1,8 +1,8 @@
 #ifndef SERVERREPLYMESSAGES_HPP
 # define SERVERREPLYMESSAGES_HPP
 
-#define RPL_WELCOME(client, network, nick, user, host) \
-    "001 " + (client) + " :Welcome to the " + (network) + \
+#define RPL_WELCOME(network, nick, user, host) \
+    "001 " + (user) + " :Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
 #define RPL_TOPIC(server, nick, channel, topic) \

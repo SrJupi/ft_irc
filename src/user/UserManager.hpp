@@ -10,23 +10,23 @@ class UserManager
 private:
     UserManager(const UserManager& ref);
     UserManager&	operator=(const UserManager& ref);
-    std::map<int, User *> _mapFdToClient;
-    std::map<std::string, User *> _mapNicknameToClient; //keep only this one?
+    std::map<int, User *> _mapFdToUser;
+    std::map<std::string, User *> _mapNicknameToUser; //keep only this one?
     std::set<std::string> _nicknames; //delete this one?
     
 public:
     UserManager();
     ~UserManager();
     
-    int     addNewClient(int clientfd);
-    int     removeClient(int clientfd);
-    User  *getClientByFd(int clientfd);
-    User  *getClientByNick(std::string const &nick);
-    int     deleteClient();
+    int     addNewUser(int userFd);
+    int     removeUser(int userFd);
+    User  *getUserByFd(int userFd);
+    User  *getUserByNick(std::string const &nick);
+    int     deleteUser();
     
     void    addNicknameToFd(std::string nick, int fd);
 
-    bool    isMapFdToClientEmpty();
+    bool    isMapFdToUserEmpty();
     bool    existsNickname(const std::string &nick);
     
 };

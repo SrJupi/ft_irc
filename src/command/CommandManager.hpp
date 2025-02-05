@@ -20,7 +20,7 @@ private:
     CommandManager&	operator=(const CommandManager& ref);
     CommandManager();
     
-    void    executeCommand(int originClient, const std::string &command);
+    void    executeCommand(int originUser, const std::string &command);
 
     //Handlers
     //TODO implementar handleUser (USER cammand)
@@ -35,9 +35,9 @@ private:
     void    handleMode(int fd, const std::vector<std::string>& args);
     void    handleTopic(int fd, const std::vector<std::string>& args);
 
-    void addClientToChannel(const std::string &channelName, int fd, User *client);
-    std::string createJoinResponseMessage(User *client, const std::string &channelName, Channel *channel);
-    void    removeClientFromChannel(User *client, const std::string &channelName, const std::string &leaveMessage);
+    void addUserToChannel(const std::string &channelName, int fd, User *user);
+    std::string createJoinResponseMessage(User *user, const std::string &channelName, Channel *channel);
+    void    removeUserFromChannel(User *user, const std::string &channelName, const std::string &leaveMessage);
     
     int     handlePrivateMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
     int     handleChannelMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
@@ -46,7 +46,7 @@ public:
     CommandManager(Server *server);
     ~CommandManager();
 
-    void    executeCommands(int originClient, std::vector<std::string> commands);
+    void    executeCommands(int originUser, std::vector<std::string> commands);
 
 };
 

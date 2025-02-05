@@ -34,7 +34,7 @@ private:
     //helper Classes
     NetworkManager  _networkManager;
     EpollManager    _epollManager;
-    UserManager   _clientManager;
+    UserManager   _userManager;
     CommandManager  _commandManager;
     ChannelManager  _channelManager;
 
@@ -44,13 +44,11 @@ private:
     bool _isSet;
     bool _isRunning;
 
-    //Clients data
-
     std::set<int> _fdSendSet;
 
     //Start server utils
     int manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]);
-    int addNewClient();
+    int addNewUser();
 
 public:
     Server(const std::string& port, const std::string &password);
@@ -64,7 +62,7 @@ public:
     void    stopServer();
 
     //GETTERS
-    UserManager   &getClientManager();
+    UserManager   &getUserManager();
     EpollManager    &getEpollManager();
     ChannelManager  &getChannelManager();
 };

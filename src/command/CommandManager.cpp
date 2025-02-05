@@ -33,14 +33,14 @@ CommandManager::~CommandManager()
 {
 }
 
-void CommandManager::executeCommands(int originClient, std::vector<std::string> commands)
+void CommandManager::executeCommands(int originUser, std::vector<std::string> commands)
 {
     for (std::vector<std::string>::const_iterator it = commands.begin(); it != commands.end(); it++) {
-        executeCommand(originClient, *it);
+        executeCommand(originUser, *it);
     }
 }
 
-void CommandManager::executeCommand(int originClient, const std::string &command)
+void CommandManager::executeCommand(int originUser, const std::string &command)
 {
     std::string commandName;
     std::vector<std::string> args;
@@ -56,7 +56,7 @@ void CommandManager::executeCommand(int originClient, const std::string &command
     }
 
     // Execute the command handler
-    (this->*(it->second))(originClient, args);
+    (this->*(it->second))(originUser, args);
 
 }
 
@@ -68,20 +68,20 @@ void CommandManager::handleCap(int fd, const std::vector<std::string> &args)
 
 void CommandManager::handlePass(int fd, const std::vector<std::string> &args)
 {
-    User *client = server_ptr->getClientManager().getClientByFd(fd);
-    const std::string nick = client->getNickname();
+    User *user = server_ptr->getUserManager().getUserByFd(fd);
+    const std::string nick = user->getNickname();
     std::string response;
     if (args.empty()) {
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "PASS");
     }
-    else if (client->isAutenticated()) {
+    else if (user->isAutenticated()) {
         response = ERR_ALREADYREGISTRED(nick);
     }
     else if (args[0] != server_ptr->getPassword()) {
         response = ERR_PASSWDMISMATCH(nick, "PASS");
     }
     else {
-        client->setAuthenticationTrue();
+        user->setAuthenticationTrue();
     }
     if (!response.empty()) {
         send(fd, response.c_str(), response.length(), 0);
@@ -93,9 +93,9 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
     std::string response;
     if (args.size() == 0) {
         response = ERR_NONICKNAMEGIVEN(SERVER_NAME);
-    } else if (!server_ptr->getClientManager().getClientByFd(fd)->isAutenticated()) {
+    } else if (!server_ptr->getUserManager().getUserByFd(fd)->isAutenticated()) {
         response = ERR_NOTREGISTERED(SERVER_NAME);
-    } else if (server_ptr->getClientManager().existsNickname(args[0])) {
+    } else if (server_ptr->getUserManager().existsNickname(args[0])) {
         response = ERR_NICKNAMEINUSE(SERVER_NAME, args[0]);
     }
     if (!response.empty()) {
@@ -103,8 +103,8 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
         return;
     }
     std::cout << "NICK command executed with argument: " << args[0] << std::endl;
-    std::string oldNick = server_ptr->getClientManager().getClientByFd(fd)->getNickname();
-    server_ptr->getClientManager().addNicknameToFd(args[0], fd);
+    std::string oldNick = server_ptr->getUserManager().getUserByFd(fd)->getNickname();
+    server_ptr->getUserManager().addNicknameToFd(args[0], fd);
     std::string nickMessage = RPL_NICK(oldNick, args[0]);
     send(fd, nickMessage.c_str(), nickMessage.length(), 0);
     if (!oldNick.empty()) {
@@ -120,20 +120,20 @@ void    CommandManager::handlePart(int fd, const std::vector<std::string>& args)
         std::cout << *it << std::endl;
     }
     //TODO 01: implementar quando enviar a mensagem default e quando a padronizada, quando sair de um canal ou de todos, quando eh quit e quando eh param
-    //if (args[0] != "Leaving") eh porque o client ta deixando um canal somente ou de todos??
+    //if (args[0] != "Leaving") eh porque o user ta deixando um canal somente ou de todos??
     
-    //if (args[0] == "Leaving"): remover o cliente de todos s canais em que ele esta e enviar a mensagem args[1]
-    User *client = server_ptr->getClientManager().getClientByFd(fd);
-    std::set<std::string> clientChannels = client->getChannels();
-    for (std::set<std::string>::iterator it = clientChannels.begin(); it != clientChannels.end(); it++) {
-        removeClientFromChannel(client, *it, args[1]);
+    //if (args[0] == "Leaving"): remover o user de todos s canais em que ele esta e enviar a mensagem args[1]
+    User *user = server_ptr->getUserManager().getUserByFd(fd);
+    std::set<std::string> userChannels = user->getChannels();
+    for (std::set<std::string>::iterator it = userChannels.begin(); it != userChannels.end(); it++) {
+        removeUserFromChannel(user, *it, args[1]);
     }
 }
 
 void CommandManager::handleMode(int fd, const std::vector<std::string> &args)
 {
     std::string response;
-    const std::string nick = server_ptr->getClientManager().getClientByFd(fd)->getNickname();
+    const std::string nick = server_ptr->getUserManager().getUserByFd(fd)->getNickname();
     if (args.size() < 2) {
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
     } else if (args[0][0] != '#' || !server_ptr->getChannelManager().getChannelByName(args[0])){
@@ -157,17 +157,17 @@ void CommandManager::handleTopic(int fd, const std::vector<std::string> &args)
     channel->setTopic(args[1]);
 }
 
-void    CommandManager::removeClientFromChannel(User *client, const std::string &channelName, const std::string &leaveMessage) {
+void    CommandManager::removeUserFromChannel(User *user, const std::string &channelName, const std::string &leaveMessage) {
     Channel *channel;
     channel = server_ptr->getChannelManager().getChannelByName(channelName);
-    channel->removeClient(client->getFd());
-    client->removeChannel(channelName);
-    channel->listClients();
-    //informar aos outros usuarios que o cliente saiu
-    std::string response = ":" + client->getNickname() + "!" + client->getUsername() + "@127.0.0.1 PART " +
+    channel->removeUser(user->getFd());
+    user->removeChannel(channelName);
+    channel->listUsers();
+    //informar aos outros usuarios que o usere saiu
+    std::string response = ":" + user->getNickname() + "!" + user->getUsername() + "@127.0.0.1 PART " +
     channel->getChannelName() + " :" + leaveMessage + "\r\n";
     // std::string response = ":paco!Robson@127.0.0.1 PART #waka3 :Goodbye everyone!\r\n";
-    channel->broadcastMessage(response, client->getFd());
+    channel->broadcastMessage(response, user->getFd());
 }
 
 void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
@@ -182,12 +182,12 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
     //Check if there are minimum params // ERR_NEEDMOREPARAMS (461)
     //Check if the channel exists // ERR_NOSUCHCHANNEL (403)
-    //Check if the client can kick users    // ERR_CHANOPRIVSNEEDED (482)
-    //The fdClient must be in the channel // ERR_NOTONCHANNEL (442)
+    //Check if the user can kick users    // ERR_CHANOPRIVSNEEDED (482)
+    //The fduser must be in the channel // ERR_NOTONCHANNEL (442)
     //The users must be in the channel // ERR_USERNOTINCHANNEL (441)
-    User *userKicker = server_ptr->getClientManager().getClientByFd(fd);
+    User *userKicker = server_ptr->getUserManager().getUserByFd(fd);
     Channel *channel = server_ptr->getChannelManager().getChannelByName(args[0]);
-    User *userKicked = server_ptr->getClientManager().getClientByNick(args[1]);
+    User *userKicked = server_ptr->getUserManager().getUserByNick(args[1]);
     
     std::string response = ":" + userKicker->getNickname() + "!" + userKicker->getUsername() + "@127.0.0.1 KICK " +
     channel->getChannelName() + " " + userKicked->getNickname() + " :Spamming is not allowed MF!!\r\n";
@@ -198,12 +198,12 @@ void    CommandManager::handleKick(int fd, const std::vector<std::string>& args)
     channel->broadcastMessage(response, fd);
 
     // // Now, remove Paco from the channel in the server's internal structure
-    channel->removeClient(userKicked->getFd());
+    channel->removeUser(userKicked->getFd());
 }
 
 void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> &args) {
-    User *client = server_ptr->getClientManager().getClientByFd(fdSenter);
-    const std::string &nickSender = client->getNickname();
+    User *user = server_ptr->getUserManager().getUserByFd(fdSenter);
+    const std::string &nickSender = user->getNickname();
     std::string response;
 
     // Validate arguments
@@ -227,7 +227,7 @@ void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> 
 int CommandManager::handlePrivateMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message)
 {
     std::string response;
-    User *target = server_ptr->getClientManager().getClientByNick(receiver);
+    User *target = server_ptr->getUserManager().getUserByNick(receiver);
     if (!target) {
         response = ERR_NOSUCHNICK(nickSender, receiver);
         return send(fdSenter, response.c_str(), response.length(), 0);
@@ -239,7 +239,7 @@ int CommandManager::handlePrivateMessage(int fdSenter, const std::string &nickSe
     }
 }
 
-//TODO: quando um cliente que ja esta no canal desconecta temos que remover ele do canal, pq se ele se reconecta nosso servidor considera que ele ja esta no canal
+//TODO: quando um usere que ja esta no canal desconecta temos que remover ele do canal, pq se ele se reconecta nosso servidor considera que ele ja esta no canal
 int CommandManager::handleChannelMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message) {
     std::string response;
     Channel *channel = server_ptr->getChannelManager().getChannelByName(receiver);
@@ -261,8 +261,8 @@ bool isValidChannelName(const std::string& str) {
 
 //TODO: as vezes, quando o hexchat ja esta aberto com um usuario ali, o sistema nao pega o nickname e fica vazio
 void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args) {
-    User *client = server_ptr->getClientManager().getClientByFd(fd);
-    const std::string nick = client->getNickname();
+    User *user = server_ptr->getUserManager().getUserByFd(fd);
+    const std::string nick = user->getNickname();
 
     std::string response;
 
@@ -298,24 +298,24 @@ void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args)
             //send and return ?
         }
     }
-    client->addChannel(args[0]);
-    channel->addClient(fd, nick);
-    response = createJoinResponseMessage(client, args[0], channel);
+    user->addChannel(args[0]);
+    channel->addUser(fd, nick);
+    response = createJoinResponseMessage(user, args[0], channel);
     send(fd, response.c_str(), response.length(), 0);
-    response = ":" + client->getNickname() + "!" + client->getUsername() + "@localhost JOIN :" + channelName + "\r\n";
-    channel->broadcastMessage(response, client->getFd());
+    response = ":" + user->getNickname() + "!" + user->getUsername() + "@localhost JOIN :" + channelName + "\r\n";
+    channel->broadcastMessage(response, user->getFd());
 }
 
-std::string CommandManager::createJoinResponseMessage(User *client, const std::string &channelName, Channel *channel){
+std::string CommandManager::createJoinResponseMessage(User *user, const std::string &channelName, Channel *channel){
     std::string response;
-    const std::string nick = client->getNickname();
+    const std::string nick = user->getNickname();
     const std::string topic = channel->getChannelTopic();
 
     response = RPL_JOIN(nick, channelName);
     if (!topic.empty()) {
         response += RPL_TOPIC(SERVER_NAME, nick, channelName, topic);
     }
-    response += RPL_NAMREPLY(SERVER_NAME, nick, channelName, channel->getClientsConnectedList());
+    response += RPL_NAMREPLY(SERVER_NAME, nick, channelName, channel->getUsersConnectedList());
     response += RPL_ENDOFNAMES(SERVER_NAME, nick, channelName);
     return response;
 }

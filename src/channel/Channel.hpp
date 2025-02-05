@@ -11,7 +11,7 @@ class Channel
 private:
     std::string _channelName;
     std::string _channelTopic;
-    std::map<int, std::string> _clientsConnected;
+    std::map<int, std::string> _usersConnected;
     std::set<int> _channelOperators;
     std::string     topic;
     Channel();
@@ -37,10 +37,10 @@ public:
     std::string getChannelName();
     void        setTopic(const std::string &topic);
     std::string getChannelTopic();
-    std::string getClientsConnectedList();
-    void        addClient(int fd, const std::string &clientName);
-    void        removeClient(int fd);
-    void        listClients();
+    std::string getUsersConnectedList();
+    void        addUser(int fd, const std::string &userName);
+    void        removeUser(int fd);
+    void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude);
     bool        canSendMessage(int fdSenter);
 

@@ -71,17 +71,17 @@ int NetworkManager::getSocketFd()
     return _socketfd;
 }
 
-int NetworkManager::acceptNewClient()
+int NetworkManager::acceptNewUser()
 {
-    int clientfd = accept(_socketfd, NULL, NULL); //add struct to track ip info
-	if (clientfd == -1) {
+    int userFd = accept(_socketfd, NULL, NULL); //add struct to track ip info
+	if (userFd == -1) {
 		return -1;
 	}
-	if (fcntl(clientfd, F_SETFL, O_NONBLOCK) == -1) {
-		close (clientfd);
+	if (fcntl(userFd, F_SETFL, O_NONBLOCK) == -1) {
+		close (userFd);
 		return -1;
 	}
-	return clientfd;
+	return userFd;
 }
 
 //TODO: remover o print e o include
