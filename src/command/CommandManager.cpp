@@ -172,12 +172,12 @@ void    CommandManager::removeUserFromChannel(User *user, const std::string &cha
     }
     Channel *channel;
     channel = server_ptr->getChannelManager().getChannelByName(channelName);
-    //informar a todos os usuarios que o user saiu
+    //first inform to all users that the user left so the client can handle the display window
     std::string response = ":" + user->getNickname() + "!" + user->getUsername() + "@127.0.0.1 PART " +
     channel->getChannelName() + " :" + leaveMessage + "\r\n";
     channel->broadcastMessage(response, -1);
 
-    //Agora sim posso remover o usuario do sistema
+    //Now remove the user from the server indeed
     channel->removeUser(user->getFd());
     user->removeChannel(channelName);
     channel->listUsers();
@@ -191,7 +191,7 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
 //args[0]: channel
 //args[1]: lista de usuarios
 //args[2]: comentario
-//TODO: implementar os checks abaixo
+//TODO[1]: implementar os checks abaixo
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
     //Check if there are minimum params // ERR_NEEDMOREPARAMS (461)
     //Check if the channel exists // ERR_NOSUCHCHANNEL (403)
@@ -252,7 +252,6 @@ int CommandManager::handlePrivateMessage(int fdSenter, const std::string &nickSe
     }
 }
 
-//TODO: quando um usere que ja esta no canal desconecta temos que remover ele do canal, pq se ele se reconecta nosso servidor considera que ele ja esta no canal
 int CommandManager::handleChannelMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message) {
     std::string response;
     Channel *channel = server_ptr->getChannelManager().getChannelByName(receiver);
@@ -272,7 +271,6 @@ bool isValidChannelName(const std::string& str) {
     return str.size() >= 2 && str[0] == '#';
 }
 
-//TODO: as vezes, quando o hexchat ja esta aberto com um usuario ali, o sistema nao pega o nickname e fica vazio
 void    CommandManager::handleJoin(int fd, const std::vector<std::string>& args) {
     User *user = server_ptr->getUserManager().getUserByFd(fd);
     const std::string nick = user->getNickname();

@@ -67,6 +67,6 @@ bool User::isAutenticated() {
     return _isAuth;
 }
 
-User::User(const int fd): _fd(fd), _username("user_name_temp"), _isAuth(false) //TODO: remover ou alterar 
+User::User(const int fd): _fd(fd), _username("no_user_name"), _isAuth(false)
 {}
 

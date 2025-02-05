@@ -76,7 +76,7 @@ void Channel::listUsers() {
     }
 }
 
-//TODO: talvez tenha outros motivos que invibializem que o usere possa enviar mensagem para o canal
+//TODO[2]: talvez tenha outros motivos que invibializem que o usere possa enviar mensagem para o canal
 bool Channel::canSendMessage(int fdSenter) {
     //Check if the user (fdSenter) is in the channel
     /* for (std::map<int, std::string>::iterator it = _usersConnected.begin(); it != _usersConnected.end(); ++it) {

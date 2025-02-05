@@ -4,6 +4,7 @@
 #include <string>
 #include <fcntl.h>
 #include <unistd.h>
+#include <iostream>
 
 NetworkManager::NetworkManager(): _addrInfo(NULL), _socketfd(-1)
 {
@@ -39,7 +40,7 @@ int	NetworkManager::createSocket()
 {
 	_socketfd = socket(_addrInfo->ai_family, _addrInfo->ai_socktype, _addrInfo->ai_protocol);
 	if (_socketfd == -1) {
-		return -1; //TODO: retornar mensagem de erro
+		return -1; 
 	}
 	if (fcntl(_socketfd, F_SETFL, O_NONBLOCK) == -1){
 		return 1;
@@ -84,8 +85,6 @@ int NetworkManager::acceptNewUser()
 	return userFd;
 }
 
-//TODO: remover o print e o include
-#include <iostream>
 //Create and set the socket, bind and start to listen
 int NetworkManager::setNetwork(std::string &port)
 {
