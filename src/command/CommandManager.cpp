@@ -114,6 +114,15 @@ void CommandManager::handleNick(int fd, const std::vector<std::string> &args)
     }
 }
 
+bool CommandManager::sendErrorIf(bool condition, int fd, const std::string& message) {
+    if (condition) {
+        send(fd, message.c_str(), message.length(), 0);
+        return true;
+    }
+    return false;
+}
+
+
 //(quando ele manda part)
 //args[0]: channel 
 //args[1]: comentario do usuario ou Leaving
@@ -196,13 +205,10 @@ void CommandManager::handleTopic(int fd, const std::vector<std::string> &args)
 
 //Remove from the channel and broadcast the message to the other users
 void    CommandManager::removeUserFromChannel(User *user, const std::string &channelName, const std::string &leaveMessage) {
-    if (!server_ptr->getChannelManager().doesChannelExists(channelName)) {
-        std::string message = ERR_NOSUCHCHANNEL(SERVER_NAME, user->getNickname(), channelName);
-        send(user->getFd(), message.c_str(), message.length(), 0);
+    Channel *channel = server_ptr->getChannelManager().getChannelByName(channelName);
+    if (sendErrorIf(!channel, user->getFd(), ERR_NOSUCHCHANNEL(SERVER_NAME, user->getNickname(), channelName)))
         return;
-    }
-    Channel *channel;
-    channel = server_ptr->getChannelManager().getChannelByName(channelName);
+
     //first inform to all users that the user left so the client can handle the display window
     std::string response = ":" + user->getNickname() + "!" + user->getUsername() + "@127.0.0.1 PART " +
     channel->getChannelName() + " :" + leaveMessage + "\r\n";
@@ -224,17 +230,27 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
 //args[2]: comentario
 //TODO[1]: implementar os checks abaixo
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
+    std::string response;
     //Check if there are minimum params // ERR_NEEDMOREPARAMS (461)
-    //Check if the channel exists // ERR_NOSUCHCHANNEL (403)
+    User *userKicker = server_ptr->getUserManager().getUserByFd(fd);
+    User *kickedUser = server_ptr->getUserManager().getUserByNick(args[1]); //TODO: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
+    std::string channelName = args[0];
+
+    Channel *channel = server_ptr->getChannelManager().getChannelByName(channelName);
+
+    //Check if the user exist
+    if (!kickedUser) {
+        response = ERR_NOSUCHNICK(userKicker->getNickname(), args[1]);
+        send(fd, response.c_str(), response.length(), 0);
+        return ;
+    }
+
     //Check if the user can kick users    // ERR_CHANOPRIVSNEEDED (482)
     //The fduser must be in the channel // ERR_NOTONCHANNEL (442)
     //The users must be in the channel // ERR_USERNOTINCHANNEL (441)
-    User *userKicker = server_ptr->getUserManager().getUserByFd(fd);
-    Channel *channel = server_ptr->getChannelManager().getChannelByName(args[0]);
-    User *userKicked = server_ptr->getUserManager().getUserByNick(args[1]);
     
-    std::string response = ":" + userKicker->getNickname() + "!" + userKicker->getUsername() + "@127.0.0.1 KICK " +
-    channel->getChannelName() + " " + userKicked->getNickname() + " :Spamming is not allowed MF!!\r\n";
+    response = ":" + userKicker->getNickname() + "!" + userKicker->getUsername() + "@127.0.0.1 KICK " +
+    channel->getChannelName() + " " + kickedUser->getNickname() + " :Spamming is not allowed MF!!\r\n";
 
     send(fd, response.c_str(), response.length(), 0);
 
@@ -242,7 +258,7 @@ void    CommandManager::handleKick(int fd, const std::vector<std::string>& args)
     channel->broadcastMessage(response, fd);
 
     // // Now, remove Paco from the channel in the server's internal structure
-    channel->removeUser(userKicked->getFd());
+    channel->removeUser(kickedUser->getFd());
 }
 
 void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> &args) {

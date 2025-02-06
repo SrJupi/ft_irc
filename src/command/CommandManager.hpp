@@ -41,6 +41,7 @@ private:
     
     int     handlePrivateMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
     int     handleChannelMessage(int fdSenter, const std::string &nickSender, const std::string &receiver, const std::string &message);
+    bool    sendErrorIf(bool condition, int fd, const std::string& message);
 
 public:
     CommandManager(Server *server);
