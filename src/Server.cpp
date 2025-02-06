@@ -1,17 +1,16 @@
 #include <ft_irc/Server.hpp>
 #include <cerrno>
 
-Server::Server(): _commandManager(this), _channelManager()
+Server::Server()
 {
 }
 
-Server::Server(const Server &ref): _commandManager(this), _channelManager()
+Server::Server(const Server &ref)
 {
 	*this = ref;
 }
 
 Server::Server(const std::string& port, const std::string &password):
-	_commandManager(this),
 	_port(port),
 	_password(password),
 	_isSet(false),
@@ -80,7 +79,9 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			if (events[i].events & EPOLLIN) { //Add send method
 				std::cout << currentFd << " - User sent messages EPOLLIN" << std::endl;
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
-				_commandManager.executeCommands(currentFd, cmd_messages);	
+				if (!cmd_messages.empty()) {
+					_commandManager.executeCommands(*(_userManager.getUserByFd(currentFd)), *this, cmd_messages);	
+				}
 			}
 		}
 	}

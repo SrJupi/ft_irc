@@ -5,12 +5,16 @@ MAIN_CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -Iinclude -Isrc -g
 LDFLAGS = -L$(GTEST_LIB) -lgtest -lgtest_main -pthread
 MAIN_SRCS = src/main.cpp src/Server.cpp src/user/User.cpp \
 src/NetworkManager.cpp src/user/UserManager.cpp src/EpollManager.cpp src/Parser.cpp \
-src/command/CommandManager.cpp src/channel/Channel.cpp src/channel/ChannelManager.cpp
+src/command/CommandManager.cpp src/channel/Channel.cpp src/channel/ChannelManager.cpp \
+src/command/HandleCap.cpp   src/command/HandleKick.cpp  src/command/HandleNick.cpp src/command/HandlePass.cpp  \
+src/command/HandleQuit.cpp  src/command/HandleTopic.cpp src/command/HandleJoin.cpp src/command/HandleMode.cpp \
+src/command/HandlePart.cpp  src/command/HandlePrivmsg.cpp src/command/HandleExit.cpp
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
 HEADERS = include/ft_irc/Server.hpp src/user/User.hpp src/NetworkManager.hpp \
 src/user/UserManager.hpp src/EpollManager.hpp src/Parser.hpp src/command/CommandManager.hpp \
-src/ServerReplyMessages.hpp src/channel/Channel.hpp src/channel/ChannelManager.hpp
+src/ServerReplyMessages.hpp src/channel/Channel.hpp src/channel/ChannelManager.hpp \
+src/command/Handlers.hpp
 
 all: $(NAME)
 
