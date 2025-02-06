@@ -228,11 +228,13 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
 //args[0]: channel
 //args[1]: lista de usuarios
 //args[2]: comentario
-//TODO[1]: implementar os checks abaixo
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
-    std::string response;
     User *kicker = server_ptr->getUserManager().getUserByFd(fd);
-    User *userKicked = server_ptr->getUserManager().getUserByNick(args[1]); //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
+    std::string nickKicker = kicker->getNickname();
+
+    std::string response;
+    //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
+    User *userKicked = server_ptr->getUserManager().getUserByNick(args[1]);
     std::string channelName = args[0];
 
     Channel *channel = server_ptr->getChannelManager().getChannelByName(channelName);
