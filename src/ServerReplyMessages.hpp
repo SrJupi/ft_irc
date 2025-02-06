@@ -37,6 +37,9 @@
 
 #define ERR_NICKNAMEINUSE(server, nick) \
     ":" + (server) + " 433 " + (nick) + " :Nickname is already in use\r\n"
+    
+#define ERR_USERNOTINCHANNEL(server, nick, channel) \
+    ":" + (server) + " 441 " + (nick) + (channel) + " :They aren't on that channel\r\n"
 
 #define ERR_NOTONCHANNEL(server, nick, channel) \
     ":" + (server) + " 442 " + (nick) + " " + (channel) + " :You're not on that channel\r\n"

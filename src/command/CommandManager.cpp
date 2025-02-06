@@ -231,26 +231,34 @@ void CommandManager::handleQuit(int fd, const std::vector<std::string> &args) {
 //TODO[1]: implementar os checks abaixo
 void    CommandManager::handleKick(int fd, const std::vector<std::string>& args) {
     std::string response;
-    //Check if there are minimum params // ERR_NEEDMOREPARAMS (461)
-    User *userKicker = server_ptr->getUserManager().getUserByFd(fd);
-    User *kickedUser = server_ptr->getUserManager().getUserByNick(args[1]); //TODO: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
+    User *kicker = server_ptr->getUserManager().getUserByFd(fd);
+    User *userKicked = server_ptr->getUserManager().getUserByNick(args[1]); //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
     std::string channelName = args[0];
 
     Channel *channel = server_ptr->getChannelManager().getChannelByName(channelName);
-
     //Check if the user exist
-    if (!kickedUser) {
-        response = ERR_NOSUCHNICK(userKicker->getNickname(), args[1]);
+    if (!userKicked) {
+        response = ERR_NOSUCHNICK(kicker->getNickname(), args[1]);
         send(fd, response.c_str(), response.length(), 0);
         return ;
     }
 
-    //Check if the user can kick users    // ERR_CHANOPRIVSNEEDED (482)
-    //The fduser must be in the channel // ERR_NOTONCHANNEL (442)
-    //The users must be in the channel // ERR_USERNOTINCHANNEL (441)
+    //Check if the user can kick users 
+    if (!channel->isUserFdChanOperator(kicker->getFd())) {
+        response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, kicker->getNickname(), channelName);
+        send(fd, response.c_str(), response.length(), 0);
+        return ;
+    }
+
+    //The users must be in the channel
+    if (!channel->isUserInChannel(userKicked->getFd())) {
+        response = ERR_USERNOTINCHANNEL(SERVER_NAME, kicker->getNickname(), channelName);
+        send(fd, response.c_str(), response.length(), 0);
+        return ;
+    }
     
-    response = ":" + userKicker->getNickname() + "!" + userKicker->getUsername() + "@127.0.0.1 KICK " +
-    channel->getChannelName() + " " + kickedUser->getNickname() + " :Spamming is not allowed MF!!\r\n";
+    response = ":" + kicker->getNickname() + "!" + kicker->getUsername() + "@127.0.0.1 KICK " +
+    channel->getChannelName() + " " + userKicked->getNickname() + " :Spamming is not allowed MF!!\r\n";
 
     send(fd, response.c_str(), response.length(), 0);
 
@@ -258,7 +266,7 @@ void    CommandManager::handleKick(int fd, const std::vector<std::string>& args)
     channel->broadcastMessage(response, fd);
 
     // // Now, remove Paco from the channel in the server's internal structure
-    channel->removeUser(kickedUser->getFd());
+    channel->removeUser(userKicked->getFd());
 }
 
 void CommandManager::handlePrivmsg(int fdSenter, const std::vector<std::string> &args) {
