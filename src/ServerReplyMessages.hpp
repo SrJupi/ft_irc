@@ -17,6 +17,9 @@
 #define RPL_NICK(oldNick, newNick) \
     ":" + (oldNick) + " NICK :" + (newNick) + "\r\n"
 
+#define RPL_CAP_LS(server) \
+    ":" + (server) + " CAP * LS :\r\n"
+
 #define ERR_NOSUCHNICK(nick, receiver) \
     "401 " + (nick) + " " + (receiver) + " :No such nick/channel\r\n"
 

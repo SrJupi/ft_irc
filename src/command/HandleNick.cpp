@@ -28,7 +28,7 @@ void handleNick(User& user, Server& server, const std::vector<std::string>& args
         std::string nickMessage = RPL_NICK(oldNick, args[0]);
         send(user.getFd(), nickMessage.c_str(), nickMessage.length(), 0);
         /* 
-        TODO: broadcast to all channels
+        TODO: broadcast to all channels and privmsgs (??)
          */
     }
 }

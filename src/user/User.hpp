@@ -11,6 +11,7 @@ private:
     std::string _nickname;
     std::string _username;
     std::set<std::string> _channels;
+    std::set<int> _privmsgs; //Adicionei isso aqui porque acho que em alguns comanado (ex NICK) vamos ter que enviar a info para todos que o user tenha contato
 	std::string _storedMsg;
 	bool    _isAuth;
     User();
