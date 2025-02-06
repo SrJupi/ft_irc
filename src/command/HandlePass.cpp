@@ -2,23 +2,23 @@
 #include <ServerReplyMessages.hpp>
 #include "Handlers.hpp"
 
-void handlePass(User* user, Server* server, const std::vector<std::string>& args)
+void handlePass(User& user, Server& server, const std::vector<std::string>& args)
 {
-    const std::string nick = user->getNickname();
+    const std::string nick = user.getNickname();
     std::string response;
     if (args.empty()) {
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "PASS");
     }
-    else if (user->isAutenticated()) {
+    else if (user.isAutenticated()) {
         response = ERR_ALREADYREGISTRED(nick);
     }
-    else if (args[0] != server->getPassword()) {
+    else if (args[0] != server.getPassword()) {
         response = ERR_PASSWDMISMATCH(nick, "PASS");
     }
     else {
-        user->setAuthenticationTrue();
+        user.setAuthenticationTrue();
     }
     if (!response.empty()) {
-        send(user->getFd(), response.c_str(), response.length(), 0);
+        send(user.getFd(), response.c_str(), response.length(), 0);
     }
 }

@@ -7,9 +7,9 @@ static bool isValidChannelName(const std::string& str) {
     return str.size() >= 2 && str[0] == '#';
 }
 
-static std::string createJoinResponseMessage(User *user, const std::string &channelName, Channel *channel){
+static std::string createJoinResponseMessage(User &user, const std::string &channelName, Channel *channel){
     std::string response;
-    const std::string nick = user->getNickname();
+    const std::string nick = user.getNickname();
     const std::string topic = channel->getChannelTopic();
 
     response = RPL_JOIN(nick, channelName);
@@ -21,8 +21,8 @@ static std::string createJoinResponseMessage(User *user, const std::string &chan
     return response;
 }
 
-void handleJoin(User* user, Server* server, const std::vector<std::string>& args) {
-    const std::string nick = user->getNickname();
+void handleJoin(User& user, Server& server, const std::vector<std::string>& args) {
+    const std::string nick = user.getNickname();
     std::string response;
 
     // Validate arguments
@@ -32,7 +32,7 @@ void handleJoin(User* user, Server* server, const std::vector<std::string>& args
         response = ERR_NOSUCHCHANNEL(SERVER_NAME, nick, args[0]);
     } 
     if (!response.empty()) {
-        send(user->getFd(), response.c_str(), response.length(), 0);
+        send(user.getFd(), response.c_str(), response.length(), 0);
         return;
     }
     std::string channelName = args[0];
@@ -40,11 +40,11 @@ void handleJoin(User* user, Server* server, const std::vector<std::string>& args
     if (args.size() >= 2) {
         password = args[1]; 
     }
-    Channel *channel = server->getChannelManager().getChannelByName(args[0]);
+    Channel *channel = server.getChannelManager().getChannelByName(args[0]);
     if (channel == NULL) {
-        channel = server->getChannelManager().createChannel(args[0], user->getFd()); //REVER ISSO, criei para ja adicionar o criador aos op, mas aparentemente o server usa mode para dar op para o criador (?)
+        channel = server.getChannelManager().createChannel(args[0], user.getFd()); //REVER ISSO, criei para ja adicionar o criador aos op, mas aparentemente o server usa mode para dar op para o criador (?)
     } else {
-        if (channel->getInviteMode() && !channel->isUserInvited(user->getFd())) {
+        if (channel->getInviteMode() && !channel->isUserInvited(user.getFd())) {
             //User not invited... ERR_INVITEONLYCHAN 
             //send and return ?
         }
@@ -57,10 +57,10 @@ void handleJoin(User* user, Server* server, const std::vector<std::string>& args
             //send and return ?
         }
     }
-    user->addChannel(args[0]);
-    channel->addUser(user->getFd(), nick);
+    user.addChannel(args[0]);
+    channel->addUser(user.getFd(), nick);
     response = createJoinResponseMessage(user, args[0], channel);
-    send(user->getFd(), response.c_str(), response.length(), 0);
-    response = ":" + user->getNickname() + "!" + user->getUsername() + "@localhost JOIN :" + channelName + "\r\n";
-    channel->broadcastMessage(response, user->getFd());
+    send(user.getFd(), response.c_str(), response.length(), 0);
+    response = ":" + user.getNickname() + "!" + user.getUsername() + "@localhost JOIN :" + channelName + "\r\n";
+    channel->broadcastMessage(response, user.getFd());
 }

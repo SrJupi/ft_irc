@@ -12,19 +12,19 @@ class Server;
 class CommandManager
 {
 private:
-    typedef void (*CommandHandler)(User* user, Server* server, const std::vector<std::string>& args);
+    typedef void (*CommandHandler)(User& user, Server& server, const std::vector<std::string>& args);
     std::map<std::string, CommandHandler> _commandHandlers;
 
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
     
-    void    executeCommand(User* user, Server* server, const std::string &command);
+    void    executeCommand(User& user, Server& server, const std::string &command);
 
 public:
     ~CommandManager();
     CommandManager();
 
-    void    executeCommands(User* user, Server* server, std::vector<std::string> commands);
+    void    executeCommands(User& user, Server& server, std::vector<std::string> commands);
 
 };
 

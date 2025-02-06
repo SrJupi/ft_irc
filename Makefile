@@ -8,7 +8,7 @@ src/NetworkManager.cpp src/user/UserManager.cpp src/EpollManager.cpp src/Parser.
 src/command/CommandManager.cpp src/channel/Channel.cpp src/channel/ChannelManager.cpp \
 src/command/HandleCap.cpp   src/command/HandleKick.cpp  src/command/HandleNick.cpp src/command/HandlePass.cpp  \
 src/command/HandleQuit.cpp  src/command/HandleTopic.cpp src/command/HandleJoin.cpp src/command/HandleMode.cpp \
-src/command/HandlePart.cpp  src/command/HandlePrivmsg.cpp
+src/command/HandlePart.cpp  src/command/HandlePrivmsg.cpp src/command/HandleExit.cpp
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
 HEADERS = include/ft_irc/Server.hpp src/user/User.hpp src/NetworkManager.hpp \

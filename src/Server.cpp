@@ -80,7 +80,7 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 				std::cout << currentFd << " - User sent messages EPOLLIN" << std::endl;
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
 				if (!cmd_messages.empty()) {
-					_commandManager.executeCommands(_userManager.getUserByFd(currentFd), this, cmd_messages);	
+					_commandManager.executeCommands(*(_userManager.getUserByFd(currentFd)), *this, cmd_messages);	
 				}
 			}
 		}

@@ -18,6 +18,7 @@ CommandManager::CommandManager()
     _commandHandlers["MODE"] = &handleMode;
     _commandHandlers["TOPIC"] = &handleTopic;
     _commandHandlers["PRIVMSG"] = &handlePrivmsg;
+    _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
 }
 
 CommandManager::CommandManager(const CommandManager& ref)
@@ -29,18 +30,18 @@ CommandManager::~CommandManager()
 {
 }
 
-void CommandManager::executeCommands(User* user, Server* server, std::vector<std::string> commands)
+void CommandManager::executeCommands(User& user, Server& server, std::vector<std::string> commands)
 {
     for (std::vector<std::string>::const_iterator it = commands.begin(); it != commands.end(); it++) {
         executeCommand(user, server, *it);
     }
 }
 
-void CommandManager::executeCommand(User* user, Server* server, const std::string &command)
+void CommandManager::executeCommand(User& user, Server& server, const std::string &command)
 {
     std::string commandName;
     std::vector<std::string> args;
-    std::cout << ">> EXECUTING " << command << ": userFd = " << user->getFd() << " userNick: " << user->getNickname() << " userIsAuth: " << user->isAutenticated() << std::endl << std::endl; 
+    std::cout << ">> EXECUTING " << command << ": userFd = " << user.getFd() << " userNick: " << user.getNickname() << " userIsAuth: " << user.isAutenticated() << std::endl << std::endl; 
     if (!Parser::parseCommand(command, commandName, args)) {
         return;
     }
