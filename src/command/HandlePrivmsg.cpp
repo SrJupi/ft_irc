@@ -18,7 +18,7 @@ static int handlePrivateMessage(User &sender, User *target, const std::string &r
 
 static int handleChannelMessage(User &sender, Channel *channel, const std::string &receiver, const std::string &message) {
     std::string response;
-    if (!channel->canSendMessage(sender.getFd())) {
+    if (!channel->doesUserInTheChannel(sender.getFd())) {
         response = ERR_CANNOTSENDTOCHAN(sender.getNickname(), receiver);
         return send(sender.getFd(), response.c_str(), response.length(), 0);
     }

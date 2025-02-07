@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <sys/socket.h> //tmp to test send, see where it fits better!
+#include "user/User.hpp"
 
 class Channel
 {
@@ -42,7 +43,7 @@ public:
     void        removeUser(int fd);
     void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude);
-    bool        canSendMessage(int fdSenter);
+    bool        doesUserInTheChannel(int fdSenter);
 
     int         getAmountOfUsers();
     bool        isUserInChannel(int fd);

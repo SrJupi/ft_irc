@@ -7,7 +7,8 @@
 #include <command/Handlers.hpp>
 
 CommandManager::CommandManager()
-{                           
+{        
+    //TODO: implementar INVITE, USER, PING, PONG                   
     _commandHandlers["CAP"] = &handleCap;
     _commandHandlers["NICK"] = &handleNick;   
     _commandHandlers["PASS"] = &handlePass;
@@ -17,6 +18,7 @@ CommandManager::CommandManager()
     _commandHandlers["PART"] = &handlePart;
     _commandHandlers["MODE"] = &handleMode;
     _commandHandlers["TOPIC"] = &handleTopic;
+    _commandHandlers["USER"] = &handleUser;
     _commandHandlers["PRIVMSG"] = &handlePrivmsg;
     _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
 }
@@ -41,14 +43,13 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
 {
     std::string commandName;
     std::vector<std::string> args;
-    std::cout << ">> EXECUTING " << command << ": userFd = " << user.getFd() << " userNick: " << user.getNickname() << " userIsAuth: " << user.isAutenticated() << std::endl << std::endl; 
+    std::cout << ">> EXECUTING " << command << ": userFd = " << user.getFd() << " userNick: " << user.getNickname() << " userIsAuth: " << user.isAutenticated() << " userName: " << user.getUsername() << std::endl << std::endl; 
     if (!Parser::parseCommand(command, commandName, args)) {
         return;
     }
     std::cout << "Command name: " << commandName << std::endl;
     std::map<std::string, CommandHandler>::iterator it = _commandHandlers.find(commandName);
     if (it == _commandHandlers.end()) {
-        // Handle unknown command
         std::cerr << "Unknown command: " << commandName << std::endl;
         return;
     }

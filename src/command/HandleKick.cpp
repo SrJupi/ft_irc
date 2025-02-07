@@ -43,6 +43,6 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
     // Send to all users in the channel (including Paco before removing him)
     channel->broadcastMessage(response, kicker.getFd());
 
-    // // Now, remove Paco from the channel in the server's internal structure
+    // Now, remove Paco from the channel in the server's internal structure
     channel->removeUser(userKicked->getFd());
 }
