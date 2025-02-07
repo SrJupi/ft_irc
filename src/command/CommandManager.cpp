@@ -8,7 +8,7 @@
 
 CommandManager::CommandManager()
 {        
-    //TODO: implementar INVITE, USER, PING, PONG                   
+    //TODO: implementar PING, PONG?                    
     _commandHandlers["CAP"] = &handleCap;
     _commandHandlers["NICK"] = &handleNick;   
     _commandHandlers["PASS"] = &handlePass;
@@ -19,6 +19,7 @@ CommandManager::CommandManager()
     _commandHandlers["MODE"] = &handleMode;
     _commandHandlers["TOPIC"] = &handleTopic;
     _commandHandlers["USER"] = &handleUser;
+    _commandHandlers["INVITE"] = &handleInvite;
     _commandHandlers["PRIVMSG"] = &handlePrivmsg;
     _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
 }

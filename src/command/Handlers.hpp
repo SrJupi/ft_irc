@@ -13,6 +13,7 @@
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);
 void handleExit(User &user, Server &server, const std::vector<std::string> &args);
+void handleInvite(User &user, Server &server, const std::vector<std::string> &args);
 void handleJoin(User &user, Server &server, const std::vector<std::string> &args);
 void handleKick(User &user, Server &server, const std::vector<std::string> &args);
 void handleMode(User &user, Server &server, const std::vector<std::string> &args);
