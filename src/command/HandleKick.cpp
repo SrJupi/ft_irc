@@ -22,7 +22,7 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
     }
 
     //Check if the user can kick users 
-    if (!channel->isUserFdChanOperator(kicker.getFd())) {
+    if (!channel->isUserChannelOperator(kicker.getFd())) {
         response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, kicker.getNickname(), channelName);
         send(kicker.getFd(), response.c_str(), response.length(), 0);
         return ;
