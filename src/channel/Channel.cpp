@@ -1,9 +1,35 @@
 #include "Channel.hpp"
 #include <ServerReplyMessages.hpp>
 #include <ServerConstants.hpp>
+#include <sstream>
 
 Channel::Channel()
 {
+}
+
+void Channel::setMode(char mode, const std::string &param)
+{
+	_modeMap[mode] = param;
+}
+
+void Channel::removeMode(char mode)
+{
+	_modeMap.erase(mode);
+}
+
+std::string Channel::getModeString() const
+{
+    std::ostringstream modes, params;
+	for (std::map<char, std::string>::const_iterator it = _modeMap.begin(); it != _modeMap.end(); it++)	{
+		modes << it->first;
+		if (!it->second.empty()) {
+			if (!params.str().empty()) {
+				params << " ";
+			}
+			params << it->second;
+		}
+	}
+	return "+" + modes.str() + (params.str().empty() ? "" : " " + params.str());
 }
 
 Channel::Channel(const std::string &name, int fd) : _channelName(name),
@@ -140,49 +166,51 @@ bool Channel::isUserInvited(int fd)
 
 void Channel::giveUserOp(int fd, const std::string &nick)
 {
-    _channelOperators.insert(fd);
-    broadcastMessage(RPL_MODE_OP(SERVER_NAME, nick, _channelName, _usersConnected.at(fd), "+"), -1);
+	_channelOperators.insert(fd);
+	broadcastMessage(RPL_MODE_OP(SERVER_NAME, nick, _channelName,
+			_usersConnected.at(fd), "+"));
 }
 
 void Channel::removeUserOp(int fd, const std::string &nick)
 {
-    _channelOperators.erase(fd);
-    broadcastMessage(RPL_MODE_OP(SERVER_NAME, nick, _channelName, _usersConnected.at(fd), "-"), -1);
+	_channelOperators.erase(fd);
+	broadcastMessage(RPL_MODE_OP(SERVER_NAME, nick, _channelName,
+			_usersConnected.at(fd), "-"));
 }
 
 void Channel::setInviteMode(bool mode, const std::string &nick)
 {
-	if (mode != _isInviteOnly)
-	{
-		std::string sign = (mode) ? "+" : "-";
-        broadcastMessage(RPL_MODE_INVITE(SERVER_NAME, nick, _channelName, sign), -1);
-	}
+	if (mode == _isInviteOnly) return;
 	_isInviteOnly = mode;
+	std::string sign = (mode) ? "+" : "-";
+	broadcastMessage(RPL_MODE_INVITE(SERVER_NAME, nick, _channelName,
+			sign));
+	mode ? setMode('i') : removeMode('i');
 }
 
 bool Channel::getInviteMode()
 {
-	return _isInviteOnly;
+	return (_isInviteOnly);
 }
 
 void Channel::setLockedTopicMode(bool mode, const std::string &nick)
 {
-	if (mode != _isTopicLocked) {
-        std::string sign = (mode) ? "+" : "-";
-        broadcastMessage(RPL_MODE_TOPIC(SERVER_NAME, nick, _channelName, sign), -1);
-    }
-    _isTopicLocked = mode;
+	if (mode == _isTopicLocked) return;
+	_isTopicLocked = mode;
+	std::string sign = (mode) ? "+" : "-";
+	broadcastMessage(RPL_MODE_TOPIC(SERVER_NAME, nick, _channelName, sign));
+	mode ? setMode('t') : removeMode('t');
 }
 
 bool Channel::getLockedTopicMode()
 {
-	return _isTopicLocked;
+	return (_isTopicLocked);
 }
 
 void Channel::setUserLimitMode(int num)
 {
-	//BROADCAST REPLY TO ALL CHANNEL
-    _userLimit = num;
+	// BROADCAST REPLY TO ALL CHANNEL
+	_userLimit = num;
 }
 
 int Channel::getUserLimitMode()
@@ -192,8 +220,8 @@ int Channel::getUserLimitMode()
 
 void Channel::setChannelPassword(const std::string &password)
 {
-	//BROADCAST REPLY TO ALL CHANNEL
-    _password = password;
+	// BROADCAST REPLY TO ALL CHANNEL
+	_password = password;
 }
 
 std::string Channel::getChannelPassword()

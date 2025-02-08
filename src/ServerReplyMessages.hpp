@@ -5,8 +5,8 @@
     "001 " + (user) + " :Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
-#define RPL_CHANNELMODEIS(server, nick, channel, modes, params) \
-    ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modes) + " " + (params) + "\r\n"
+#define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
+    ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modesAndParams) + "\r\n"
 
 #define RPL_TOPIC(server, nick, channel, topic) \
     ":" + (server) + " 332 " + (nick) + " " + (channel) + " :" + (topic) + "\r\n"
@@ -79,6 +79,10 @@
     ":" + (nick) + " JOIN " + (channel) + "\r\n"
 
 // Mode Replies
+
+#define RPL_MODES(server, nick, channel, sign, mode, message) \
+":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + (mode) + " " + (message) + "\r\n"
+
 
 #define RPL_MODE_OP(server, nick, channel, target, sign) \
 ":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + "o " + (target) + "\r\n"

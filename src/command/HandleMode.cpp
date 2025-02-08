@@ -2,39 +2,48 @@
 #include <ServerReplyMessages.hpp>
 #include "Handlers.hpp"
 
-static void testGenericErrors(User& user, Channel* channel, const std::vector<std::string>& args, std::string &response) {
+static bool testGenericErrors(User& user, Channel* channel, const std::vector<std::string>& args) {
     const std::string nick = user.getNickname();
+    std::string response;
     if (args.size() == 0) {
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
-    } else if (args[0][0] != '#' || !channel){
+    } else if (!channel){
         response = ERR_NOSUCHCHANNEL(SERVER_NAME ,nick, args[0]);
     } else if (!channel->isUserInChannel(user.getFd())) {
         response = ERR_NOTONCHANNEL(SERVER_NAME, nick, args[0]);
     } else if (!channel->isUserChannelOperator(user.getFd())){
         response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, args[0]);
     }
+    if (response.empty()) {
+        return false;
+    }
+    send(user.getFd(), response.c_str(), response.size(), 0);
+    return true;
 }
 
 void        handleMode(User& user, Server& server, const std::vector<std::string>& args) {
     std::string response;
     Channel *channel = args.size() > 0 ? server.getChannelManager().getChannelByName(args[0]) : NULL;
-    testGenericErrors(user, channel, args, response);
-    if (!response.empty()) {
-        //send response
+    if (testGenericErrors(user, channel, args)) {
         return;
     }
     std::string nick = user.getNickname();
     std::vector<std::string>::const_iterator it = args.begin() + 1;
     if (it == args.end()) {
-        //response mode channels
+        /* 
+        TODO:
+        Add RPL_CREATIONTIME (329)
+        */
+        response = RPL_CHANNELMODEIS(SERVER_NAME, nick, channel->getChannelName(), channel->getModeString());
+        send(user.getFd(), response.c_str(), response.size(), 0);
         return ;
     }
     std::string modestring = *it++;
     bool    addMode = true;
     for (std::string::const_iterator strIt = modestring.begin(); strIt != modestring.end(); strIt++)
     {
-        char c = *strIt;
-        switch (c) {
+        char currentMode = *strIt;
+        switch (currentMode) {
             case '+': {
                 addMode = true;
                 break ;
@@ -53,54 +62,46 @@ void        handleMode(User& user, Server& server, const std::vector<std::string
             }
             case 'k': {
                 if (it == args.end()) {
-                    response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");  //send msg
+                    if (addMode) response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
                     break;
                 }
-                std::string keyword = *it++;
-                if (addMode) {
-                    channel->setChannelPassword(keyword);
-                } else if (keyword == channel->getChannelPassword()) {
-                    channel->setChannelPassword("");
-                }
+                addMode ? channel->setChannelPassword(*it++) : channel->setChannelPassword("");
                 break;
             }
             case 'o': {
                 if (it == args.end()) {
-                    response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE"); //send msg
+                    response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
                     break;
                 }
-                std::string keyword = *it++;
-                int fd = channel->isUserInChannel(keyword);
+                int fd = channel->isUserInChannel(*it++);
                 if (!fd) {
-                    response = ERR_USERNOTINCHANNEL(SERVER_NAME, nick, args[0]); //send msg
+                    response = ERR_USERNOTINCHANNEL(SERVER_NAME, nick, args[0]);
                     break;
                 }
-                if (addMode) {
-                    channel->giveUserOp(fd, nick);
-                } else {
-                    channel->removeUserOp(fd, nick);
-                }
+                addMode ? channel->giveUserOp(fd, nick) : channel->removeUserOp(fd, nick);
                 break;
             }
             case 'l': {
                 int num = -1;
                 if (addMode) {
                     if (it == args.end()) {
-                        response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE"); //send msg
+                        response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "MODE");
                         break;
                     }
                     num = std::atoi((*it).c_str());
                     it++;
                 }
                 channel->setUserLimitMode(num);
-                //send message
                 break;
             }
             default: {
-                response = ERR_UNKNOWNMODE(SERVER_NAME, nick, args[1]);  //send msg
+                response = ERR_UNKNOWNMODE(SERVER_NAME, nick, currentMode);
                 break;
             }
         }
+        if (response.empty()) continue;
+        send(user.getFd(), response.c_str(), response.size(), 0);
+        response.clear();
     }
     
  

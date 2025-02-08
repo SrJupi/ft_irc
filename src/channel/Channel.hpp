@@ -6,7 +6,7 @@
 #include <string>
 #include <sys/socket.h> //tmp to test send, see where it fits better!
 #include "user/User.hpp"
-#include <ctime> 
+#include <ctime>
 
 class Channel
 {
@@ -33,12 +33,17 @@ private:
     bool        _isTopicLocked; 
     int         _userLimit;
     std::string _password;
+    std::map<char, std::string> _modeMap;
 
-
-public:
+    void        setMode(char mode, const std::string &param = "");
+    void        removeMode(char mode);
+    //void        updateMode(bool &currentStatus); general Update to be called in all setMode methods (?)
+    
+    
+    public:
     explicit Channel(const std::string &channelName, int fd); //@David: preciso de explicit?
     ~Channel();
-
+    
     void        setChannelName(const std::string &);
     std::string getChannelName();
     void        setTopic(const std::string &topic);
@@ -47,19 +52,19 @@ public:
     void        addUser(int fd, const std::string &userName);
     void        removeUser(int fd);
     void        listUsers();
-    void        broadcastMessage(const std::string& message, int exclude);
-
+    void        broadcastMessage(const std::string& message, int exclude = -1); //Adicionei -1 como default
+    
     int         getAmountOfUsers();
     bool        isUserInChannel(int fd);
     int         isUserInChannel(const std::string& nick);
-
+    
     //Operator Methods
     bool        isUserChannelOperator(int fd);
     void        inviteUser(int fd);
     bool        isUserInvited(int fd);
     void        giveUserOp(int fd, const std::string &nick);
     void        removeUserOp(int fd, const std::string &nick);
-
+    
     //Modes Get and Set
     void        setInviteMode(bool mode, const std::string &nick);
     bool        getInviteMode();
@@ -69,7 +74,9 @@ public:
     int         getUserLimitMode();
     void        setChannelPassword(const std::string &password);
     std::string getChannelPassword();
-
+    std::string getModeString() const;
+    
+    
 };
 
 #endif

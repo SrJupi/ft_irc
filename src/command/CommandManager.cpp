@@ -17,8 +17,8 @@ CommandManager::CommandManager()
     _commandHandlers["JOIN"] = &handleJoin;
     _commandHandlers["PART"] = &handlePart;
     _commandHandlers["MODE"] = &handleMode;
-    _commandHandlers["TOPIC"] = &handleTopic;
     _commandHandlers["USER"] = &handleUser;
+    _commandHandlers["TOPIC"] = &handleTopic;
     _commandHandlers["INVITE"] = &handleInvite;
     _commandHandlers["PRIVMSG"] = &handlePrivmsg;
     _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
