@@ -41,7 +41,7 @@ private:
     
     
     public:
-    explicit Channel(const std::string &channelName, int fd); //@David: preciso de explicit?
+    explicit Channel(const std::string &channelName, int fd); //@David: preciso de explicit? https://en.cppreference.com/w/cpp/language/explicit
     ~Channel();
     
     void        setChannelName(const std::string &);
