@@ -34,7 +34,7 @@ std::string Channel::getModeString() const
 
 Channel::Channel(const std::string &name, int fd) : _channelName(name),
 	_usersCounter(0), _isInviteOnly(false), _isTopicLocked(false),
-	_userLimit(-1)
+	_userLimit(0)
 {
 	_channelOperators.insert(fd);
 	time(&_creationTime);
@@ -207,10 +207,14 @@ bool Channel::getLockedTopicMode()
 	return (_isTopicLocked);
 }
 
-void Channel::setUserLimitMode(int num)
+void Channel::setUserLimitMode(int num, const std::string &nick)
 {
-	// BROADCAST REPLY TO ALL CHANNEL
+	std::string sign = (num > 0) ? "+" : "-";
+	std::ostringstream numStr;
+	numStr << num;
+	broadcastMessage(RPL_MODE_LIMIT(SERVER_NAME, nick, _channelName, sign, numStr.str()));
 	_userLimit = num;
+	(num > 0) ? setMode('l', numStr.str()) : removeMode('l');
 }
 
 int Channel::getUserLimitMode()
@@ -218,10 +222,13 @@ int Channel::getUserLimitMode()
 	return (_userLimit);
 }
 
-void Channel::setChannelPassword(const std::string &password)
+void Channel::setChannelPassword(const std::string &password,  const std::string &nick)
 {
-	// BROADCAST REPLY TO ALL CHANNEL
+	std::string sign = password.empty() ? "-" : "+";
+	std::cout << "Inside set channel password: " << password << std::endl;
+	broadcastMessage(RPL_MODE_KEY(SERVER_NAME, nick, _channelName, sign, password));
 	_password = password;
+	(!password.empty()) ? setMode('k', password) : removeMode('k');
 }
 
 std::string Channel::getChannelPassword()

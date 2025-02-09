@@ -9,6 +9,7 @@
 2. PONG (?)
 3. USER
 4. OPER
+5. WHO
  */
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);
@@ -24,6 +25,11 @@ void handlePrivmsg(User &user, Server &server, const std::vector<std::string> &a
 void handleQuit(User &user, Server &server, const std::vector<std::string> &args);
 void handleTopic(User &user, Server &server, const std::vector<std::string> &args);
 void handleUser(User &user, Server &server, const std::vector<std::string> &args);
+
+
+//Utils
+
+void responseSender(const std::string &response, int receiver);
 
 
 #endif

@@ -70,9 +70,9 @@ private:
     bool        getInviteMode();
     void        setLockedTopicMode(bool mode, const std::string &nick);
     bool        getLockedTopicMode();
-    void        setUserLimitMode(int num);
+    void        setUserLimitMode(int num, const std::string &nick);
     int         getUserLimitMode();
-    void        setChannelPassword(const std::string &password);
+    void        setChannelPassword(const std::string &password, const std::string &nick);
     std::string getChannelPassword();
     std::string getModeString() const;
     

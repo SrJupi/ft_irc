@@ -1,72 +1,104 @@
 #include "User.hpp"
 
-User::User() {}
-
-User::User(const User& ref) {
-    (void)ref;
+User::User()
+{
 }
 
-User::~User() {}
-
-User&	User::operator=(const User& ref) {
-    if (this != &ref) {
-        *this = ref;
-    }
-    return (*this);
+User::User(const User &ref)
+{
+	(void)ref;
 }
 
-void User::setStoredMsg(const std::string &msg) {
-    _storedMsg = msg;
+User::~User()
+{
 }
 
-std::string User::getStoredMsg() {
-    return _storedMsg;
+User &User::operator=(const User &ref)
+{
+	if (this != &ref)
+	{
+		*this = ref;
+	}
+	return (*this);
 }
 
-void    User::addChannel(const std::string &channelName) {
-    _channels.insert(channelName);
+void User::setStoredMsg(const std::string &msg)
+{
+	_storedMsg = msg;
 }
 
-void    User::removeChannel(const std::string &channelName) {
-    _channels.erase(channelName);
+std::string User::getStoredMsg()
+{
+	return (_storedMsg);
 }
 
-bool User::hasStoredMsg() const {
-    return !_storedMsg.empty();
+void User::addChannel(const std::string &channelName)
+{
+	_channels.insert(channelName);
 }
 
-int User::getFd() const {
-    return _fd;
+void User::removeChannel(const std::string &channelName)
+{
+	_channels.erase(channelName);
 }
 
-std::string User::getNickname() {
-    return _nickname;
+bool User::hasStoredMsg() const
+{
+	return (!_storedMsg.empty());
 }
 
-std::set<std::string>   User::getChannels() const {
-    return _channels;
+int User::getFd() const
+{
+	return (_fd);
 }
 
-void User::setNickname(std::string nick) {
-    _nickname = nick;
+std::string User::getNickname()
+{
+	return (_nickname);
 }
 
-std::string User::getUsername() {
-    return _username;
+std::set<std::string> User::getChannels() const
+{
+	return (_channels);
 }
 
-void User::setUsername(std::string user) {
-    _username = user;
+void User::setNickname(std::string nick)
+{
+	_nickname = nick;
 }
 
-void User::setAuthenticationTrue() {
-    _isAuth = true;
+std::string User::getTempNickname()
+{
+	std::string tmp = _tmpNick;
+    _tmpNick = "";
+    return (tmp);
 }
 
-bool User::isAutenticated() {
-    return _isAuth;
+void User::setTempNickname(std::string nick)
+{
+    _tmpNick = nick;
 }
 
-User::User(const int fd): _fd(fd), _username("no_user_name"), _isAuth(false)
-{}
+std::string User::getUsername()
+{
+	return (_username);
+}
 
+void User::setUsername(std::string user)
+{
+	_username = user;
+}
+
+void User::setAuthenticationTrue()
+{
+	_isAuth = true;
+}
+
+bool User::isAutenticated()
+{
+	return (_isAuth);
+}
+
+User::User(const int fd) : _fd(fd), _username("no_user_name"), _isAuth(false)
+{
+}

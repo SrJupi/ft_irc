@@ -3,6 +3,7 @@
 
 #include <channel/Channel.hpp>
 #include <map>
+#include <vector>
 
 
 class ChannelManager
@@ -19,6 +20,7 @@ public:
     int     removeChannel(const std::string &channelName);
     int     doesChannelExists(const std::string &channelName);
     Channel *getChannelByName(const std::string &channelName);
+    void    broadcastToChannels(const std::vector<std::string> channelsList); //TODO: create this method
     
     // bool    isEmpty();
     

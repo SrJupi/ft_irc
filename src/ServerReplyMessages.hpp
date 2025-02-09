@@ -83,7 +83,6 @@
 #define RPL_MODES(server, nick, channel, sign, mode, message) \
 ":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + (mode) + " " + (message) + "\r\n"
 
-
 #define RPL_MODE_OP(server, nick, channel, target, sign) \
 ":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + "o " + (target) + "\r\n"
 

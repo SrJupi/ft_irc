@@ -17,6 +17,7 @@ private:
     User();
     User(const User& ref);
     User&	operator=(const User& ref);
+    std::string _tmpNick;
 
 public:
     explicit User(int fd);
@@ -30,6 +31,8 @@ public:
 
     std::string getNickname();
     void        setNickname(std::string nick);
+    std::string getTempNickname();
+    void        setTempNickname(std::string nick);
 
     std::string getUsername();
     void        setUsername(std::string username);
