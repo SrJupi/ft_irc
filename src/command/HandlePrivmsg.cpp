@@ -12,6 +12,7 @@ static int handlePrivateMessage(User &sender, User *target, const std::string &r
     else {
         std::string privateMessage = PRIVMSG(sender.getNickname(), target->getNickname(), message);
         send(target->getFd(), privateMessage.c_str(), privateMessage.length(), 0);
+        sender.addPrivMsg(target->getNickname());
         return 1; // Message successfully delivered
     }
 }
@@ -39,7 +40,7 @@ void handlePrivmsg(User& user, Server& server, const std::vector<std::string>& a
         response = ERR_NORECIPIENT(nickSender, "PRIVMSG");
         send(fdSender, response.c_str(), response.length(), 0);
     } else if (args.size() < 2) {
-        response = ERR_NOTEXTTOSEND(nickSender);
+        response = ERR_NOTEXTTOSEND(SERVER_NAME, nickSender);
         send(fdSender, response.c_str(), response.length(), 0);
     } else {
         const std::string &receiver = args[0];

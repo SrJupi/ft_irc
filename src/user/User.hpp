@@ -11,7 +11,7 @@ private:
     std::string _nickname;
     std::string _username;
     std::set<std::string> _channels;
-    std::set<int> _privmsgs; //Adicionei isso aqui porque acho que em alguns comanado (ex NICK) vamos ter que enviar a info para todos que o user tenha contato
+    std::set<std::string> _privmsgs;
 	std::string _storedMsg;
 	bool    _isAuth;
     User();
@@ -29,12 +29,12 @@ public:
     
 	int			getFd() const;
 
-    std::string getNickname();
+    std::string getNickname() const;
     void        setNickname(std::string nick);
     std::string getTempNickname();
     void        setTempNickname(std::string nick);
 
-    std::string getUsername();
+    std::string getUsername() const;
     void        setUsername(std::string username);
 
     void        setAuthenticationTrue();
@@ -43,6 +43,10 @@ public:
     void        addChannel(const std::string &channelName);
     void        removeChannel(const std::string &channelName);
     std::set<std::string>   getChannels() const;
+
+    void    addPrivMsg(const std::string &nick);
+    void    removePrivMsg(const std::string &nick);
+    const std::set<std::string> getPrivMsgList();
 };
 
 #endif

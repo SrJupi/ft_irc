@@ -29,7 +29,7 @@ void handleUser(User &user, Server &server, const std::vector<std::string> &args
 
 //Utils
 
-void responseSender(const std::string &response, int receiver);
+void sendResponse(const std::string &response, int receiver);
 
 
 #endif

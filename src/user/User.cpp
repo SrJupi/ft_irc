@@ -52,7 +52,7 @@ int User::getFd() const
 	return (_fd);
 }
 
-std::string User::getNickname()
+std::string User::getNickname() const
 {
 	return (_nickname);
 }
@@ -60,6 +60,21 @@ std::string User::getNickname()
 std::set<std::string> User::getChannels() const
 {
 	return (_channels);
+}
+
+void User::addPrivMsg(const std::string &nick)
+{
+	_privmsgs.insert(nick);
+}
+
+void User::removePrivMsg(const std::string &nick)
+{
+	_privmsgs.erase(nick);
+}
+
+const std::set<std::string> User::getPrivMsgList()
+{
+    return _privmsgs;
 }
 
 void User::setNickname(std::string nick)
@@ -79,7 +94,7 @@ void User::setTempNickname(std::string nick)
     _tmpNick = nick;
 }
 
-std::string User::getUsername()
+std::string User::getUsername() const
 {
 	return (_username);
 }

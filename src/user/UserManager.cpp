@@ -1,5 +1,7 @@
 #include <user/UserManager.hpp>
 #include <iostream>
+#include "UserManager.hpp"
+#include <command/Handlers.hpp>
 
 UserManager::UserManager()
 {
@@ -88,6 +90,27 @@ bool UserManager::existsNickname(const std::string &nick)
         return true;
     }
     return false;
+}
+
+void UserManager::broadcastToUsers(const std::set<std::string> &usersList, const std::string message)
+{
+    for (std::set<std::string>::const_iterator it = usersList.begin(); it != usersList.end(); it++) {
+        User *user = getUserByNick(*it);
+
+        if (!user) continue;
+
+        sendResponse(message, user->getFd());
+    }
+}
+
+void UserManager::removeUserFromOthersList(const std::set<std::string> &privList, const std::string nick) {
+    for (std::set<std::string>::const_iterator it = privList.begin(); it != privList.end(); it++) {
+        User *user = getUserByNick(*it);
+
+        if (!user) continue;
+
+        user->removePrivMsg(nick);
+    }
 }
 
 UserManager &UserManager::operator=(const UserManager &ref)

@@ -35,8 +35,8 @@
 #define ERR_NORECIPIENT(nick, command) \
     "411 " + (nick) + " :No recipient given (" + (command) + ")\r\n"
 
-#define ERR_NOTEXTTOSEND(nick) \
-    "412 " + (nick) + " :No text to send\r\n"
+#define ERR_NOTEXTTOSEND(server, nick) \
+    ":" + (server) + " 412 " + (nick) + " :No text to send\r\n"
 
 #define ERR_NONICKNAMEGIVEN(server) \
     ":" + (server) + " 431 :No nickname given\r\n"

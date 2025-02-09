@@ -20,14 +20,17 @@ public:
     
     int     addNewUser(int userFd);
     int     removeUser(int userFd);
-    User  *getUserByFd(int userFd);
-    User  *getUserByNick(std::string const &nick);
+    User    *getUserByFd(int userFd);
+    User    *getUserByNick(std::string const &nick);
     int     deleteUser();
     
     void    addNicknameToFd(std::string nick, int fd);
 
     bool    isMapFdToUserEmpty();
     bool    existsNickname(const std::string &nick);
+
+    void    broadcastToUsers(const std::set<std::string> &usersList, const std::string message);
+    void    removeUserFromOthersList(const std::set<std::string> &privList, const std::string nick);
     
 };
 

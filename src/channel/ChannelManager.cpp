@@ -65,6 +65,19 @@ Channel* ChannelManager::getChannelByName(const std::string &channelName) {
     return NULL;
 }
 
+void ChannelManager::broadcastToChannels(const std::set<std::string> &channelsList, const std::string message)
+{
+    for (std::set<std::string>::const_iterator it = channelsList.begin(); it != channelsList.end(); it++)
+    {
+        Channel *channel = getChannelByName(*it);
+        
+        if (!channel) continue;
+
+        channel->broadcastMessage(message);
+    }
+    
+}
+
 // bool ChannelManager::isEmpty()
 // {
 //     return _channelFdMap.empty();
