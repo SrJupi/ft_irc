@@ -8,7 +8,6 @@
 
 CommandManager::CommandManager()
 {        
-    //TODO: implementar PING, PONG?                    
     _commandHandlers["CAP"] = &handleCap;
     _commandHandlers["NICK"] = &handleNick;   
     _commandHandlers["PASS"] = &handlePass;

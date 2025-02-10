@@ -231,6 +231,11 @@ void Channel::setChannelPassword(const std::string &password,  const std::string
 	(!password.empty()) ? setMode('k', password) : removeMode('k');
 }
 
+bool Channel::isInviteOnly()
+{
+    return _isInviteOnly;
+}
+
 std::string Channel::getChannelPassword()
 {
 	return (_password);

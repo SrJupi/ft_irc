@@ -2,6 +2,9 @@
 #include <ServerReplyMessages.hpp>
 #include "Handlers.hpp"
 
+
+//TODO[2]: nao permitir um usuario join quando esta no invite mode e ele nao tem invitation
+
 static bool isValidChannelName(const std::string& str) {
     std::cout << str << std::endl;
     return str.size() >= 2 && str[0] == '#';

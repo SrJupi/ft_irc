@@ -7,9 +7,10 @@
 /* TODO:
 1. PING (?)
 2. PONG (?)
-3. USER
+3. USER (started)
 4. OPER
 5. WHO
+6. INVITE (david is doing)
  */
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);

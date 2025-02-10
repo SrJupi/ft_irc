@@ -73,6 +73,7 @@ private:
     void        setUserLimitMode(int num, const std::string &nick);
     int         getUserLimitMode();
     void        setChannelPassword(const std::string &password, const std::string &nick);
+    bool        isInviteOnly();
     std::string getChannelPassword();
     std::string getModeString() const;
     
