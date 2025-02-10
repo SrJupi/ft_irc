@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include <sstream>
 
 void handleTopic(User &user, Server &server, const std::vector<std::string> &args)
 {
@@ -22,10 +21,8 @@ void handleTopic(User &user, Server &server, const std::vector<std::string> &arg
         std::string topic = channel->getChannelTopic();
         if (topic.empty())
             return sendResponse(RPL_NOTOPIC(SERVER_NAME, nick, args[0]), fd);
-        std::ostringstream timeStream;
-        timeStream << channel->getTopicTimestamp();
         return sendResponse(RPL_TOPIC(SERVER_NAME, nick, args[0], topic) +
-            RPL_TOPICWHOTIME(SERVER_NAME, nick, args[0], channel->getWhoSetTopic(), timeStream.str()), fd);
+            RPL_TOPICWHOTIME(SERVER_NAME, nick, args[0], channel->getWhoSetTopic(), channel->getTopicTimestampAsString()), fd);
     }
     if (channel->isTopicLocked() && !channel->isUserChannelOperator(user.getFd()))
         return sendResponse(ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, args[0]), fd);

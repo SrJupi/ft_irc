@@ -17,6 +17,8 @@ void Channel::removeMode(char mode)
 	_modeMap.erase(mode);
 }
 
+
+
 std::string Channel::getModeString() const
 {
     std::ostringstream modes, params;
@@ -37,7 +39,7 @@ Channel::Channel(const std::string &name, int fd) : _channelName(name),
 	_userLimit(0)
 {
 	_channelOperators.insert(fd);
-	time(&_creationTime);
+	time(&_channelTimestamp);
 }
 
 Channel::Channel(const Channel &ref)
@@ -76,7 +78,7 @@ void Channel::setTopic(const std::string &topic, const std::string &nick)
 {
 	_topic = topic;
 	time(&_topicTimestamp);
-	_topicSetBy = nick;
+	_topicSetBy = nick; //Change to full mask??? -> <nick>!<user>@<host> ???
 	broadcastMessage(RPL_TOPIC(SERVER_NAME, nick, _channelName, _topic));
 }
 
@@ -255,7 +257,19 @@ const std::string &Channel::getWhoSetTopic() const
     return _topicSetBy;
 }
 
-const time_t &Channel::getTopicTimestamp() const
+const std::string Channel::getTimestampAsString(const time_t &timestamp) const
 {
-    return _topicTimestamp;
+	std::ostringstream os;
+	os << timestamp;
+	return os.str();
+}
+
+const std::string Channel::getTopicTimestampAsString() const
+{
+	return getTimestampAsString(_topicTimestamp);
+}
+
+const std::string Channel::getChannelTimestampAsString() const
+{
+	return getTimestampAsString(_channelTimestamp);
 }

@@ -16,6 +16,7 @@ static std::string createJoinResponseMessage(User &user, const std::string &chan
     response = RPL_JOIN(nick, channelName);
     if (!topic.empty()) {
         response += RPL_TOPIC(SERVER_NAME, nick, channelName, topic);
+        //TODO: response += RPL_TOPICWHOTIME(SERVER_NAME, nick, channelName, channel->getWhoSetTopic(),) 
     }
     response += RPL_NAMREPLY(SERVER_NAME, nick, channelName, channel->getUsersConnectedList());
     response += RPL_ENDOFNAMES(SERVER_NAME, nick, channelName);

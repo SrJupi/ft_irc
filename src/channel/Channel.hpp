@@ -18,7 +18,7 @@ private:
     //Channel Info
     std::string _channelName;
     int         _usersCounter;
-    time_t      _creationTime;
+    time_t      _channelTimestamp;
     //topic stuff
     std::string _topic;
     time_t      _topicTimestamp;
@@ -40,6 +40,8 @@ private:
     void        setMode(char mode, const std::string &param = "");
     void        removeMode(char mode);
     //void        updateMode(bool &currentStatus); general Update to be called in all setMode methods (?)
+
+    const std::string   getTimestampAsString(const time_t &timestamp) const;
     
     
     public:
@@ -56,7 +58,8 @@ private:
     void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude = -1); //Adicionei -1 como default
     const std::string   &getWhoSetTopic() const;
-    const time_t        &getTopicTimestamp() const;
+    const std::string   getTopicTimestampAsString() const;
+    const std::string   getChannelTimestampAsString() const;
     
     int         getAmountOfUsers();
     bool        isUserInChannel(int fd);

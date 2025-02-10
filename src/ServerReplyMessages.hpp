@@ -8,6 +8,9 @@
 #define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
     ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modesAndParams) + "\r\n"
 
+#define RPL_CREATIONTIME(server, nick, channel, timestamp) \
+    ":" + (server) + " 329 " + (nick) + " " + (channel) + " " + (timestamp) + "\r\n"
+
 #define RPL_NOTOPIC(server, nick, channel) \
     ":" + (server) + " 331 " + (nick) + " " + (channel) + " :No topic is set\r\n"
 

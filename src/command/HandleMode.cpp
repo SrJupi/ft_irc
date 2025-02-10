@@ -105,13 +105,13 @@ void handleMode(User &user, Server &server, const std::vector<std::string> &args
     if (!channel->isUserInChannel(nick))
         return sendResponse(ERR_NOTONCHANNEL(SERVER_NAME, nick, args[0]), fd);
 
-    if (args.size() == 1) //TODO: Add RPL_CREATIONTIME (329)
-        return sendResponse(RPL_CHANNELMODEIS(SERVER_NAME, nick, channel->getChannelName(), channel->getModeString()), fd);
+    if (args.size() == 1) {
+        return sendResponse(RPL_CHANNELMODEIS(SERVER_NAME, nick, args[0], channel->getModeString()) + 
+        RPL_CREATIONTIME(SERVER_NAME, nick, args[0], channel->getChannelTimestampAsString()), fd);
+    }
 
     if (!channel->isUserChannelOperator(fd))
         return sendResponse(ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, args[0]), fd);
 
-    
     return parseModeCases(user, channel, args);
-
 }
