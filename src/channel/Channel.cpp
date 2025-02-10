@@ -188,7 +188,7 @@ void Channel::setInviteMode(bool mode, const std::string &nick)
 	mode ? setMode('i') : removeMode('i');
 }
 
-bool Channel::getInviteMode()
+bool Channel::isInviteOnly()
 {
 	return (_isInviteOnly);
 }
@@ -229,11 +229,6 @@ void Channel::setChannelPassword(const std::string &password,  const std::string
 	broadcastMessage(RPL_MODE_KEY(SERVER_NAME, nick, _channelName, sign, password));
 	_password = password;
 	(!password.empty()) ? setMode('k', password) : removeMode('k');
-}
-
-bool Channel::isInviteOnly()
-{
-    return _isInviteOnly;
 }
 
 std::string Channel::getChannelPassword()

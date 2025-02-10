@@ -67,7 +67,7 @@ private:
     
     //Modes Get and Set
     void        setInviteMode(bool mode, const std::string &nick);
-    bool        getInviteMode();
+    bool        isInviteOnly();
     void        setLockedTopicMode(bool mode, const std::string &nick);
     bool        getLockedTopicMode();
     void        setUserLimitMode(int num, const std::string &nick);

@@ -7,11 +7,11 @@
 /* TODO:
 1. PING (?)
 2. PONG (?)
-3. USER (started)
+3. USER (DONE): somente eh enviado quando o cliente se conecta ao servidor (o chat disse que eh um comando por conexao e se enviado mais de uma vez pode gerar erro 462)
 4. OPER
-5. WHO
-6. INVITE (david is doing)
- */
+5. WHO TODO[1]
+6. INVITE (DONE )
+*/
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);
 void handleExit(User &user, Server &server, const std::vector<std::string> &args);

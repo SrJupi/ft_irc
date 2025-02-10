@@ -3,8 +3,6 @@
 #include "Handlers.hpp"
 
 
-//TODO[2]: nao permitir um usuario join quando esta no invite mode e ele nao tem invitation
-
 static bool isValidChannelName(const std::string& str) {
     std::cout << str << std::endl;
     return str.size() >= 2 && str[0] == '#';
@@ -47,7 +45,7 @@ void handleJoin(User& user, Server& server, const std::vector<std::string>& args
     if (channel == NULL) {
         channel = server.getChannelManager().createChannel(args[0], user.getFd()); //REVER ISSO, criei para ja adicionar o criador aos op, mas aparentemente o server usa mode para dar op para o criador (?)
     } else {
-        if (channel->getInviteMode() && !channel->isUserInvited(user.getFd())) {
+        if (channel->isInviteOnly() && !channel->isUserInvited(user.getFd())) {
             //User not invited... ERR_INVITEONLYCHAN 
             //send and return ?
         }
