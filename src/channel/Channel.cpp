@@ -43,7 +43,7 @@ Channel::Channel(const std::string &name, int fd) : _channelName(name),
 Channel::Channel(const Channel &ref)
 {
 	this->_channelName = ref._channelName;
-	this->_topic = ref._channelTopic;
+	this->_topic = ref._topic;
 	this->_usersConnected = ref._usersConnected;
 }
 
@@ -56,7 +56,7 @@ Channel &Channel::operator=(const Channel &ref)
 	if (this != &ref)
 	{
 		this->_channelName = ref._channelName;
-		this->_channelTopic = ref._channelTopic;
+		this->_topic = ref._topic;
 		this->_usersConnected = ref._usersConnected;
 	}
 	return (*this);
@@ -72,14 +72,17 @@ std::string Channel::getChannelName()
 	return (_channelName);
 }
 
-void Channel::setTopic(const std::string &topic)
+void Channel::setTopic(const std::string &topic, const std::string &nick)
 {
-	_channelTopic = topic;
+	_topic = topic;
+	time(&_topicTimestamp);
+	_topicSetBy = nick;
+	broadcastMessage(RPL_TOPIC(SERVER_NAME, nick, _channelName, _topic));
 }
 
 std::string Channel::getChannelTopic()
 {
-	return (_channelTopic);
+	return (_topic);
 }
 
 void Channel::addUser(int fd, const std::string &userName)
@@ -202,7 +205,7 @@ void Channel::setLockedTopicMode(bool mode, const std::string &nick)
 	mode ? setMode('t') : removeMode('t');
 }
 
-bool Channel::getLockedTopicMode()
+bool Channel::isTopicLocked()
 {
 	return (_isTopicLocked);
 }
@@ -245,4 +248,14 @@ void Channel::broadcastMessage(const std::string &message, int exclude)
 		if (it->first != exclude)
 			send(it->first, message.c_str(), message.length(), 0);
 	}
+}
+
+const std::string &Channel::getWhoSetTopic() const
+{
+    return _topicSetBy;
+}
+
+const time_t &Channel::getTopicTimestamp() const
+{
+    return _topicTimestamp;
 }

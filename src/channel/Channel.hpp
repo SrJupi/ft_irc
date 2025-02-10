@@ -17,10 +17,12 @@ private:
     
     //Channel Info
     std::string _channelName;
-    std::string _channelTopic;
-    std::string _topic;
     int         _usersCounter;
     time_t      _creationTime;
+    //topic stuff
+    std::string _topic;
+    time_t      _topicTimestamp;
+    std::string _topicSetBy;
     
     //Users list
     std::map<int, std::string> _usersConnected;
@@ -46,13 +48,15 @@ private:
     
     void        setChannelName(const std::string &);
     std::string getChannelName();
-    void        setTopic(const std::string &topic);
+    void        setTopic(const std::string &topic, const std::string &nick);
     std::string getChannelTopic();
     std::string getUsersConnectedList();
     void        addUser(int fd, const std::string &userName);
     void        removeUser(int fd);
     void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude = -1); //Adicionei -1 como default
+    const std::string   &getWhoSetTopic() const;
+    const time_t        &getTopicTimestamp() const;
     
     int         getAmountOfUsers();
     bool        isUserInChannel(int fd);
@@ -69,11 +73,10 @@ private:
     void        setInviteMode(bool mode, const std::string &nick);
     bool        isInviteOnly();
     void        setLockedTopicMode(bool mode, const std::string &nick);
-    bool        getLockedTopicMode();
+    bool        isTopicLocked();
     void        setUserLimitMode(int num, const std::string &nick);
     int         getUserLimitMode();
     void        setChannelPassword(const std::string &password, const std::string &nick);
-    bool        isInviteOnly();
     std::string getChannelPassword();
     std::string getModeString() const;
     

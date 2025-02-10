@@ -8,8 +8,14 @@
 #define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
     ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modesAndParams) + "\r\n"
 
+#define RPL_NOTOPIC(server, nick, channel) \
+    ":" + (server) + " 331 " + (nick) + " " + (channel) + " :No topic is set\r\n"
+
 #define RPL_TOPIC(server, nick, channel, topic) \
     ":" + (server) + " 332 " + (nick) + " " + (channel) + " :" + (topic) + "\r\n"
+
+#define RPL_TOPICWHOTIME(server, nick, channel, setBy, timestamp) \
+    ":" + (server) + " 333 " + (nick) + " " + (channel) + " " + (setBy) + " " + (timestamp) + "\r\n"
 
 #define RPL_NAMREPLY(server, nick, channel, nicks) \
     ":" + (server) + " 353 " + (nick) + " = " + (channel) + " :" + (nicks) + "\r\n"
