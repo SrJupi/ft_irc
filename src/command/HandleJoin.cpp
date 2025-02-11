@@ -44,7 +44,7 @@ void handleJoin(User& user, Server& server, const std::vector<std::string>& args
     }
     Channel *channel = server.getChannelManager().getChannelByName(args[0]);
     if (channel == NULL) {
-        channel = server.getChannelManager().createChannel(args[0], user.getFd()); //REVER ISSO, criei para ja adicionar o criador aos op, mas aparentemente o server usa mode para dar op para o criador (?)
+        channel = server.getChannelManager().createChannel(args[0], user.getFd()); 
     } else {
         if (channel->isInviteOnly() && !channel->isUserInvited(user.getFd())) {
             //User not invited... ERR_INVITEONLYCHAN 

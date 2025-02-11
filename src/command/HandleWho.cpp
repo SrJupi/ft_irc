@@ -1,8 +1,6 @@
 #include <command/Handlers.hpp>
 #include "Handlers.hpp"
 
-//TODO: ao entrar no canal o servidor deve mandar o WHO
-
 void sendInfoOf(User &userInChannel, Channel *channel, User &user);
 void sendEndMessage(std::string channelName, User &user);
 
