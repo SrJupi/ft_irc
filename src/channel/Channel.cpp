@@ -114,6 +114,9 @@ std::string Channel::getUsersConnectedList()
 		{
 			userList += " ";
 		}
+		if (isUserChannelOperator(it->first)) {
+			userList += "@";
+		}
 		userList += it->second;
 	}
 	return (userList);

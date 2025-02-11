@@ -37,9 +37,9 @@ void sendInfoOf(User &userInChannel, Channel *channel, User &userRequesting)
     std::string response;
     std::string status;
     status = channel->isUserChannelOperator(userInChannel.getFd()) ? "@H" : "H"; // @ = Operator
-    response = RPL_WHOREPLY(SERVER_NAME, userRequesting.getNickname(), channel->getChannelName(), userInChannel.getUsername(),
-                            "localhost", SERVER_NAME, userInChannel.getNickname(), status,
-                            "0", "realname");
+    response = RPL_WHOREPLY(SERVER_NAME, userRequesting.getNickname(), channel->getChannelName(),
+                            userInChannel.getUsername(), "localhost", SERVER_NAME, 
+                            userInChannel.getNickname(), status, "0", "realname");
     send(userRequesting.getFd(), response.c_str(), response.length(), 0);
 }
 
