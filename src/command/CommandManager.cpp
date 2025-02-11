@@ -8,20 +8,21 @@
 
 CommandManager::CommandManager()
 {        
-    _commandHandlers["CAP"] = &handleCap;
-    _commandHandlers["NICK"] = &handleNick;   
-    _commandHandlers["PASS"] = &handlePass;
-    _commandHandlers["QUIT"] = &handleQuit;
-    _commandHandlers["KICK"] = &handleKick;
-    _commandHandlers["JOIN"] = &handleJoin;
-    _commandHandlers["PART"] = &handlePart;
-    _commandHandlers["MODE"] = &handleMode;
-    _commandHandlers["USER"] = &handleUser;
-    _commandHandlers["TOPIC"] = &handleTopic;
-    _commandHandlers["INVITE"] = &handleInvite;
-    _commandHandlers["PRIVMSG"] = &handlePrivmsg;
-    _commandHandlers["WHO"] = &handleWho;
-    _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
+    _unregisteredCommandHandlers["CAP"] = &handleCap;
+    _unregisteredCommandHandlers["PASS"] = &handlePass;
+    _unregisteredCommandHandlers["NICK"] = &handleNick;   
+    _unregisteredCommandHandlers["USER"] = &handleUser;
+    
+    _registeredCommandHandlers["WHO"] = &handleWho;
+    _registeredCommandHandlers["QUIT"] = &handleQuit;
+    _registeredCommandHandlers["KICK"] = &handleKick;
+    _registeredCommandHandlers["JOIN"] = &handleJoin;
+    _registeredCommandHandlers["PART"] = &handlePart;
+    _registeredCommandHandlers["MODE"] = &handleMode;
+    _registeredCommandHandlers["TOPIC"] = &handleTopic;
+    _registeredCommandHandlers["INVITE"] = &handleInvite;
+    _registeredCommandHandlers["PRIVMSG"] = &handlePrivmsg;
+    _registeredCommandHandlers["VALGRIND"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
 }
 
 CommandManager::CommandManager(const CommandManager& ref)
@@ -44,13 +45,21 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
 {
     std::string commandName;
     std::vector<std::string> args;
-    std::cout << ">> EXECUTING " << command << ": userFd = " << user.getFd() << " userNick: " << user.getNickname() << " userIsAuth: " << user.isAutenticated() << " userName: " << user.getUsername() << std::endl << std::endl; 
     if (!Parser::parseCommand(command, commandName, args)) {
         return;
     }
-    std::cout << "Command name: " << commandName << std::endl;
-    std::map<std::string, CommandHandler>::iterator it = _commandHandlers.find(commandName);
-    if (it == _commandHandlers.end()) {
+    std::map<std::string, CommandHandler>::iterator it = _unregisteredCommandHandlers.find(commandName);
+    if (it != _unregisteredCommandHandlers.end()) {
+        (it->second)(user, server, args);
+        if (user.isAuthenticated() && !user.getNickname().empty() && !user.getUsername().empty() && !user.isRegistered()) {
+            user.setRegisteredTrue(); 
+            return sendResponse(RPL_WELCOME(SERVER_NAME, "Brazilian IRC network",user.getNickname(), user.getUsername(), user.getIp()), user.getFd());
+        }
+    }
+    if (!user.isRegistered()) return; //add notregisted message
+
+    it = _registeredCommandHandlers.find(commandName);
+    if (it == _registeredCommandHandlers.end()) {
         std::cerr << "Unknown command: " << commandName << std::endl;
         return;
     }

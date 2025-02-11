@@ -11,7 +11,7 @@ void handleNick(User& user, Server& server, const std::vector<std::string>& args
 {
     if (args.size() == 0) return sendResponse(ERR_NONICKNAMEGIVEN(SERVER_NAME), user.getFd());
 
-    if (!user.isAutenticated()) return sendResponse (ERR_NOTREGISTERED(SERVER_NAME), user.getFd()); //Move this outside before all commands (?)
+    if (!user.isAuthenticated()) return sendResponse (ERR_NOTREGISTERED(SERVER_NAME), user.getFd()); //Move this outside before all commands (?)
 
     if (server.getUserManager().existsNickname(args[0])) {     
         user.setTempNickname(args[0]);

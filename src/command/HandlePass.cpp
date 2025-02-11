@@ -9,7 +9,7 @@ void handlePass(User& user, Server& server, const std::vector<std::string>& args
     if (args.empty()) {
         response = ERR_NEEDMOREPARAMS(SERVER_NAME, nick, "PASS");
     }
-    else if (user.isAutenticated()) {
+    else if (user.isAuthenticated()) {
         response = ERR_ALREADYREGISTRED(nick);
     }
     else if (args[0] != server.getPassword()) {

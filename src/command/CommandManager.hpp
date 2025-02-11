@@ -13,7 +13,9 @@ class CommandManager
 {
 private:
     typedef void (*CommandHandler)(User& user, Server& server, const std::vector<std::string>& args);
-    std::map<std::string, CommandHandler> _commandHandlers;
+    std::map<std::string, CommandHandler> _registeredCommandHandlers;
+    std::map<std::string, CommandHandler> _unregisteredCommandHandlers;
+
 
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);

@@ -5,6 +5,11 @@
 
 #include <string>
 
+typedef struct s_network { 
+  int           userFd;
+  std::string   userIP; 
+} t_network;
+
 class NetworkManager
 {
 private:
@@ -22,9 +27,9 @@ public:
     NetworkManager();
     ~NetworkManager();
 
-    int setNetwork(std::string &port);
-    int getSocketFd();
-    int acceptNewUser();
+    int         setNetwork(std::string &port);
+    int         getSocketFd();
+    t_network   acceptNewUser();
 };
 
 #endif

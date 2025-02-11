@@ -1,5 +1,6 @@
 #include "NetworkManager.hpp"
 #include <sys/socket.h>
+#include <arpa/inet.h>
 #include <netdb.h>
 #include <string>
 #include <fcntl.h>
@@ -72,17 +73,21 @@ int NetworkManager::getSocketFd()
     return _socketfd;
 }
 
-int NetworkManager::acceptNewUser()
+t_network NetworkManager::acceptNewUser()
 {
-    int userFd = accept(_socketfd, NULL, NULL); //add struct to track ip info
-	if (userFd == -1) {
-		return -1;
+    struct sockaddr_in clientAddr;
+	t_network response;
+	socklen_t clientAddrLen = sizeof(clientAddr);
+	response.userFd = accept(_socketfd, (struct sockaddr *)&clientAddr, &clientAddrLen);
+	if (response.userFd == -1) {
+		return response;
 	}
-	if (fcntl(userFd, F_SETFL, O_NONBLOCK) == -1) {
-		close (userFd);
-		return -1;
+	if (fcntl(response.userFd, F_SETFL, O_NONBLOCK) == -1) {
+		close (response.userFd);
+		return response;
 	}
-	return userFd;
+	response.userIP = std::string(inet_ntoa((&clientAddr)->sin_addr));
+	return response;
 }
 
 //Create and set the socket, bind and start to listen

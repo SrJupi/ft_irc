@@ -1,8 +1,8 @@
 #ifndef SERVERREPLYMESSAGES_HPP
 # define SERVERREPLYMESSAGES_HPP
 
-#define RPL_WELCOME(network, nick, user, host) \
-    "001 " + (user) + " Welcome to the " + (network) + \
+#define RPL_WELCOME(server, network, nick, user, host) \
+    ":" + (server) + " 001 " + (nick) + " Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
 #define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
@@ -48,7 +48,7 @@
     ":" + (server) + " 412 " + (nick) + " :No text to send\r\n"
 
 #define ERR_NONICKNAMEGIVEN(server) \
-    ":" + (server) + " 431 :No nickname given\r\n"
+    ":" + (server) + " 431 * :No nickname given\r\n"
 
 #define ERR_NICKNAMEINUSE(server, nick) \
     ":" + (server) + " 433 " + (nick) + " :Nickname is already in use\r\n"

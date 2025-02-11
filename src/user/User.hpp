@@ -14,13 +14,15 @@ private:
     std::set<std::string> _privmsgs;
 	std::string _storedMsg;
 	bool    _isAuth;
+    bool    _isRegistered;
     User();
     User(const User& ref);
     User&	operator=(const User& ref);
     std::string _tmpNick;
+    std::string _ip;
 
 public:
-    explicit User(int fd);
+    explicit User(int fd, std::string ip);
     ~User();
 
     void        setStoredMsg(const std::string &msg);
@@ -38,7 +40,13 @@ public:
     void        setUsername(std::string username);
 
     void        setAuthenticationTrue();
-    bool        isAutenticated();
+    bool        isAuthenticated();
+
+    void        setRegisteredTrue();
+    bool        isRegistered(); 
+
+    void        setIp(std::string &ip);
+    std::string &getIp();
 
     void        addChannel(const std::string &channelName);
     void        removeChannel(const std::string &channelName);

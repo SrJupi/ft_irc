@@ -109,11 +109,31 @@ void User::setAuthenticationTrue()
 	_isAuth = true;
 }
 
-bool User::isAutenticated()
+bool User::isAuthenticated()
 {
 	return (_isAuth);
 }
 
-User::User(const int fd) : _fd(fd), _username("no_user_name"), _isAuth(false)
+void User::setRegisteredTrue()
+{
+	_isRegistered = true;
+}
+
+bool User::isRegistered()
+{
+    return _isRegistered;
+}
+
+void User::setIp(std::string &ip)
+{
+	_ip = ip;
+}
+
+std::string &User::getIp()
+{
+    return _ip;
+}
+
+User::User(const int fd, std::string ip) : _fd(fd), _isAuth(false), _isRegistered(false),_ip(ip)
 {
 }

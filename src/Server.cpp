@@ -90,15 +90,15 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 
 int Server::addNewUser()
 {
-	int userFd = _networkManager.acceptNewUser(); 
-	if (userFd == -1) {
+	t_network userInfo = _networkManager.acceptNewUser(); 
+	if (userInfo.userFd == -1) {
 		return -1;
 	}
-	if (_epollManager.addToEpoll(EPOLLIN | EPOLLOUT | EPOLLET, userFd)) {
+	if (_epollManager.addToEpoll(EPOLLIN | EPOLLOUT | EPOLLET, userInfo.userFd)) {
 		return -1;
 	}
-	_userManager.addNewUser(userFd);
-	std::cout << "User added: " << _userManager.getUserByFd(userFd)->getFd() << std::endl;
+	_userManager.addNewUser(userInfo.userFd, userInfo.userIP);
+	std::cout << "User added: " << _userManager.getUserByFd(userInfo.userFd)->getFd() << std::endl;
 	return 0;
 }
 

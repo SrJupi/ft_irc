@@ -16,9 +16,9 @@ UserManager::~UserManager()
 {
 }
 
-int UserManager::addNewUser(int userfd)
+int UserManager::addNewUser(int userfd, std::string &ip)
 {
-	_mapFdToUser[userfd] = new User(userfd);
+	_mapFdToUser[userfd] = new User(userfd, ip);
 
     return 0;
 }

@@ -18,7 +18,7 @@ public:
     UserManager();
     ~UserManager();
     
-    int     addNewUser(int userFd);
+    int     addNewUser(int userFd, std::string &ip);
     int     removeUser(int userFd);
     User    *getUserByFd(int userFd);
     User    *getUserByNick(std::string const &nick);
