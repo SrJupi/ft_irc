@@ -26,7 +26,7 @@ void handlePrivmsg(User &user, Server &server, const std::vector<std::string> &a
 void handleQuit(User &user, Server &server, const std::vector<std::string> &args);
 void handleTopic(User &user, Server &server, const std::vector<std::string> &args);
 void handleUser(User &user, Server &server, const std::vector<std::string> &args);
-
+void handleWho(User &user, Server &server, const std::vector<std::string> &args);
 
 //Utils
 

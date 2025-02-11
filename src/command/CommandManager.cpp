@@ -20,6 +20,7 @@ CommandManager::CommandManager()
     _commandHandlers["TOPIC"] = &handleTopic;
     _commandHandlers["INVITE"] = &handleInvite;
     _commandHandlers["PRIVMSG"] = &handlePrivmsg;
+    _commandHandlers["WHO"] = &handleWho;
     _commandHandlers["IWANTTOLEAVE"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
 }
 

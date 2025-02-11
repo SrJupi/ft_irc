@@ -77,7 +77,13 @@
 #define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
     ":" + (server) + " 482 " + (nick) + " " + (channel) + " :You're not a channel operator\r\n"
 
+// WHO repply messages
+#define RPL_WHOREPLY(server, nick, channel, user, host, srv, targetNick, status, hopcount, realname) \
+    ":" + (server) + " 352 " + (nick) + " " + (channel) + " " + (user) + " " + (host) + " " + (srv) + " " + (targetNick) + \
+    " " + (status) + " :" + (hopcount) + " " + (realname) + "\r\n"
 
+#define RPL_ENDOFWHO(server, nick, target) \
+    ":" + (server) + " 315 " + (nick) + " " + (target) + " :End of WHO list\r\n"
 
 // Forwarded message format for PRIVMSG
 #define PRIVMSG(sender, receiver, message) \

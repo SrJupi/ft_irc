@@ -87,6 +87,11 @@ std::string Channel::getChannelTopic()
 	return (_topic);
 }
 
+std::map<int, std::string> Channel::getUsersConnected()
+{
+    return _usersConnected;
+}
+
 void Channel::addUser(int fd, const std::string &userName)
 {
 	_usersCounter += 1;

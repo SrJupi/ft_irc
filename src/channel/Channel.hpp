@@ -52,6 +52,7 @@ private:
     std::string getChannelName();
     void        setTopic(const std::string &topic, const std::string &nick);
     std::string getChannelTopic();
+    std::map<int, std::string>  getUsersConnected();
     std::string getUsersConnectedList();
     void        addUser(int fd, const std::string &userName);
     void        removeUser(int fd);
