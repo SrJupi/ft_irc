@@ -7,6 +7,7 @@ ChannelManager::ChannelManager(const ChannelManager& ref) {
     *this=ref;
 }
 
+//TODO -> leak
 ChannelManager::~ChannelManager() {
     // for (std::map<std::string, Channel*>::iterator it = _mapNameToChannels.begin(); it != _mapNameToChannels.end(); ++it) {
     //     delete it->second; // ✅ Free memory
@@ -15,23 +16,8 @@ ChannelManager::~ChannelManager() {
 
 }
 Channel     *ChannelManager::createChannel(const std::string &channelName, int fd) {
-    // // _channels[channelName] = new Channel(channelName);
-    // // return 0;
-    // if (_channels.find(channelName) == _channels.end()) {
-    //     _channels[channelName] = new Channel(channelName);
-    //     return 0;
-    // }
-    // return -1; // Channel already exists 
-
-/*     if (_channels.find(channelName) == _channels.end()) { // ✅ Prevent duplicate entries
-        std::cout << "Channel created: " << channelName << " at " << _channels[channelName] << std::endl;
-    } else {
-        std::cout << "Channel already exists: " << channelName << " at " << _channels[channelName] << std::endl;
-    } */
-   //@LL: mas se você não confere se o canal já existe, você vai criar um novo canal com o mesmo nome e sobrescrever o anterior, não?
-    _channels[channelName] = new Channel(channelName, fd); // ✅ Store pointer correctly
-    return _channels.at(channelName); // _channels[channelName]
-
+    _channels[channelName] = new Channel(channelName, fd);
+    return _channels.at(channelName);
 }
 
 int     ChannelManager::removeChannel(const std::string &channelName) {

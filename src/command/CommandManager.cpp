@@ -52,8 +52,9 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
     if (it != _unregisteredCommandHandlers.end()) {
         (it->second)(user, server, args);
         if (user.isAuthenticated() && !user.getNickname().empty() && !user.getUsername().empty() && !user.isRegistered()) {
-            user.setRegisteredTrue(); 
-            return sendResponse(RPL_WELCOME(SERVER_NAME, "Brazilian IRC network",user.getNickname(), user.getUsername(), user.getIp()), user.getFd());
+            user.setRegisteredTrue();
+            //TODO: ADD LOGIN HERE
+            return sendResponse(RPL_WELCOME(SERVER_NAME, "Brazilian IRC network", user.getNickname(), user.getUsername(), user.getIp()), user.getFd());
         }
     }
     if (!user.isRegistered()) return; //add notregisted message

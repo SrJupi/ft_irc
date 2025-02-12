@@ -5,6 +5,18 @@
     ":" + (server) + " 001 " + (nick) + " Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
+#define RPL_YOURHOST(server, nick, servername, version) \
+    ":" + (server) + " 002 " + (nick) + " :Your host is " + (servername) + ", running version " + (version) + "\r\n"
+
+#define RPL_CREATED(server, nick, datetime) \
+    ":" + (server) + " 003 " + (nick) + " :This server was created " + (datetime) + "\r\n"
+
+#define RPL_MYINFO(server, nick, servername, version, usermodes, chanmodes) \
+    ":" + (server) + " 004 " + (nick) + " " + (servername) + " " + (version) + " " + (usermodes) + " " + (chanmodes) + "\r\n"
+
+#define RPL_ISUPPORT(server, nick, features) \
+    ":" + (server) + " 005 " + (nick) + " " + (features) + " :are supported by this server\r\n"
+
 #define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
     ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modesAndParams) + "\r\n"
 
@@ -31,6 +43,15 @@
 
 #define RPL_CAP_LS(server) \
     ":" + (server) + " CAP * LS :\r\n"
+
+#define RPL_MOTD(server, nick, message) \
+    ":" + (server) + " 372 " + (nick) + " :- " + (message) + "\r\n"
+
+#define RPL_MOTDSTART(server, nick) \
+    ":" + (server) + " 375 " + (nick) + " :- Message of the day -\r\n"
+
+#define RPL_ENDOFMOTD(server, nick) \
+    ":" + (server) + " 376 " + (nick) + " :End of MOTD\r\n"
 
 #define ERR_NOSUCHNICK(nick, receiver) \
     "401 " + (nick) + " " + (receiver) + " :No such nick/channel\r\n"
@@ -71,8 +92,20 @@
 #define ERR_PASSWDMISMATCH(nick, command) \
     "464 " + (nick) + " " + (command) + " :Password incorrect\r\n"
 
+#define ERR_CHANNELISFULL(server, nick, channel) \
+    ":" + (server) + " 471 " + (nick) + " " + (channel) + " :Cannot join channel (+l)\r\n"
+
 #define ERR_UNKNOWNMODE(server, nick, mode) \
     ":" + (server) + " 472 " + (nick) + " " + (mode) + " :is unknown mode char to me\r\n"
+
+#define ERR_INVITEONLYCHAN(server, nick, channel) \
+    ":" + (server) + " 473 " + (nick) + " " + (channel) + " :Cannot join channel (+i)\r\n"
+
+#define ERR_BADCHANNELKEY(server, nick, channel) \
+    ":" + (server) + " 475 " + (nick) + " " + (channel) + " :Cannot join channel (+k)\r\n"
+
+#define ERR_BADCHANMASK(server, nick, channel) \
+    ":" + (server) + " 476 " + (nick) + " " + (channel) + " :Bad Channel Mask\r\n"
 
 #define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
     ":" + (server) + " 482 " + (nick) + " " + (channel) + " :You're not a channel operator\r\n"
@@ -90,8 +123,8 @@
     ":" + (sender) + " PRIVMSG " + (receiver) + " :" + (message) + "\r\n"
 
 // Join Reply
-#define RPL_JOIN(nick, channel) \
-    ":" + (nick) + " JOIN " + (channel) + "\r\n"
+#define RPL_JOIN(nick, user, host, channel) \
+    ":" + (nick) + "!" + (user) + "@" + (host) + " JOIN " + (channel) + "\r\n"
 
 // Mode Replies
 
@@ -112,6 +145,10 @@
 
 #define RPL_MODE_TOPIC(server, nick, channel, sign) \
 ":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + "t\r\n"
+
+//Part message
+#define RPL_PART(nick, user, host, channel, reason) \
+    ":" + (nick) + "!" + (user) + "@" + (host) + " PART " + (channel) + " :" + (reason) + "\r\n"
 
 
 

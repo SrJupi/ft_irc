@@ -7,6 +7,20 @@
 /* TODO:
 4. OPER - David
 5. JOIN - Lucas
+6. "LOGIN" - Lucas
+Info pro Login:
+Sequence of Responses After a User Logs In
+
+Once a user successfully logs in with PASS, NICK, and USER, the server sends a sequence of numeric replies to complete the registration process.
+
+    RPL_WELCOME (001) – Welcome message
+    RPL_YOURHOST (002) – Server information
+    RPL_CREATED (003) – Server creation time
+    RPL_MYINFO (004) – Server details
+    RPL_ISUPPORT (005) – Supported server features (optional)
+    RPL_MOTDSTART (375) – Start of the MOTD (Message of the Day)
+    RPL_MOTD (372) – MOTD line (repeated for each line)
+    RPL_ENDOFMOTD (376) – End of MOTD
 */
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);

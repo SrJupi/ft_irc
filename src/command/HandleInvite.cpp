@@ -42,6 +42,7 @@ void handleInvite(User &user, Server &server, const std::vector<std::string> &ar
     // Send confirmation to inviter
     std::string confirmMsg = "You've invited " + targetNickname + " to " + channelName + "\r\n";
     send(user.getFd(), confirmMsg.c_str(), confirmMsg.length(), 0);
+    channel->inviteUser(targetUser->getFd());
 }
 
 

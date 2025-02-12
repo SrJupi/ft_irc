@@ -35,7 +35,7 @@ std::string Channel::getModeString() const
 }
 
 Channel::Channel(const std::string &name, int fd) : _channelName(name),
-	_usersCounter(0), _isInviteOnly(false), _isTopicLocked(false),
+	_isInviteOnly(false), _isTopicLocked(false),
 	_userLimit(0)
 {
 	_channelOperators.insert(fd);
@@ -94,13 +94,14 @@ std::map<int, std::string> Channel::getUsersConnected()
 
 void Channel::addUser(int fd, const std::string &userName)
 {
-	_usersCounter += 1;
 	_usersConnected[fd] = userName;
+	_invitedUsers.erase(fd);
 }
 
-void Channel::removeUser(int fd)
+void Channel::removeUser(int fd) //TODO: if userconnected = 0, delete channel;
 {
 	_usersConnected.erase(fd);
+	_channelOperators.erase(fd);
 }
 
 // Join the users into a single string
@@ -141,7 +142,7 @@ void Channel::listUsers()
 
 int Channel::getAmountOfUsers()
 {
-	return (_usersCounter);
+	return (_usersConnected.size());
 }
 
 bool Channel::isUserInChannel(int fd)
@@ -238,7 +239,6 @@ int Channel::getUserLimitMode()
 void Channel::setChannelPassword(const std::string &password,  const std::string &nick)
 {
 	std::string sign = password.empty() ? "-" : "+";
-	std::cout << "Inside set channel password: " << password << std::endl;
 	broadcastMessage(RPL_MODE_KEY(SERVER_NAME, nick, _channelName, sign, password));
 	_password = password;
 	(!password.empty()) ? setMode('k', password) : removeMode('k');

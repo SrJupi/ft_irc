@@ -17,7 +17,6 @@ private:
     
     //Channel Info
     std::string _channelName;
-    int         _usersCounter;
     time_t      _channelTimestamp;
     //topic stuff
     std::string _topic;
