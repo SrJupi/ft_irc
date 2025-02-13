@@ -43,6 +43,7 @@ void CommandManager::executeCommands(User& user, Server& server, std::vector<std
 
 void CommandManager::executeCommand(User& user, Server& server, const std::string &command)
 {
+    std::cout << user.getFd() << " sent: " << command << std::endl;
     std::string commandName;
     std::vector<std::string> args;
     if (!Parser::parseCommand(command, commandName, args)) {
@@ -53,11 +54,13 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
         (it->second)(user, server, args);
         if (user.isAuthenticated() && !user.getNickname().empty() && !user.getUsername().empty() && !user.isRegistered()) {
             user.setRegisteredTrue();
-            //TODO: ADD LOGIN HERE
-            return sendResponse(RPL_WELCOME(SERVER_NAME, "Brazilian IRC network", user.getNickname(), user.getUsername(), user.getIp()), user.getFd());
+            return sendLoginMessage(user, server);
         }
+        return;
     }
-    if (!user.isRegistered()) return; //add notregisted message
+    if (!user.isRegistered()) {
+        return sendResponse(ERR_NOTREGISTERED(SERVER_NAME), user.getFd());
+    }
 
     it = _registeredCommandHandlers.find(commandName);
     if (it == _registeredCommandHandlers.end()) {
@@ -67,6 +70,23 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
 
     // Execute the command handler
     (it->second)(user, server, args);
+}
+
+void CommandManager::sendLoginMessage(User &user, Server &server)
+{
+    std::string response = RPL_WELCOME(SERVER_NAME, NETWORK_NAME, user.getNickname(), user.getUsername(), user.getIp());
+    response += RPL_YOURHOST(SERVER_NAME, user.getNickname(), IRC_VERSION);
+    response += RPL_CREATED(SERVER_NAME, user.getNickname(), server.getServerTimestamp());
+/*  TODO (?) Boooooring!
+    response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, "", ""); //TODO
+    response += RPL_ISUPPORT(SERVER_NAME, user.getNickname(), "CHANTYPES=# PREFIX=(o)@"); //TODO
+    response += RPL_MOTDSTART(SERVER_NAME, user.getNickname());
+    response += RPL_MOTD(SERVER_NAME, user.getNickname(), "This IS the MOTD!");
+    response += RPL_MOTD(SERVER_NAME, user.getNickname(), "Welcome");
+    response += RPL_ENDOFMOTD(SERVER_NAME, user.getNickname()); */
+    sendResponse(response, user.getFd());
+    
+
 }
 
 CommandManager &CommandManager::operator=(const CommandManager &ref) {

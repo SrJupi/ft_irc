@@ -2,17 +2,17 @@
 # define SERVERREPLYMESSAGES_HPP
 
 #define RPL_WELCOME(server, network, nick, user, host) \
-    ":" + (server) + " 001 " + (nick) + " Welcome to the " + (network) + \
+    ":" + (server) + " 001 " + (nick) + " :Welcome to the " + (network) + \
     " Network, " + (nick) + "!" + (user) + "@" + (host) + "\r\n"
 
-#define RPL_YOURHOST(server, nick, servername, version) \
-    ":" + (server) + " 002 " + (nick) + " :Your host is " + (servername) + ", running version " + (version) + "\r\n"
+#define RPL_YOURHOST(server, nick, version) \
+    ":" + (server) + " 002 " + (nick) + " :Your host is " + (server) + ", running version " + (version) + "\r\n"
 
 #define RPL_CREATED(server, nick, datetime) \
     ":" + (server) + " 003 " + (nick) + " :This server was created " + (datetime) + "\r\n"
 
-#define RPL_MYINFO(server, nick, servername, version, usermodes, chanmodes) \
-    ":" + (server) + " 004 " + (nick) + " " + (servername) + " " + (version) + " " + (usermodes) + " " + (chanmodes) + "\r\n"
+#define RPL_MYINFO(server, nick, version, usermodes, chanmodes) \
+    ":" + (server) + " 004 " + (nick) + " " + (server) + " " + (version) + " " + (usermodes) + " " + (chanmodes) + "\r\n"
 
 #define RPL_ISUPPORT(server, nick, features) \
     ":" + (server) + " 005 " + (nick) + " " + (features) + " :are supported by this server\r\n"

@@ -74,7 +74,7 @@ void User::removePrivMsg(const std::string &nick)
 
 const std::set<std::string> User::getPrivMsgList()
 {
-    return _privmsgs;
+	return (_privmsgs);
 }
 
 void User::setNickname(std::string nick)
@@ -85,13 +85,13 @@ void User::setNickname(std::string nick)
 std::string User::getTempNickname()
 {
 	std::string tmp = _tmpNick;
-    _tmpNick = "";
-    return (tmp);
+	_tmpNick = "";
+	return (tmp);
 }
 
 void User::setTempNickname(std::string nick)
 {
-    _tmpNick = nick;
+	_tmpNick = nick;
 }
 
 std::string User::getUsername() const
@@ -102,6 +102,16 @@ std::string User::getUsername() const
 void User::setUsername(std::string user)
 {
 	_username = user;
+}
+
+std::string User::getRealname() const
+{
+    return _realname;
+}
+
+void User::setRealname(std::string realname)
+{
+	_realname = realname;
 }
 
 void User::setAuthenticationTrue()
@@ -121,7 +131,7 @@ void User::setRegisteredTrue()
 
 bool User::isRegistered()
 {
-    return _isRegistered;
+	return (_isRegistered);
 }
 
 void User::setIp(std::string &ip)
@@ -131,9 +141,10 @@ void User::setIp(std::string &ip)
 
 std::string &User::getIp()
 {
-    return _ip;
+	return (_ip);
 }
 
-User::User(const int fd, std::string ip) : _fd(fd), _isAuth(false), _isRegistered(false),_ip(ip)
+User::User(const int fd, std::string ip) : _fd(fd), _isAuth(false),
+	_isRegistered(false), _ip(ip)
 {
 }

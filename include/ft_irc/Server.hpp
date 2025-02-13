@@ -19,6 +19,7 @@
 #include <vector>
 #include <ServerConstants.hpp>
 
+
 # define MAX_EVENTS 128
 # define BUFFER_SIZE 512
 # define CRLF "\r\n"
@@ -44,7 +45,9 @@ private:
     bool _isSet;
     bool _isRunning;
 
-    std::set<int> _fdSendSet;
+    std::string _serverTimestamp;
+
+    std::set<int> _fdSendSet; //never used DELETE (?)
 
     //Start server utils
     int manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]);
@@ -65,6 +68,7 @@ public:
     UserManager   &getUserManager();
     EpollManager    &getEpollManager();
     ChannelManager  &getChannelManager();
+    const std::string getServerTimestamp() const;
 };
 
 #endif

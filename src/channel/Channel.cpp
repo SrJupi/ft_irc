@@ -98,10 +98,11 @@ void Channel::addUser(int fd, const std::string &userName)
 	_invitedUsers.erase(fd);
 }
 
-void Channel::removeUser(int fd) //TODO: if userconnected = 0, delete channel;
+bool Channel::removeUser(int fd)
 {
 	_usersConnected.erase(fd);
 	_channelOperators.erase(fd);
+	return _usersConnected.size();
 }
 
 // Join the users into a single string

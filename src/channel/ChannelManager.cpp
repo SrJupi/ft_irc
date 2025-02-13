@@ -21,7 +21,12 @@ Channel     *ChannelManager::createChannel(const std::string &channelName, int f
 }
 
 int     ChannelManager::removeChannel(const std::string &channelName) {
-    (void)channelName;
+    std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
+    if (it == _channels.end()) {
+        return 1;
+    }
+    delete it->second;
+    _channels.erase(it->first);
     return 0;
 }
 

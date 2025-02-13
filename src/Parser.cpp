@@ -30,8 +30,6 @@ Parser&	Parser::operator=(const Parser& ref)
     return (*this);
 }
 
-//Print messagens sent by the user -> Isso é só placeholder, ate ter a funcao de verdade
-//Return msgs to be executed (commands) -> Isso sim é o que faz :D
 std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 {
     std::vector<std::string> msgs;
@@ -41,12 +39,10 @@ std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 	}
 	std::size_t start = 0;
 	std::size_t pos = 0;
-	std::cout << "string received: " << msg << std::endl;
 	while (true) {		
 		pos = msg.find(CRLF, start);
 		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
             msg = msg.substr(start, pos - start);
-			std::cout << "Remaining: [" << msg << "]" << std::endl;
 			break;
 		}
         msgs.push_back(msg.substr(start, pos - start));

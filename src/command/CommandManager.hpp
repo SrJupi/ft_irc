@@ -21,6 +21,7 @@ private:
     CommandManager&	operator=(const CommandManager& ref);
     
     void    executeCommand(User& user, Server& server, const std::string &command);
+    void    sendLoginMessage(User &user, Server &server);
 
 public:
     ~CommandManager();

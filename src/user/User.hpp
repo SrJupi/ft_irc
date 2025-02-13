@@ -10,6 +10,7 @@ private:
     int _fd;
     std::string _nickname;
     std::string _username;
+    std::string _realname;
     std::set<std::string> _channels;
     std::set<std::string> _privmsgs;
 	std::string _storedMsg;
@@ -38,6 +39,9 @@ public:
 
     std::string getUsername() const;
     void        setUsername(std::string username);
+
+    std::string getRealname() const;
+    void        setRealname(std::string realname);
 
     void        setAuthenticationTrue();
     bool        isAuthenticated();

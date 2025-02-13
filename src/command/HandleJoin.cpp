@@ -42,14 +42,14 @@ void handleJoin(User& user, Server& server, const std::vector<std::string>& args
     if (channel == NULL) {
         channel = server.getChannelManager().createChannel(args[0], user.getFd()); 
     } else {
-        if (channel->isInviteOnly() && !channel->isUserInvited(user.getFd())) {
-            return sendResponse(ERR_INVITEONLYCHAN(SERVER_NAME, user.getNickname(), channel->getChannelName()), user.getFd());
-        }
         if (!channel->getChannelPassword().empty() && password != channel->getChannelPassword()) {
             return sendResponse(ERR_BADCHANNELKEY(SERVER_NAME, user.getNickname(), channel->getChannelName()), user.getFd());
         }
         if (channel->getUserLimitMode() > 0 && channel->getAmountOfUsers() >= channel->getUserLimitMode() && !channel->isUserInvited(user.getFd())) {
             return sendResponse(ERR_CHANNELISFULL(SERVER_NAME, user.getNickname(), channel->getChannelName()), user. getFd());
+        }
+        if (channel->isInviteOnly() && !channel->isUserInvited(user.getFd())) {
+            return sendResponse(ERR_INVITEONLYCHAN(SERVER_NAME, user.getNickname(), channel->getChannelName()), user.getFd());
         }
     }
     user.addChannel(args[0]);

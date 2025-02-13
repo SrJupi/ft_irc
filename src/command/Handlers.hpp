@@ -6,7 +6,6 @@
 
 /* TODO:
 4. OPER - David
-5. JOIN - Lucas
 6. "LOGIN" - Lucas
 Info pro Login:
 Sequence of Responses After a User Logs In
