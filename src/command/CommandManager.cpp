@@ -18,6 +18,7 @@ CommandManager::CommandManager()
     _registeredCommandHandlers["KICK"] = &handleKick;
     _registeredCommandHandlers["JOIN"] = &handleJoin;
     _registeredCommandHandlers["PART"] = &handlePart;
+    _registeredCommandHandlers["PING"] = &handlePing;
     _registeredCommandHandlers["MODE"] = &handleMode;
     _registeredCommandHandlers["TOPIC"] = &handleTopic;
     _registeredCommandHandlers["INVITE"] = &handleInvite;
@@ -43,7 +44,7 @@ void CommandManager::executeCommands(User& user, Server& server, std::vector<std
 
 void CommandManager::executeCommand(User& user, Server& server, const std::string &command)
 {
-    std::cout << user.getFd() << " sent: " << command << std::endl;
+    std::cout << "-> " << user.getFd() << " sent: " << command << std::endl;
     std::string commandName;
     std::vector<std::string> args;
     if (!Parser::parseCommand(command, commandName, args)) {
@@ -77,13 +78,13 @@ void CommandManager::sendLoginMessage(User &user, Server &server)
     std::string response = RPL_WELCOME(SERVER_NAME, NETWORK_NAME, user.getNickname(), user.getUsername(), user.getIp());
     response += RPL_YOURHOST(SERVER_NAME, user.getNickname(), IRC_VERSION);
     response += RPL_CREATED(SERVER_NAME, user.getNickname(), server.getServerTimestamp());
-/*  TODO (?) Boooooring!
+/*  TODO (?) Boooooring! */
     response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, "", ""); //TODO
     response += RPL_ISUPPORT(SERVER_NAME, user.getNickname(), "CHANTYPES=# PREFIX=(o)@"); //TODO
     response += RPL_MOTDSTART(SERVER_NAME, user.getNickname());
     response += RPL_MOTD(SERVER_NAME, user.getNickname(), "This IS the MOTD!");
     response += RPL_MOTD(SERVER_NAME, user.getNickname(), "Welcome");
-    response += RPL_ENDOFMOTD(SERVER_NAME, user.getNickname()); */
+    response += RPL_ENDOFMOTD(SERVER_NAME, user.getNickname());
     sendResponse(response, user.getFd());
     
 

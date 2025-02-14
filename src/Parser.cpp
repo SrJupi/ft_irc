@@ -68,7 +68,8 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		}
 		if (bytes == 0) {
 			std::cout << "user " << userFd << " disconnected" << std::endl;
-			server.getUserManager().removeUser(userFd);
+			std::set<std::string> channels = server.getUserManager().removeUser(userFd);
+            server.getChannelManager().deleteUserFromChannels(channels, userFd);
 			server.getEpollManager().removeFromEpoll(userFd);
 			return -1;
 		}

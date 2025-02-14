@@ -150,6 +150,14 @@
 #define RPL_PART(nick, user, host, channel, reason) \
     ":" + (nick) + "!" + (user) + "@" + (host) + " PART " + (channel) + " :" + (reason) + "\r\n"
 
+//Ping Pong
+
+#define RPL_PING(server, token) \
+    ":" + (server) + " PING :" + (token) + "\r\n"
+
+#define RPL_PONG(server, token) \
+    ":" + (server) + " PONG :" + (token) + "\r\n"
+
 
 
 #endif

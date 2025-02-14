@@ -1,6 +1,5 @@
 #include <user/UserManager.hpp>
 #include <iostream>
-#include "UserManager.hpp"
 #include <command/Handlers.hpp>
 
 UserManager::UserManager()
@@ -23,14 +22,15 @@ int UserManager::addNewUser(int userfd, std::string &ip)
     return 0;
 }
 
-int UserManager::removeUser(int userfd)
+std::set<std::string> UserManager::removeUser(int userfd)
 {
-    std::string const &nick = getUserByFd(userfd)->getNickname();
-    _nicknames.erase(nick);
-    _mapNicknameToUser.erase(nick);
+    User *user = getUserByFd(userfd);
+    _nicknames.erase(user->getNickname());
+    _mapNicknameToUser.erase(user->getNickname());
+    std::set<std::string> channels = user->getChannels();
     delete _mapFdToUser.at(userfd);
     _mapFdToUser.erase(userfd);
-    return 0;
+    return channels;
 }
 
 User *UserManager::getUserByFd(int userfd)

@@ -19,10 +19,10 @@ public:
     ~UserManager();
     
     int     addNewUser(int userFd, std::string &ip);
-    int     removeUser(int userFd);
     User    *getUserByFd(int userFd);
     User    *getUserByNick(std::string const &nick);
     int     deleteUser();
+    std::set<std::string>     removeUser(int userFd);
     
     void    addNicknameToFd(std::string nick, int fd);
 
