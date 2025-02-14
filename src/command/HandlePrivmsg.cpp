@@ -10,7 +10,7 @@ static int handlePrivateMessage(User &sender, User *target, const std::string &r
         return send(sender.getFd(), response.c_str(), response.length(), 0);
     }
     else {
-        std::string privateMessage = PRIVMSG(sender.getNickname(), target->getNickname(), message);
+        std::string privateMessage = PRIVMSG(sender.getUserMask(), target->getNickname(), message);
         send(target->getFd(), privateMessage.c_str(), privateMessage.length(), 0);
         sender.addPrivMsg(target->getNickname());
         return 1; // Message successfully delivered
@@ -24,7 +24,7 @@ static int handleChannelMessage(User &sender, Channel *channel, const std::strin
         return send(sender.getFd(), response.c_str(), response.length(), 0);
     }
     else {
-        std::string broadcastMessage = PRIVMSG(sender.getNickname(), channel->getChannelName(), message);
+        std::string broadcastMessage = PRIVMSG(sender.getUserMask(), channel->getChannelName(), message);
         channel->broadcastMessage(broadcastMessage, sender.getFd());
         return 1; // Message successfully delivered
     }

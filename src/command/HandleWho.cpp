@@ -33,10 +33,10 @@ void handleWho(User &user, Server &server, const std::vector<std::string> &args)
 void sendInfoOf(User &userInChannel, Channel *channel, User &userRequesting)
 {
     std::string response;
-    std::string status;
+    std::string status; //TODO: acho que nao precisa
     status = channel->isUserChannelOperator(userInChannel.getFd()) ? "@H" : "H"; // @ = Operator
     response = RPL_WHOREPLY(SERVER_NAME, userRequesting.getNickname(), channel->getChannelName(),
-                            userInChannel.getUsername(), "localhost", SERVER_NAME, 
+                            userInChannel.getUsername(), "localhost", SERVER_NAME, //TODO: put real variables
                             userInChannel.getNickname(), status, "0", "realname");
     send(userRequesting.getFd(), response.c_str(), response.length(), 0);
 }

@@ -69,7 +69,7 @@ void ChannelManager::broadcastToChannels(const std::set<std::string> &channelsLi
     
 }
 
-void ChannelManager::deleteUserFromChannels(std::set<std::string> channels, int userFd)
+void ChannelManager::deleteDisconnectedUserFromChannels(std::set<std::string> channels, int userFd)
 {
     for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); it++) {
         Channel *channel = getChannelByName(*it);

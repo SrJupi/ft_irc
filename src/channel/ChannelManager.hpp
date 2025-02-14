@@ -21,7 +21,7 @@ public:
     int     doesChannelExists(const std::string &channelName);
     Channel *getChannelByName(const std::string &channelName);
     void    broadcastToChannels(const std::set<std::string> &channelsList, const std::string message);
-    void    deleteUserFromChannels(std::set<std::string> channels, int userFd);
+    void    deleteDisconnectedUserFromChannels(std::set<std::string> channels, int userFd);
     // bool    isEmpty();
     
 };

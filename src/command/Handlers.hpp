@@ -12,9 +12,6 @@ Sequence of Responses After a User Logs In
 
 Once a user successfully logs in with PASS, NICK, and USER, the server sends a sequence of numeric replies to complete the registration process.
 
-    RPL_WELCOME (001) – Welcome message
-    RPL_YOURHOST (002) – Server information
-    RPL_CREATED (003) – Server creation time
     RPL_MYINFO (004) – Server details
     RPL_ISUPPORT (005) – Supported server features (optional)
     RPL_MOTDSTART (375) – Start of the MOTD (Message of the Day)

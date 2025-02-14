@@ -114,6 +114,11 @@ void User::setRealname(std::string realname)
 	_realname = realname;
 }
 
+const std::string User::getUserMask() const
+{
+    return _nickname + "!~" + _username + "@" + _ip;
+}
+
 void User::setAuthenticationTrue()
 {
 	_isAuth = true;

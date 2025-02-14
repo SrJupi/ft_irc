@@ -43,6 +43,8 @@ public:
     std::string getRealname() const;
     void        setRealname(std::string realname);
 
+    const std::string getUserMask() const;
+
     void        setAuthenticationTrue();
     bool        isAuthenticated();
 

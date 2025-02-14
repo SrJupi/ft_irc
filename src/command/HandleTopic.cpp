@@ -26,5 +26,5 @@ void handleTopic(User &user, Server &server, const std::vector<std::string> &arg
     }
     if (channel->isTopicLocked() && !channel->isUserChannelOperator(user.getFd()))
         return sendResponse(ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, args[0]), fd);
-    channel->setTopic(args[1], nick);
+    channel->setTopic(args[1], user.getUserMask());
 }
