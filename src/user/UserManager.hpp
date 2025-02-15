@@ -11,8 +11,7 @@ private:
     UserManager(const UserManager& ref);
     UserManager&	operator=(const UserManager& ref);
     std::map<int, User *> _mapFdToUser;
-    std::map<std::string, User *> _mapNicknameToUser; //keep only this one?
-    std::set<std::string> _nicknames; //delete this one?
+    std::map<std::string, User *> _mapNicknameToUser;
     
 public:
     UserManager();
@@ -21,12 +20,12 @@ public:
     int     addNewUser(int userFd, std::string &ip);
     User    *getUserByFd(int userFd);
     User    *getUserByNick(std::string const &nick);
-    int     deleteUser();
-    std::set<std::string>     removeUser(int userFd);
+    std::set<int>           removeAllUsers();
+    std::set<std::string>   removeUser(int userFd);
     
     void    addNicknameToFd(std::string nick, int fd);
 
-    bool    isMapFdToUserEmpty();
+    bool    isMapFdToUserEmpty(); //NEVER USED - REMOVE (?)
     bool    existsNickname(const std::string &nick);
 
     void    broadcastToUsers(const std::set<std::string> &usersList, const std::string message);

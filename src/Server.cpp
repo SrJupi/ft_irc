@@ -27,14 +27,8 @@ Server::Server(const std::string& port, const std::string &password):
 
 Server::~Server()
 {
-	//CREATE CLEAN FUNCTIONS?
-	while (!_userManager.isMapFdToUserEmpty())
-	{
-		const int fd = _userManager.deleteUser();
-		if (fd >= 0) {
-			_epollManager.removeFromEpoll(fd);
-		}
-	}
+	std::set<int> fds = _userManager.removeAllUsers();
+	_epollManager.removeFromEpoll(fds);
 	if (_epollManager.getEpoll() >= 0) {
 		_epollManager.closeEpoll();
 	}

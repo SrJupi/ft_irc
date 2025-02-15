@@ -1,6 +1,7 @@
 #include <user/UserManager.hpp>
 #include <iostream>
 #include <command/Handlers.hpp>
+#include "UserManager.hpp"
 
 UserManager::UserManager()
 {
@@ -25,7 +26,6 @@ int UserManager::addNewUser(int userfd, std::string &ip)
 std::set<std::string> UserManager::removeUser(int userfd)
 {
     User *user = getUserByFd(userfd);
-    _nicknames.erase(user->getNickname());
     _mapNicknameToUser.erase(user->getNickname());
     std::set<std::string> channels = user->getChannels();
     delete _mapFdToUser.at(userfd);
@@ -47,18 +47,15 @@ User *UserManager::getUserByNick(std::string const &nick)
     return it->second;
 }
 
-int UserManager::deleteUser()
+std::set<int> UserManager::removeAllUsers()
 {
-    std::map<int, User *>::iterator it = _mapFdToUser.begin();
-    if (it == _mapFdToUser.end()) {
-        return -1;
+    std::set<int> fds;
+    for (std::map<int, User *>::iterator it = _mapFdToUser.begin(); it != _mapFdToUser.end(); it++) {
+        delete it->second;
+        fds.insert(it->first);
     }
-    delete it->second;
-    const int fd = it->first;
-    _mapFdToUser.erase(fd);
-    return fd;
+    return fds;
 }
-
 void UserManager::addNicknameToFd(std::string nick, int fd)
 {
     std::map<int, User *>::iterator it = _mapFdToUser.find(fd);
@@ -67,15 +64,13 @@ void UserManager::addNicknameToFd(std::string nick, int fd)
     }
     std::string oldNick = it->second->getNickname();
     if (!oldNick.empty()) {
-        _nicknames.erase(oldNick);
         _mapNicknameToUser.erase(oldNick);
     }
     it->second->setNickname(nick);
-    _nicknames.insert(nick);
     _mapNicknameToUser[nick] = it->second;
     std::cout << "User added nickname. Current set:\n"; //REMOVE
-    for (std::set<std::string>::iterator it = _nicknames.begin(); it != _nicknames.end(); it++) {
-        std::cout << *it << std::endl;
+    for (std::map<std::string, User *>::iterator it = _mapNicknameToUser.begin(); it != _mapNicknameToUser.end(); it++) {
+        std::cout << it->first << std::endl;
     }
 }
 
@@ -86,7 +81,7 @@ bool UserManager::isMapFdToUserEmpty()
 
 bool UserManager::existsNickname(const std::string &nick)
 {
-    if (_nicknames.find(nick) != _nicknames.end()){
+    if (_mapNicknameToUser.find(nick) != _mapNicknameToUser.end()){
         return true;
     }
     return false;

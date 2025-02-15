@@ -3,6 +3,7 @@
 
 #include <unistd.h>
 #include <sys/epoll.h>
+#include <set>
 
 class EpollManager
 {
@@ -19,6 +20,7 @@ public:
     int     createEpoll();
     int     addToEpoll(const uint32_t events, const int fd) const;
     int     removeFromEpoll(int fd);
+    void    removeFromEpoll(std::set<int> fds);
     void    closeEpoll();
 
 };

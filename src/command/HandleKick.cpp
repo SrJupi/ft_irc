@@ -10,7 +10,7 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
 
     std::string response;
     //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
-    User *userKicked = server.getUserManager().getUserByNick(args[1]);
+    User *userKicked = server.getUserManager().getUserByNick(args[1]); //TODO: args[1] pode nao existir = segfault
     std::string channelName = args[0];
 
     Channel *channel = server.getChannelManager().getChannelByName(channelName);
