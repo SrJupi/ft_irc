@@ -75,7 +75,7 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
 
 void CommandManager::sendLoginMessage(User &user, Server &server)
 {
-    std::string response = RPL_WELCOME(SERVER_NAME, NETWORK_NAME, user.getNickname(), user.getUsername(), user.getIp());
+    std::string response = RPL_WELCOME(SERVER_NAME, NETWORK_NAME, user.getNickname(), user.getUsername(), user.getHostname());
     response += RPL_YOURHOST(SERVER_NAME, user.getNickname(), IRC_VERSION);
     response += RPL_CREATED(SERVER_NAME, user.getNickname(), server.getServerTimestamp());
     response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, "", ""); //TODO

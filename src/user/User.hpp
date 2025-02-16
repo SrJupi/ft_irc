@@ -20,7 +20,7 @@ private:
     User(const User& ref);
     User&	operator=(const User& ref);
     std::string _tmpNick;
-    std::string _ip;
+    std::string _hostname;
 
 public:
     explicit User(int fd, std::string ip);
@@ -52,7 +52,7 @@ public:
     bool        isRegistered(); 
 
     void        setIp(std::string &ip);
-    std::string &getIp();
+    std::string &getHostname();
 
     void        addChannel(const std::string &channelName);
     void        removeChannel(const std::string &channelName);

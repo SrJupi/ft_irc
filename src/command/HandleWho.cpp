@@ -29,15 +29,16 @@ void handleWho(User &user, Server &server, const std::vector<std::string> &args)
     }
     sendEndMessage(channel->getChannelName(), user);
 }
-
+/* 
+@David, retirei o H/@H status porque vi no https://modern.ircdocs.horse/#rplwhoreply-352 que isso seria opcional e,
+aparentemente, não afeta nada no hexchat.
+*/
 void sendInfoOf(User &userInChannel, Channel *channel, User &userRequesting)
 {
     std::string response;
-    std::string status; //TODO: acho que nao precisa
-    status = channel->isUserChannelOperator(userInChannel.getFd()) ? "@H" : "H"; // @ = Operator
     response = RPL_WHOREPLY(SERVER_NAME, userRequesting.getNickname(), channel->getChannelName(),
-                            userInChannel.getUsername(), "localhost", SERVER_NAME, //TODO: put real variables
-                            userInChannel.getNickname(), status, "0", "realname");
+                            userInChannel.getUsername(), userInChannel.getHostname(), SERVER_NAME,
+                            userInChannel.getNickname(), "H", "0", userInChannel.getRealname());
     send(userRequesting.getFd(), response.c_str(), response.length(), 0);
 }
 

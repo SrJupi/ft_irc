@@ -13,7 +13,7 @@ void handlePart(User& user, Server& server, const std::vector<std::string>& args
     if (!channel->isUserInChannel(user.getNickname())) {
         return sendResponse(ERR_NOTONCHANNEL(SERVER_NAME, user.getNickname(), args[0]), user.getFd());
     }
-    channel->broadcastMessage(RPL_PART(user.getNickname(), user.getUsername(), user.getIp(), args[0], args[1]));
+    channel->broadcastMessage(RPL_PART(user.getNickname(), user.getUsername(), user.getHostname(), args[0], args[1]));
     if (!channel->removeUser(user.getFd())) {
         server.getChannelManager().removeChannel(args[0]);
     }

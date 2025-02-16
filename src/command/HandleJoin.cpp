@@ -54,6 +54,6 @@ void handleJoin(User& user, Server& server, const std::vector<std::string>& args
     }
     user.addChannel(args[0]);
     channel->addUser(user.getFd(), nick);
-    channel->broadcastMessage(RPL_JOIN(nick, user.getUsername(), user.getIp(), channel->getChannelName()));
+    channel->broadcastMessage(RPL_JOIN(nick, user.getUsername(), user.getHostname(), channel->getChannelName()));
     sendJoinResponseMessage(user, args[0], channel);
 }

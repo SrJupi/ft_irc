@@ -116,7 +116,7 @@ void User::setRealname(std::string realname)
 
 const std::string User::getUserMask() const
 {
-    return _nickname + "!~" + _username + "@" + _ip;
+    return _nickname + "!~" + _username + "@" + _hostname;
 }
 
 void User::setAuthenticationTrue()
@@ -139,17 +139,17 @@ bool User::isRegistered()
 	return (_isRegistered);
 }
 
-void User::setIp(std::string &ip)
+void User::setIp(std::string &hostname)
 {
-	_ip = ip;
+	_hostname = hostname;
 }
 
-std::string &User::getIp()
+std::string &User::getHostname()
 {
-	return (_ip);
+	return (_hostname);
 }
 
-User::User(const int fd, std::string ip) : _fd(fd), _isAuth(false),
-	_isRegistered(false), _ip(ip)
+User::User(const int fd, std::string hostname) : _fd(fd), _isAuth(false),
+	_isRegistered(false), _hostname(hostname)
 {
 }
