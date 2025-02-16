@@ -60,13 +60,13 @@ int Server::setServer()
 		return result;
 	}
 	if (_epollManager.createEpoll()) {
-		return 5;
+		return CREATE_EPOLL_FAILURE;
 	}
 	if (_epollManager.addToEpoll(EPOLLIN, _networkManager.getSocketFd())) {
-		return 6;
+		return ADD_TO_EPOLL_FAILURE;
 	}
 	if (loadMOTD()) {
-		return 7;
+		return LOAD_MOTD_FAILURE;
 	}
 	_isSet = true;
 	return 0;
@@ -141,7 +141,7 @@ int Server::startServer()
 		}
 		manageEvents(nfds, events);
 	}
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 void Server::stopServer()

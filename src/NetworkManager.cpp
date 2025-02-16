@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <iostream>
+#include <ServerConstants.hpp>
 
 NetworkManager::NetworkManager(): _addrInfo(NULL), _socketfd(-1)
 {
@@ -94,17 +95,16 @@ t_network NetworkManager::acceptNewUser()
 int NetworkManager::setNetwork(std::string &port)
 {
     if (fillAddr(port)) {
-        return 1;
+        return GETADDRINFO_FAILURE;
 	}
 	if (createSocket()) {
-		return 2;
+		return CREATE_SOCKET_FAILURE;
 	}
 	if (bindPort()) {
-		std::cout << "Bind error" << std::endl;
-		return 3;
+		return BIND_FAILURE;
 	}
 	if (startListen()) {
-		return 4;
+		return LISTEN_FAILURE;
 	}
     return 0;
 }
