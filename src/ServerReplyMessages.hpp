@@ -150,6 +150,11 @@
 #define RPL_PART(nick, user, host, channel, reason) \
     ":" + (nick) + "!" + (user) + "@" + (host) + " PART " + (channel) + " :" + (reason) + "\r\n"
 
+
+//Quit message
+#define RPL_QUIT(usermask, message) \
+    ":" + (usermask) + " QUIT :" + (message) + "\r\n"
+
 //Ping Pong
 
 #define RPL_PING(server, token) \
@@ -157,6 +162,9 @@
 
 #define RPL_PONG(server, token) \
     ":" + (server) + " PONG :" + (token) + "\r\n"
+
+#define IRC_ERROR(nick, reason) \
+    "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n"
 
 
 

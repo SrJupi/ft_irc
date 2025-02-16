@@ -98,6 +98,11 @@ void Channel::addUser(int fd, const std::string &userName)
 	_invitedUsers.erase(fd);
 }
 
+void Channel::updateUser(int fd, const std::string &nick)
+{
+	_usersConnected[fd] = nick;
+}
+
 bool Channel::removeUser(int fd)
 {
 	_usersConnected.erase(fd);

@@ -33,7 +33,7 @@ Parser&	Parser::operator=(const Parser& ref)
 std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 {
     std::vector<std::string> msgs;
-	std::string msg = server.getUserManager().getUserByFd(userFd)->getStoredMsg();
+	std::string msg = (server.getUserManager().existsFd(userFd)) ? server.getUserManager().getUserByFd(userFd)->getStoredMsg() : "";
     if (readMessage(userFd, msg, server)) {
 		return msgs;
 	}
@@ -68,9 +68,9 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		}
 		if (bytes == 0) {
 			std::cout << "user " << userFd << " disconnected" << std::endl;
-			std::set<std::string> channels = server.getUserManager().removeUser(userFd); //REMOVE, USE QUIT WITH MESSAGE DISCONNECTED
-            server.getChannelManager().deleteDisconnectedUserFromChannels(channels, userFd); //REMOVE, USE QUIT WITH MESSAGE DISCONNECTED
-			server.getEpollManager().removeFromEpoll(userFd);
+            if (server.getUserManager().existsFd(userFd)) {
+                server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection reset by peer"));
+            }
 			return -1;
 		}
 		fullMsg.append(std::string(buf, bytes));

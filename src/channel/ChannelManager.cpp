@@ -69,16 +69,28 @@ void ChannelManager::broadcastToChannels(const std::set<std::string> &channelsLi
     
 }
 
-void ChannelManager::deleteDisconnectedUserFromChannels(std::set<std::string> channels, int userFd)
+void ChannelManager::deleteDisconnectedUserFromChannels(std::set<std::string> channels, int userFd, const std::string &message)
 {
     for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); it++) {
         Channel *channel = getChannelByName(*it);
         if (!channel) continue;
         if (!channel->removeUser(userFd)) {
             removeChannel(*it);
+        } else {
+            channel->broadcastMessage(message);
         }
+        
     }
 }
+
+void ChannelManager::updateNickMapInChannels(std::set<std::string> channels, int userFd, const std::string &nick)
+{
+    for (std::set<std::string>::const_iterator it = channels.begin(); it != channels.end(); it++) {
+        Channel *channel = getChannelByName(*it);
+        if (!channel) continue;
+        channel->updateUser(userFd, nick);
+    }
+} 
 
 // bool ChannelManager::isEmpty()
 // {

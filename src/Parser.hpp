@@ -1,10 +1,6 @@
 #ifndef PARSER_HPP
 # define PARSER_HPP
 
-# define BUFFER_SIZE 512
-# define CRLF "\r\n"
-
-
 #include <string>
 #include <vector>
 

@@ -27,6 +27,7 @@ public:
 
     bool    isMapFdToUserEmpty(); //NEVER USED - REMOVE (?)
     bool    existsNickname(const std::string &nick);
+    bool    existsFd(int fd);
 
     void    broadcastToUsers(const std::set<std::string> &usersList, const std::string message);
     void    removeUserFromOthersList(const std::set<std::string> &privList, const std::string nick);

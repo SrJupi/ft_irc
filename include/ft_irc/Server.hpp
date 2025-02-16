@@ -19,11 +19,6 @@
 #include <vector>
 #include <ServerConstants.hpp>
 
-
-# define MAX_EVENTS 128
-# define BUFFER_SIZE 512
-# define CRLF "\r\n"
-
 class Server
 {
 private:
@@ -65,10 +60,11 @@ public:
     void    stopServer();
 
     //GETTERS
-    UserManager   &getUserManager();
-    EpollManager    &getEpollManager();
-    ChannelManager  &getChannelManager();
-    const std::string getServerTimestamp() const;
+    UserManager         &getUserManager();
+    EpollManager        &getEpollManager();
+    ChannelManager      &getChannelManager();
+    CommandManager      &getCommandManager();
+    const std::string   getServerTimestamp() const;
 };
 
 #endif

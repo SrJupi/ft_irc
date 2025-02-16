@@ -25,6 +25,7 @@ int UserManager::addNewUser(int userfd, std::string &ip)
 
 std::set<std::string> UserManager::removeUser(int userfd)
 {
+    std::cout << "User Manager removeUser: " << userfd << std::endl;
     User *user = getUserByFd(userfd);
     _mapNicknameToUser.erase(user->getNickname());
     std::set<std::string> channels = user->getChannels();
@@ -81,10 +82,12 @@ bool UserManager::isMapFdToUserEmpty()
 
 bool UserManager::existsNickname(const std::string &nick)
 {
-    if (_mapNicknameToUser.find(nick) != _mapNicknameToUser.end()){
-        return true;
-    }
-    return false;
+    return _mapNicknameToUser.find(nick) != _mapNicknameToUser.end();
+}
+
+bool UserManager::existsFd(int fd)
+{
+    return _mapFdToUser.find(fd) != _mapFdToUser.end();
 }
 
 void UserManager::broadcastToUsers(const std::set<std::string> &usersList, const std::string message)

@@ -3,6 +3,10 @@
 #include <sstream>
 #include <ctime>
 
+/* 
+TODO: Handle signals
+ */
+
 Server::Server()
 {
 }
@@ -143,6 +147,11 @@ EpollManager &Server::getEpollManager() {
 
 ChannelManager &Server::getChannelManager() {
 	return _channelManager;
+}
+
+CommandManager &Server::getCommandManager()
+{
+    return _commandManager;
 }
 
 const std::string Server::getServerTimestamp() const

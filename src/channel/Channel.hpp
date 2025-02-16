@@ -54,6 +54,7 @@ private:
     std::map<int, std::string>  getUsersConnected();
     std::string getUsersConnectedList();
     void        addUser(int fd, const std::string &userName);
+    void        updateUser(int fd, const std::string &nick);
     bool        removeUser(int fd);
     void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude = -1); //Adicionei -1 como default
