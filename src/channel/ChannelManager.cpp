@@ -7,13 +7,11 @@ ChannelManager::ChannelManager(const ChannelManager& ref) {
     *this=ref;
 }
 
-//TODO -> leak
 ChannelManager::~ChannelManager() {
-    // for (std::map<std::string, Channel*>::iterator it = _mapNameToChannels.begin(); it != _mapNameToChannels.end(); ++it) {
-    //     delete it->second; // ✅ Free memory
-    // }
-    // _mapNameToChannels.clear();
-
+    for (std::map<std::string, Channel*>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+        delete it->second; // ✅ Free memory
+    }
+    _channels.clear();
 }
 Channel     *ChannelManager::createChannel(const std::string &channelName, int fd) {
     _channels[channelName] = new Channel(channelName, fd);

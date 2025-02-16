@@ -5,9 +5,14 @@
 #include <ft_irc/Server.hpp>
 
 /* TODO:
-4. OPER - David
+1. OPER - David
 
-Define maxChar for nick, topic, channelName? Define max numChan per user?
+//Metodos do operador para implementar (?)
+KILL -> eliminar um usuario do servidor :D
+DIE == VALGRIND -> ja implementado, so mudar nome
+RESTART
+
+Define maxLEN for nick, topic, channelName? Define max numChan per user?
 
 */
 
@@ -18,7 +23,6 @@ void handleJoin(User &user, Server &server, const std::vector<std::string> &args
 void handleKick(User &user, Server &server, const std::vector<std::string> &args);
 void handleMode(User &user, Server &server, const std::vector<std::string> &args);
 void handleNick(User &user, Server &server, const std::vector<std::string> &args);
-void handleNotice(User &user, Server &server, const std::vector<std::string> &args);
 void handlePart(User &user, Server &server, const std::vector<std::string> &args);
 void handlePass(User &user, Server &server, const std::vector<std::string> &args);
 void handlePing(User &user, Server &server, const std::vector<std::string> &args);

@@ -13,7 +13,7 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
     User *userKicked = server.getUserManager().getUserByNick(args[1]); //TODO: args[1] pode nao existir = segfault
     std::string channelName = args[0];
 
-    Channel *channel = server.getChannelManager().getChannelByName(channelName);
+    Channel *channel = server.getChannelManager().getChannelByName(channelName); //TODO: pode retornar null
     //Check if the user exist
     if (!userKicked) {
         response = ERR_NOSUCHNICK(kicker.getNickname(), args[1]);

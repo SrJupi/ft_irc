@@ -9,7 +9,7 @@
 class ChannelManager
 {
 private:
-    std::map<std::string, Channel *> _channels; //@David: por que precisa ser ponteiro?
+    std::map<std::string, Channel *> _channels; //@David: por que precisa ser ponteiro? -> Estudei aqui no finde e acho que nao precisa, mas nao vamos mudar tudo agora :D
     ChannelManager(const ChannelManager& ref);
     ChannelManager&	operator=(const ChannelManager& ref);
     

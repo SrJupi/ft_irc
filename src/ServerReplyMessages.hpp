@@ -71,6 +71,9 @@
 #define ERR_NONICKNAMEGIVEN(server) \
     ":" + (server) + " 431 * :No nickname given\r\n"
 
+#define ERR_ERRONEUSNICKNAME(server, nick, attempted_nick) \
+    ":" + (server) + " 432 " + (nick) + " " + (attempted_nick) + " :Erroneous nickname\r\n"
+
 #define ERR_NICKNAMEINUSE(server, nick) \
     ":" + (server) + " 433 " + (nick) + " :Nickname is already in use\r\n"
     

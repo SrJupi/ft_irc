@@ -25,5 +25,13 @@ const std::string CHAN_MODES = "iklot";
 
 static const char MOTD_FILE[] = "src/.conf/motd.irc";
 
+//IRC definitions
+const std::string SPECIAL_CHARS = "-[]\\`_^{|}";
+
+//Size definitions
+const int   NICKLEN = 16;
+const int   TOPICLEN = 300;
+
+
 
 #endif

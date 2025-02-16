@@ -95,15 +95,19 @@ t_network NetworkManager::acceptNewUser()
 int NetworkManager::setNetwork(std::string &port)
 {
     if (fillAddr(port)) {
+		std::cerr << "Error on fillAddr\n";
         return GETADDRINFO_FAILURE;
 	}
 	if (createSocket()) {
+		std::cerr << "Error on createSocket\n";
 		return CREATE_SOCKET_FAILURE;
 	}
 	if (bindPort()) {
+		std::cerr << "Error on bindPort\n";
 		return BIND_FAILURE;
 	}
 	if (startListen()) {
+		std::cerr << "Error on startListen\n";
 		return LISTEN_FAILURE;
 	}
     return 0;

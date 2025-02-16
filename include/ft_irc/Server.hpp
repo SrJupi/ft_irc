@@ -69,7 +69,7 @@ public:
     ChannelManager      &getChannelManager();
     CommandManager      &getCommandManager();
     const std::string   getServerTimestamp() const;
-    const std::vector<std::string> &getMOTD() const;
+    const std::vector<std::string>  &getMOTD() const;
 };
 
 #endif

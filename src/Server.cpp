@@ -60,12 +60,15 @@ int Server::setServer()
 		return result;
 	}
 	if (_epollManager.createEpoll()) {
+		std::cerr << "Error on createEpoll\n";
 		return CREATE_EPOLL_FAILURE;
 	}
 	if (_epollManager.addToEpoll(EPOLLIN, _networkManager.getSocketFd())) {
+		std::cerr << "Error on addToEpoll\n";
 		return ADD_TO_EPOLL_FAILURE;
 	}
 	if (loadMOTD()) {
+		std::cerr << "Error on loadMOTD\n";
 		return LOAD_MOTD_FAILURE;
 	}
 	_isSet = true;
@@ -147,6 +150,15 @@ int Server::startServer()
 void Server::stopServer()
 {
 	_isRunning = false;
+}
+
+bool Server::isUserOperator(int fd)
+{
+    return _serverOperators.find(fd) != _serverOperators.end();
+}
+
+void Server::addUserOperator(int fd)
+{
 }
 
 Server &Server::operator=(const Server &ref)
