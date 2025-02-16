@@ -78,11 +78,13 @@ void CommandManager::sendLoginMessage(User &user, Server &server)
     std::string response = RPL_WELCOME(SERVER_NAME, NETWORK_NAME, user.getNickname(), user.getUsername(), user.getHostname());
     response += RPL_YOURHOST(SERVER_NAME, user.getNickname(), IRC_VERSION);
     response += RPL_CREATED(SERVER_NAME, user.getNickname(), server.getServerTimestamp());
-    response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, "", ""); //TODO
+    response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, USER_MODES, CHAN_MODES);
     //response += RPL_ISUPPORT(SERVER_NAME, user.getNickname(), "CHANTYPES=# PREFIX=(o)@"); //Not mandatory for registering, will not be implemented! xD
     response += RPL_MOTDSTART(SERVER_NAME, user.getNickname());
-    response += RPL_MOTD(SERVER_NAME, user.getNickname(), "This IS the MOTD!");
-    response += RPL_MOTD(SERVER_NAME, user.getNickname(), "Welcome");
+    std::vector<std::string> motd = server.getMOTD();
+    for (std::vector<std::string>::const_iterator it = motd.begin(); it != motd.end(); it++) {
+        response += RPL_MOTD(SERVER_NAME, user.getNickname(), *it);
+    }
     response += RPL_ENDOFMOTD(SERVER_NAME, user.getNickname());
     sendResponse(response, user.getFd());
     

@@ -2,6 +2,7 @@
 #include <cerrno>
 #include <sstream>
 #include <ctime>
+#include <fstream>
 
 /* 
 TODO: Handle signals
@@ -64,6 +65,9 @@ int Server::setServer()
 	if (_epollManager.addToEpoll(EPOLLIN, _networkManager.getSocketFd())) {
 		return 6;
 	}
+	if (loadMOTD()) {
+		return 7;
+	}
 	_isSet = true;
 	return 0;
 }
@@ -102,6 +106,21 @@ int Server::addNewUser()
 		return -1;
 	}
 	_userManager.addNewUser(userInfo.userFd, userInfo.userIP);
+	return 0;
+}
+
+int Server::loadMOTD()
+{
+	std::ifstream motdFile(MOTD_FILE);
+	if (!motdFile) {
+		std::cerr << "Error opening file: " << MOTD_FILE << std::endl;
+		return 1;
+	}
+	std::string line;
+	while (std::getline(motdFile, line)) {
+		_motd.push_back(line);
+	}
+	motdFile.close();
 	return 0;
 }
 
@@ -157,4 +176,9 @@ CommandManager &Server::getCommandManager()
 const std::string Server::getServerTimestamp() const
 {
 	return _serverTimestamp;
+}
+
+const std::vector<std::string> &Server::getMOTD() const
+{
+	return _motd;
 }

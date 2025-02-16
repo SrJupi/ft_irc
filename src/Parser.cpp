@@ -46,7 +46,7 @@ std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 			break;
 		}
         msgs.push_back(msg.substr(start, pos - start));
-		start = pos + strlen(CRLF);
+		start = pos + strlen(CRLF.c_str());
 	}
 	server.getUserManager().getUserByFd(userFd)->setStoredMsg(msg);
     return msgs;

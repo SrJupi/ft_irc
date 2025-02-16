@@ -36,6 +36,7 @@ private:
 
     std::string _port;
     std::string _password;
+    std::vector<std::string> _motd;
    
     bool _isSet;
     bool _isRunning;
@@ -47,6 +48,9 @@ private:
     //Start server utils
     int manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]);
     int addNewUser();
+
+    //MOTD
+    int loadMOTD();
 
 public:
     Server(const std::string& port, const std::string &password);
@@ -65,6 +69,7 @@ public:
     ChannelManager      &getChannelManager();
     CommandManager      &getCommandManager();
     const std::string   getServerTimestamp() const;
+    const std::vector<std::string> &getMOTD() const;
 };
 
 #endif
