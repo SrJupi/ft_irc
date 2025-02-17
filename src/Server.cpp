@@ -152,15 +152,6 @@ void Server::stopServer()
 	_isRunning = false;
 }
 
-bool Server::isUserOperator(int fd)
-{
-    return _serverOperators.find(fd) != _serverOperators.end();
-}
-
-void Server::addUserOperator(int fd)
-{
-}
-
 Server &Server::operator=(const Server &ref)
 {
 	if (this != &ref)
