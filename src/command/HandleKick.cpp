@@ -10,6 +10,8 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
 
     std::string response;
     //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
+    //@David -> Vi que no RFC 1459 (https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.8) o kick só aceita um canal, um user e uma mensagem (opcional). Acho que podemos simplificar e usar essa RFC.
+    //To pensando em rever os outros metodos e usar só o 1459 xD
     User *userKicked = server.getUserManager().getUserByNick(args[1]); //TODO: args[1] pode nao existir = segfault
     std::string channelName = args[0];
 
