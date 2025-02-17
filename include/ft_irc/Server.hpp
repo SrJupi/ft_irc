@@ -39,7 +39,7 @@ private:
     std::vector<std::string> _motd;
    
     bool _isSet;
-    bool _isRunning;
+    static bool _isRunning;
 
     std::string _serverTimestamp;
 
@@ -51,6 +51,9 @@ private:
 
     //MOTD
     int loadMOTD();
+
+    //Signal
+    static void    signalHandler(int sig);
 
 public:
     Server(const std::string& port, const std::string &password);

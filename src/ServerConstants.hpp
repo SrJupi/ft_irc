@@ -11,6 +11,7 @@
 #define CREATE_EPOLL_FAILURE 5
 #define ADD_TO_EPOLL_FAILURE 6
 #define LOAD_MOTD_FAILURE 7
+#define SIGNAL_FAILURE 8
 
 const int MAX_EVENTS = 128;
 const int BUFFER_SIZE = 512;

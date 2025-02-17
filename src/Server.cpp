@@ -3,10 +3,9 @@
 #include <sstream>
 #include <ctime>
 #include <fstream>
+#include <csignal>
 
-/* 
-TODO: Handle signals
- */
+bool Server::_isRunning = false; //changed for use with signal, do I like it? No!
 
 Server::Server()
 {
@@ -20,8 +19,7 @@ Server::Server(const Server &ref)
 Server::Server(const std::string& port, const std::string &password):
 	_port(port),
 	_password(password),
-	_isSet(false),
-	_isRunning(false)
+	_isSet(false)
 {
 	time_t tmp = time(NULL);
 	struct tm *timeinfo = gmtime(&tmp);
@@ -70,6 +68,10 @@ int Server::setServer()
 	if (loadMOTD()) {
 		std::cerr << "Error on loadMOTD\n";
 		return LOAD_MOTD_FAILURE;
+	}
+	if (signal(SIGINT, signalHandler) == SIG_ERR) {
+		std::cerr << "Error on setting signalHandler\n";
+		return SIGNAL_FAILURE;
 	}
 	_isSet = true;
 	return 0;
@@ -125,6 +127,13 @@ int Server::loadMOTD()
 	}
 	motdFile.close();
 	return 0;
+}
+
+void Server::signalHandler(int sig) //TODO: handle other signals?
+{
+	if (sig == SIGINT) {
+		_isRunning = false;
+	}
 }
 
 int Server::startServer()
