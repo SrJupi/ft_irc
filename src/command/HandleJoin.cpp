@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 
 static bool isValidChannelName(const std::string& str) {

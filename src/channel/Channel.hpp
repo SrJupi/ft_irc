@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include <sys/socket.h> //tmp to test send, see where it fits better!
-#include "user/User.hpp"
+#include <user/User.hpp>
 #include <ctime>
 
 class Channel

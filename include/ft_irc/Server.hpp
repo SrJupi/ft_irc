@@ -53,7 +53,8 @@ private:
     int loadMOTD();
 
     //Signal
-    static void    signalHandler(int sig);
+    static void     signalHandler(int sig);
+    bool            setSignals();
 
 public:
     Server(const std::string& port, const std::string &password);

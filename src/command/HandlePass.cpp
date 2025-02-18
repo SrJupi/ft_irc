@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 void handlePass(User& user, Server& server, const std::vector<std::string>& args)
 {

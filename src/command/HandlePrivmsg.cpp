@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 static int handlePrivateMessage(User &sender, User *target, const std::string &receiver, const std::string &message)
 {

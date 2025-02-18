@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 void handleQuit(User& user, Server& server, const std::vector<std::string>& args) {
     std::string msg = (args.size() < 1) ? "Leaving" : args[0];

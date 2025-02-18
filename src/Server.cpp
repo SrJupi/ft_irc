@@ -69,7 +69,7 @@ int Server::setServer()
 		std::cerr << "Error on loadMOTD\n";
 		return LOAD_MOTD_FAILURE;
 	}
-	if (signal(SIGINT, signalHandler) == SIG_ERR) {
+	if (!setSignals()) {
 		std::cerr << "Error on setting signalHandler\n";
 		return SIGNAL_FAILURE;
 	}
@@ -131,13 +131,21 @@ int Server::loadMOTD()
 	return 0;
 }
 
-void Server::signalHandler(int sig) //TODO: handle other signals?
+void Server::signalHandler(int sig)
 {
-	if (sig == SIGINT) {
-		_isRunning = false;
-	}
+	(void)sig;
+	_isRunning = false;
 }
 
+bool Server::setSignals()
+{
+    if (signal(SIGINT, signalHandler) == SIG_ERR ||
+		signal(SIGQUIT, signalHandler) == SIG_ERR ||
+		signal(SIGTERM, signalHandler) == SIG_ERR) {
+			return false;
+		}
+	return true;
+}
 int Server::startServer()
 {
 	//isSet is false if something goes wrong in ircServer.setServer()
@@ -147,7 +155,6 @@ int Server::startServer()
 	_isRunning = true;
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
-		// change to variable
 		const int nfds = epoll_wait(_epollManager.getEpoll(), events, MAX_EVENTS, -1);
 		if (nfds == -1) {
 			_isRunning = false;
@@ -187,7 +194,6 @@ bool Server::isServerOperator(int fd)
 }
 
 UserManager &Server::getUserManager() {
-
     return _userManager;
 }
 

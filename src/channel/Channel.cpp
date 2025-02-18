@@ -1,4 +1,4 @@
-#include "Channel.hpp"
+#include <channel/Channel.hpp>
 #include <ServerReplyMessages.hpp>
 #include <ServerConstants.hpp>
 #include <sstream>

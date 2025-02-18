@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 
 static bool isNickValid(const std::string &nick) {

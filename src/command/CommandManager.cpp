@@ -1,7 +1,6 @@
 #include <command/CommandManager.hpp>
 #include <ft_irc/Server.hpp>
 #include <iostream>
-#include "CommandManager.hpp"
 #include <ServerReplyMessages.hpp>
 #include <sys/socket.h> //tmp to test send, see where it fits better!
 #include <command/Handlers.hpp>

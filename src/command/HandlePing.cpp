@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 
 void handlePing(User& user, Server& server, const std::vector<std::string>& args)
 {

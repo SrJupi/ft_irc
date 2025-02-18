@@ -1,7 +1,6 @@
 #include <user/UserManager.hpp>
 #include <iostream>
 #include <command/Handlers.hpp>
-#include "UserManager.hpp"
 
 UserManager::UserManager()
 {

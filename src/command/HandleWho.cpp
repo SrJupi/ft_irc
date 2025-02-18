@@ -1,5 +1,4 @@
 #include <command/Handlers.hpp>
-#include "Handlers.hpp"
 
 void sendInfoOf(User &userInChannel, Channel *channel, User &user);
 void sendEndMessage(std::string channelName, User &user);

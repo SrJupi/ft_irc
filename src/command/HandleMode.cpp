@@ -1,6 +1,5 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
-#include "Handlers.hpp"
 #include <algorithm>
 
 static void parseModeCases(User &user, Channel *channel, const std::vector<std::string> &args) {
