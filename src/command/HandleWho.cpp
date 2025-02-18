@@ -29,10 +29,6 @@ void handleWho(User &user, Server &server, const std::vector<std::string> &args)
     }
     sendEndMessage(channel->getChannelName(), user);
 }
-/* 
-@David, retirei o H/@H status porque vi no https://modern.ircdocs.horse/#rplwhoreply-352 que isso seria opcional e,
-aparentemente, não afeta nada no hexchat.
-*/
 void sendInfoOf(User &userInChannel, Channel *channel, User &userRequesting)
 {
     std::string response;

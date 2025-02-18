@@ -86,7 +86,7 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			}
 		}
 		else {
-			if (events[i].events & EPOLLOUT) {
+			if (events[i].events & EPOLLOUT) { //@Lucas: remover?
 				_fdSendSet.insert(currentFd);
 				//std::cout  << currentFd << " - User ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
 			}

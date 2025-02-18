@@ -5,15 +5,13 @@
 #include <ft_irc/Server.hpp>
 
 /* TODO:
-1. OPER - David
+1. OPER - @David
 
 //Metodos do operador para implementar (?)
-KILL -> eliminar um usuario do servidor :D
-DIE == VALGRIND -> ja implementado, so mudar nome
-RESTART
+KILL -> eliminar um usuario do servidor :D @Lucas
+DIE == VALGRIND -> ja implementado, so mudar nome @Lucas
 
-Define maxLEN for nick, topic, channelName? Define max numChan per user?
-
+Define maxLEN for topic @Lucas
 */
 
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);

@@ -9,13 +9,13 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
     std::string nickKicker = kicker.getNickname();
 
     std::string response;
-    //TODO[n]: pode ser uma lista de usuarios e isso afeta a checagem se o usuario existe
-    //@David -> Vi que no RFC 1459 (https://datatracker.ietf.org/doc/html/rfc1459#section-4.2.8) o kick só aceita um canal, um user e uma mensagem (opcional). Acho que podemos simplificar e usar essa RFC.
-    //To pensando em rever os outros metodos e usar só o 1459 xD
-    User *userKicked = server.getUserManager().getUserByNick(args[1]); //TODO: args[1] pode nao existir = segfault
+    if (args.size() < 2) return sendResponse(ERR_NEEDMOREPARAMS(SERVER_NAME, nickKicker, "KICK"), kicker.getFd());
+    User *userKicked = server.getUserManager().getUserByNick(args[1]);
     std::string channelName = args[0];
 
-    Channel *channel = server.getChannelManager().getChannelByName(channelName); //TODO: pode retornar null
+    Channel *channel = server.getChannelManager().getChannelByName(channelName);
+    if (!channel)
+        return sendResponse(ERR_NOSUCHCHANNEL(SERVER_NAME, nickKicker, channelName), kicker.getFd());
     //Check if the user exist
     if (!userKicked) {
         response = ERR_NOSUCHNICK(kicker.getNickname(), args[1]);

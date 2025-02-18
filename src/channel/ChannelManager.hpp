@@ -9,7 +9,7 @@
 class ChannelManager
 {
 private:
-    std::map<std::string, Channel *> _channels; //@David: por que precisa ser ponteiro? -> Estudei aqui no finde e acho que nao precisa, mas nao vamos mudar tudo agora :D
+    std::map<std::string, Channel *> _channels;
     ChannelManager(const ChannelManager& ref);
     ChannelManager&	operator=(const ChannelManager& ref);
     
@@ -23,8 +23,6 @@ public:
     void    broadcastToChannels(const std::set<std::string> &channelsList, const std::string message);
     void    deleteDisconnectedUserFromChannels(std::set<std::string> channels, int userFd, const std::string &message);
     void    updateNickMapInChannels(std::set<std::string> channels, int userFd, const std::string &nick);
-    // bool    isEmpty();
-    
 };
 
 #endif

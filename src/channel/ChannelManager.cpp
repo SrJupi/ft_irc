@@ -46,11 +46,10 @@ Channel* ChannelManager::getChannelByName(const std::string &channelName) {
 
     std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
     if (it != _channels.end()) {
-        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl; // ✅ Debug output
-        return it->second; // ✅ Return the correct channel pointer
+        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl;
+        return it->second;
     }
-    std::cout << "Channel not found: " << channelName << std::endl; // ❌ Should never happen -> @David: NOW IT WILL HAPPEN! xD
-    //@LL: não sei pq caraiii o chat disse Should never happen, mas é bem possível que aconteça, não? Não sei... Conversamos amanhã.
+    std::cout << "Channel not found: " << channelName << std::endl; 
     return NULL;
 }
 
