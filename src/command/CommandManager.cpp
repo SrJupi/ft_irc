@@ -2,7 +2,7 @@
 #include <ft_irc/Server.hpp>
 #include <iostream>
 #include <ServerReplyMessages.hpp>
-#include <sys/socket.h> //tmp to test send, see where it fits better!
+#include <sys/socket.h>
 #include <command/Handlers.hpp>
 
 CommandManager::CommandManager()
@@ -23,7 +23,6 @@ CommandManager::CommandManager()
     _registeredCommandHandlers["INVITE"] = &handleInvite;
     _registeredCommandHandlers["PRIVMSG"] = &handlePrivmsg;
 
-    //add servOp commands
     _operatorCommandHandlers["DIE"] = &handleDie;
     _operatorCommandHandlers["KILL"] = &handleKill;
 }
@@ -84,7 +83,6 @@ void CommandManager::sendLoginMessage(User &user, Server &server)
     response += RPL_YOURHOST(SERVER_NAME, user.getNickname(), IRC_VERSION);
     response += RPL_CREATED(SERVER_NAME, user.getNickname(), server.getServerTimestamp());
     response += RPL_MYINFO(SERVER_NAME, user.getNickname(), IRC_VERSION, USER_MODES, CHAN_MODES);
-    //response += RPL_ISUPPORT(SERVER_NAME, user.getNickname(), "CHANTYPES=# PREFIX=(o)@"); //Not mandatory for registering, will not be implemented! xD
     response += RPL_MOTDSTART(SERVER_NAME, user.getNickname());
     std::vector<std::string> motd = server.getMOTD();
     for (std::vector<std::string>::const_iterator it = motd.begin(); it != motd.end(); it++) {
@@ -92,8 +90,6 @@ void CommandManager::sendLoginMessage(User &user, Server &server)
     }
     response += RPL_ENDOFMOTD(SERVER_NAME, user.getNickname());
     sendResponse(response, user.getFd());
-    
-
 }
 
 CommandManager &CommandManager::operator=(const CommandManager &ref) {

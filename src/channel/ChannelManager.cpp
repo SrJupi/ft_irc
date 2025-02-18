@@ -38,18 +38,12 @@ int     ChannelManager::doesChannelExists(const std::string &channelName) {
 }
 
 Channel* ChannelManager::getChannelByName(const std::string &channelName) {
-    // std::map<std::string, Channel *>::iterator it = _channels.find(channelName);
-    // if (it == _channels.end()) {
-    //     return NULL; //Channel not found
-    // }
-    // return it->second;
-
     std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
     if (it != _channels.end()) {
-        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl;
+        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl; //REMOVE
         return it->second;
     }
-    std::cout << "Channel not found: " << channelName << std::endl; 
+    std::cout << "Channel not found: " << channelName << std::endl;  //REMOVE
     return NULL;
 }
 
@@ -88,11 +82,6 @@ void ChannelManager::updateNickMapInChannels(std::set<std::string> channels, int
         channel->updateUser(userFd, nick);
     }
 } 
-
-// bool ChannelManager::isEmpty()
-// {
-//     return _channelFdMap.empty();
-// }
 
 ChannelManager&	ChannelManager::operator=(const ChannelManager& ref) {
     if (this != &ref) {

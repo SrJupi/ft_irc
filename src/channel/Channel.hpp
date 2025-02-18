@@ -38,7 +38,6 @@ private:
 
     void        setMode(char mode, const std::string &param = "");
     void        removeMode(char mode);
-    //void        updateMode(bool &currentStatus); general Update to be called in all setMode methods (?)
 
     const std::string   getTimestampAsString(const time_t &timestamp) const;
     
@@ -57,7 +56,7 @@ private:
     void        updateUser(int fd, const std::string &nick);
     bool        removeUser(int fd);
     void        listUsers();
-    void        broadcastMessage(const std::string& message, int exclude = -1); //Adicionei -1 como default
+    void        broadcastMessage(const std::string& message, int exclude = -1);
     const std::string   &getWhoSetTopic() const;
     const std::string   getTopicTimestampAsString() const;
     const std::string   getChannelTimestampAsString() const;
@@ -83,8 +82,6 @@ private:
     void        setChannelPassword(const std::string &password, const std::string &nick);
     std::string getChannelPassword();
     std::string getModeString() const;
-    
-    
 };
 
 #endif

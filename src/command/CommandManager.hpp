@@ -17,8 +17,6 @@ private:
     std::map<std::string, CommandHandler> _unregisteredCommandHandlers;
     std::map<std::string, CommandHandler> _operatorCommandHandlers;
 
-
-
     CommandManager(const CommandManager& ref);
     CommandManager&	operator=(const CommandManager& ref);
     

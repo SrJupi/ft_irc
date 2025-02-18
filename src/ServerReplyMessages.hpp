@@ -32,6 +32,9 @@
 #define RPL_TOPICWHOTIME(server, nick, channel, setBy, timestamp) \
     ":" + (server) + " 333 " + (nick) + " " + (channel) + " " + (setBy) + " " + (timestamp) + "\r\n"
 
+#define RPL_INVITING(server, nick, target, channel) \
+    ":" + (server) + " 341 " + (nick) + " " + (target) + " " + (channel) + "\r\n"
+
 #define RPL_NAMREPLY(server, nick, channel, nicks) \
     ":" + (server) + " 353 " + (nick) + " = " + (channel) + " :" + (nicks) + "\r\n"
 
@@ -85,6 +88,9 @@
 
 #define ERR_NOTONCHANNEL(server, nick, channel) \
     ":" + (server) + " 442 " + (nick) + " " + (channel) + " :You're not on that channel\r\n"
+
+#define ERR_USERONCHANNEL(server, nick, invitedNick, channel) \
+    ":" + (server) + " 443 " + (nick) + " " + (invitedNick) + " " + (channel) + " :is already on channel\r\n"
 
 #define ERR_NOTREGISTERED(server) \
     ":" + (server) + " 451 :You have not registered\r\n"
