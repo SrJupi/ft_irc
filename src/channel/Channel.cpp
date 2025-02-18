@@ -78,7 +78,7 @@ void Channel::setTopic(const std::string &topic, const std::string &nick)
 {
 	_topic = topic;
 	time(&_topicTimestamp);
-	_topicSetBy = nick; //Change to full mask??? -> <nick>!<user>@<host> ???
+	_topicSetBy = nick;
 	broadcastMessage(RPL_TOPIC(SERVER_NAME, nick, _channelName, _topic));
 }
 
