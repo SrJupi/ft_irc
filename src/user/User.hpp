@@ -58,8 +58,8 @@ public:
     void        removeChannel(const std::string &channelName);
     std::set<std::string>   getChannels() const;
 
-    void    addPrivMsg(const std::string &nick);
-    void    removePrivMsg(const std::string &nick);
+    void    addToPrivMsg(const std::string &nick);
+    void    removeFromPrivMsg(const std::string &nick);
     const std::set<std::string> getPrivMsgList();
 };
 

@@ -86,9 +86,8 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			}
 		}
 		else {
-			if (events[i].events & EPOLLOUT) { //@Lucas: remover?
-				_fdSendSet.insert(currentFd);
-				//std::cout  << currentFd << " - User ready to receive messages EPOLLOUT" << std::endl; //Is it necessary? Add receive method?
+			if (events[i].events & EPOLLOUT) {
+				//ADD EPOLLOUT IN THE FUTURE
 			}
 			if (events[i].events & EPOLLIN) { //Add send method
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
@@ -107,10 +106,13 @@ int Server::addNewUser()
 	if (userInfo.userFd == -1) {
 		return -1;
 	}
-	if (_epollManager.addToEpoll(EPOLLIN | EPOLLOUT | EPOLLET, userInfo.userFd)) {
+	if (_epollManager.addToEpoll(EPOLLIN | EPOLLET, userInfo.userFd)) {
 		return -1;
 	}
-	_userManager.addNewUser(userInfo.userFd, userInfo.userIP);
+	//REMOVE this VVVVVV to _userManager.addNewUser(userInfo.userFd, userInfo.userIP)
+	if (_userManager.addNewUser(userInfo.userFd, userInfo.userIP)) {
+		addServerOperator(userInfo.userFd);
+	}
 	return 0;
 }
 
@@ -159,6 +161,7 @@ int Server::startServer()
 void Server::stopServer()
 {
 	_isRunning = false;
+	_userManager.broadcastToAllUsers(RPL_DIE_SHUTDOWN(SERVER_NAME));
 }
 
 Server &Server::operator=(const Server &ref)
@@ -168,8 +171,24 @@ Server &Server::operator=(const Server &ref)
 	return (*this);
 }
 
+void Server::addServerOperator(int fd)
+{
+	_serverOperators.insert(fd);
+}
+
+void Server::removeServerOperator(int fd)
+{
+	_serverOperators.erase(fd);
+}
+
+bool Server::isServerOperator(int fd)
+{
+	return _serverOperators.find(fd) != _serverOperators.end();
+}
+
 UserManager &Server::getUserManager() {
-	return _userManager;
+
+    return _userManager;
 }
 
 EpollManager &Server::getEpollManager() {

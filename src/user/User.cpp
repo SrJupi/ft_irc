@@ -62,12 +62,12 @@ std::set<std::string> User::getChannels() const
 	return (_channels);
 }
 
-void User::addPrivMsg(const std::string &nick)
+void User::addToPrivMsg(const std::string &nick)
 {
 	_privmsgs.insert(nick);
 }
 
-void User::removePrivMsg(const std::string &nick)
+void User::removeFromPrivMsg(const std::string &nick)
 {
 	_privmsgs.erase(nick);
 }

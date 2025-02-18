@@ -19,6 +19,8 @@ UserManager::~UserManager()
 int UserManager::addNewUser(int userfd, std::string &ip)
 {
 	_mapFdToUser[userfd] = new User(userfd, ip);
+    //REMOVE VVV
+    if (_mapFdToUser.size() == 1) return 1;
 
     return 0;
 }
@@ -90,7 +92,14 @@ bool UserManager::existsFd(int fd)
     return _mapFdToUser.find(fd) != _mapFdToUser.end();
 }
 
-void UserManager::broadcastToUsers(const std::set<std::string> &usersList, const std::string message)
+void UserManager::broadcastToAllUsers(const std::string message)
+{
+    for (std::map<int, User*>::const_iterator it = _mapFdToUser.begin(); it != _mapFdToUser.end(); it++) {
+        sendResponse(message, it->first);
+    }
+}
+
+void UserManager::broadcastToListOfUsers(const std::set<std::string> &usersList, const std::string message)
 {
     for (std::set<std::string>::const_iterator it = usersList.begin(); it != usersList.end(); it++) {
         User *user = getUserByNick(*it);
@@ -107,7 +116,7 @@ void UserManager::removeUserFromOthersList(const std::set<std::string> &privList
 
         if (!user) continue;
 
-        user->removePrivMsg(nick);
+        user->removeFromPrivMsg(nick);
     }
 }
 

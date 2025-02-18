@@ -10,8 +10,8 @@ class UserManager
 private:
     UserManager(const UserManager& ref);
     UserManager&	operator=(const UserManager& ref);
-    std::map<int, User *> _mapFdToUser;
-    std::map<std::string, User *> _mapNicknameToUser;
+    std::map<int, User *>           _mapFdToUser;
+    std::map<std::string, User *>   _mapNicknameToUser;
     
 public:
     UserManager();
@@ -29,7 +29,8 @@ public:
     bool    existsNickname(const std::string &nick);
     bool    existsFd(int fd);
 
-    void    broadcastToUsers(const std::set<std::string> &usersList, const std::string message);
+    void    broadcastToAllUsers(const std::string message);
+    void    broadcastToListOfUsers(const std::set<std::string> &usersList, const std::string message);
     void    removeUserFromOthersList(const std::set<std::string> &privList, const std::string nick);
     
 };

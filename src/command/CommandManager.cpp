@@ -23,7 +23,10 @@ CommandManager::CommandManager()
     _registeredCommandHandlers["TOPIC"] = &handleTopic;
     _registeredCommandHandlers["INVITE"] = &handleInvite;
     _registeredCommandHandlers["PRIVMSG"] = &handlePrivmsg;
-    _registeredCommandHandlers["VALGRIND"] = &handleExit; //FAKE COMMAND TO CLOSE SERVER TO TEST LEAKS
+
+    //add servOp commands
+    _operatorCommandHandlers["DIE"] = &handleDie;
+    _operatorCommandHandlers["KILL"] = &handleKill;
 }
 
 CommandManager::CommandManager(const CommandManager& ref)
@@ -64,13 +67,16 @@ void CommandManager::executeCommand(User& user, Server& server, const std::strin
     }
 
     it = _registeredCommandHandlers.find(commandName);
-    if (it == _registeredCommandHandlers.end()) {
-        std::cerr << "Unknown command: " << commandName << std::endl;
-        return;
+    if (it != _registeredCommandHandlers.end()) {
+        return (it->second)(user, server, args);
     }
 
-    // Execute the command handler
-    (it->second)(user, server, args);
+    it = _operatorCommandHandlers.find(commandName);
+    if (it != _operatorCommandHandlers.end()) {
+        if (!server.isServerOperator(user.getFd())) return sendResponse(ERR_NOPRIVILEGES(SERVER_NAME, user.getNickname()), user.getFd());
+        return (it->second)(user, server, args);
+    }
+    sendResponse(ERR_UNKNOWNCOMMAND(SERVER_NAME, user.getNickname(), commandName), user.getFd());    
 }
 
 void CommandManager::sendLoginMessage(User &user, Server &server)

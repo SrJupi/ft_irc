@@ -12,7 +12,7 @@ static int handlePrivateMessage(User &sender, User *target, const std::string &r
     else {
         std::string privateMessage = PRIVMSG(sender.getUserMask(), target->getNickname(), message);
         send(target->getFd(), privateMessage.c_str(), privateMessage.length(), 0);
-        sender.addPrivMsg(target->getNickname());
+        sender.addToPrivMsg(target->getNickname());
         return 1; // Message successfully delivered
     }
 }

@@ -43,7 +43,7 @@ private:
 
     std::string _serverTimestamp;
 
-    std::set<int> _fdSendSet; //never used DELETE (?)
+    std::set<int> _serverOperators;
 
     //Start server utils
     int manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]);
@@ -65,6 +65,10 @@ public:
     int     startServer();
 
     void    stopServer();
+
+    void    addServerOperator(int fd);
+    void    removeServerOperator(int fd);
+    bool    isServerOperator(int fd);
 
     //GETTERS
     UserManager         &getUserManager();

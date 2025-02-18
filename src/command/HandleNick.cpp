@@ -36,5 +36,5 @@ void handleNick(User& user, Server& server, const std::vector<std::string>& args
     sendResponse(RPL_NICK(oldNick, nick), user.getFd());
     server.getChannelManager().broadcastToChannels(user.getChannels(), RPL_NICK(oldNick, nick));
     server.getChannelManager().updateNickMapInChannels(user.getChannels(), user.getFd(), nick);
-    server.getUserManager().broadcastToUsers(user.getPrivMsgList(), RPL_NICK(oldNick, nick));
+    server.getUserManager().broadcastToListOfUsers(user.getPrivMsgList(), RPL_NICK(oldNick, nick));
 }

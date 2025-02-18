@@ -68,6 +68,9 @@
 #define ERR_NOTEXTTOSEND(server, nick) \
     ":" + (server) + " 412 " + (nick) + " :No text to send\r\n"
 
+#define ERR_UNKNOWNCOMMAND(server, nick, command) \
+    ":" + (server) + " 421 " + (nick) + " " + (command) + " :Unknown command\r\n"
+
 #define ERR_NONICKNAMEGIVEN(server) \
     ":" + (server) + " 431 * :No nickname given\r\n"
 
@@ -109,6 +112,9 @@
 
 #define ERR_BADCHANMASK(server, nick, channel) \
     ":" + (server) + " 476 " + (nick) + " " + (channel) + " :Bad Channel Mask\r\n"
+
+#define ERR_NOPRIVILEGES(server, nick) \
+    ":" + (server) + " 481 " + (nick) + " :Permission Denied - You're not an IRC operator\r\n"
 
 #define ERR_CHANOPRIVSNEEDED(server, nick, channel) \
     ":" + (server) + " 482 " + (nick) + " " + (channel) + " :You're not a channel operator\r\n"
@@ -169,6 +175,10 @@
 #define IRC_ERROR(nick, reason) \
     "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n"
 
+#define RPL_DIE_SHUTDOWN(server) \
+    "ERROR :" + (server) + " shutting down\r\n"
 
+#define RPL_KILL_TARGET(operNick, reason) \
+    "ERROR :Killed by " + (operNick) + " (" + (reason) + ")\r\n"
 
 #endif
