@@ -60,10 +60,11 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		if (bytes == -1) {
 			if (errno == EWOULDBLOCK)
 				break ; 
-            else if (errno == ECONNRESET) //TODO: What to do with errors?
-                std::cerr << "Connection reset by peer (HexChat user quit)" <<  std::endl; 
-            else
-			    std::cerr << "recv failed: " << errno <<  std::endl;
+            else {
+                if (server.getUserManager().existsFd(userFd)) {
+                    server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection closed"));
+                }
+            }
 			return -1;
 		}
 		if (bytes == 0) {

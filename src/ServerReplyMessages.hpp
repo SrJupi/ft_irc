@@ -171,8 +171,9 @@
 #define RPL_PONG(server, token) \
     ":" + (server) + " PONG :" + (token) + CRLF
 
-#define IRC_ERROR(nick, reason) \ 
-    "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n" //REMOVE -> never used
+//REMOVE -> never used
+#define IRC_ERROR(nick, reason) \
+    "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n"
 
 #define RPL_DIE_SHUTDOWN(server) \
     "ERROR :" + (server) + " shutting down\r\n"
