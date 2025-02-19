@@ -17,33 +17,25 @@ void handleKick(User& kicker, Server& server, const std::vector<std::string>& ar
         return sendResponse(ERR_NOSUCHCHANNEL(SERVER_NAME, nickKicker, channelName), kicker.getFd());
     //Check if the user exist
     if (!userKicked) {
-        response = ERR_NOSUCHNICK(kicker.getNickname(), args[1]);
+        response = ERR_NOSUCHNICK(nickKicker, args[1]);
         send(kicker.getFd(), response.c_str(), response.length(), 0);
         return ;
     }
 
     //Check if the user can kick users 
     if (!channel->isUserChannelOperator(kicker.getFd())) {
-        response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, kicker.getNickname(), channelName);
+        response = ERR_CHANOPRIVSNEEDED(SERVER_NAME, nickKicker, channelName);
         send(kicker.getFd(), response.c_str(), response.length(), 0);
         return ;
     }
 
     //The users must be in the channel
     if (!channel->isUserInChannel(userKicked->getFd())) {
-        response = ERR_USERNOTINCHANNEL(SERVER_NAME, kicker.getNickname(), channelName);
+        response = ERR_USERNOTINCHANNEL(SERVER_NAME, nickKicker, channelName);
         send(kicker.getFd(), response.c_str(), response.length(), 0);
         return ;
     }
-    
-    response = ":" + kicker.getNickname() + "!" + kicker.getUsername() + "@127.0.0.1 KICK " +
-    channel->getChannelName() + " " + userKicked->getNickname() + " :Spamming is not allowed MF!!\r\n";
-
-    send(kicker.getFd(), response.c_str(), response.length(), 0);
-
-    // Send to all users in the channel (including Paco before removing him)
-    channel->broadcastMessage(response, kicker.getFd());
-
-    // Now, remove Paco from the channel in the server's internal structure
+    const std::string reason = (args.size() >= 3) ? args[2] : userKicked->getNickname();
+    channel->broadcastMessage(RPL_KICK(channelName, nickKicker, userKicked->getNickname(), reason));
     channel->removeUser(userKicked->getFd());
 }

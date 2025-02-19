@@ -31,7 +31,7 @@ void handleInvite(User &user, Server &server, const std::vector<std::string> &ar
         return sendResponse(ERR_USERONCHANNEL(SERVER_NAME, nick, targetNickname, channelName), fd);
     }
 
-    // If the channel is invite-only (+i) check if the inviting user has operator privileges 
+    // Check if the inviting user has operator privileges 
     if (!channel->isUserChannelOperator(user.getFd())) {
         return sendResponse(ERR_CHANOPRIVSNEEDED(SERVER_NAME, nick, channelName), fd);
     }
