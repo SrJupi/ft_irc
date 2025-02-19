@@ -58,16 +58,16 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		char buf[BUFFER_SIZE] = {};
 		ssize_t bytes = recv(userFd, buf, BUFFER_SIZE, 0);
 		if (bytes == -1) {
-			if (errno == EWOULDBLOCK) //check errors (?)
+			if (errno == EWOULDBLOCK)
 				break ; 
-            else if (errno == ECONNRESET) //check errors (?)
-                std::cerr << "Connection reset by peer (HexChat user quit)" <<  std::endl;
+            else if (errno == ECONNRESET) //TODO: What to do with errors?
+                std::cerr << "Connection reset by peer (HexChat user quit)" <<  std::endl; 
             else
 			    std::cerr << "recv failed: " << errno <<  std::endl;
 			return -1;
 		}
 		if (bytes == 0) {
-			std::cout << "user " << userFd << " disconnected" << std::endl;
+			std::cout << "user " << userFd << " disconnected" << std::endl; //REMOVE
             if (server.getUserManager().existsFd(userFd)) {
                 server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection reset by peer"));
             }

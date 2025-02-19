@@ -26,7 +26,7 @@ int UserManager::addNewUser(int userfd, std::string &ip)
 
 std::set<std::string> UserManager::removeUser(int userfd)
 {
-    std::cout << "User Manager removeUser: " << userfd << std::endl;
+    std::cout << "User Manager removeUser: " << userfd << std::endl; //REMOVE
     User *user = getUserByFd(userfd);
     _mapNicknameToUser.erase(user->getNickname());
     std::set<std::string> channels = user->getChannels();
@@ -72,7 +72,7 @@ void UserManager::addNicknameToFd(std::string nick, int fd)
     _mapNicknameToUser[nick] = it->second;
     std::cout << "User added nickname. Current set:\n"; //REMOVE
     for (std::map<std::string, User *>::iterator it = _mapNicknameToUser.begin(); it != _mapNicknameToUser.end(); it++) {
-        std::cout << it->first << std::endl;
+        std::cout << it->first << std::endl; //REMOVE
     }
 }
 

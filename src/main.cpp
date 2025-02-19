@@ -5,7 +5,6 @@ int main(int argc, char *argv[]) {
     if (!Parser::parseArguments(argc, argv))
         return 1;
     Server ircServer(argv[1], argv[2]);
-    std::cout << "Server created on Port: " << ircServer.getPort() << " / Password: " << ircServer.getPassword() << std::endl;
     int status = ircServer.setServer();
     if (status)
         return status;

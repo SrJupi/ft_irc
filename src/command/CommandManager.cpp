@@ -45,7 +45,7 @@ void CommandManager::executeCommands(User& user, Server& server, std::vector<std
 
 void CommandManager::executeCommand(User& user, Server& server, const std::string &command)
 {
-    std::cout << "-> " << user.getFd() << " sent: " << command << std::endl;
+    std::cout << "-> " << user.getFd() << " sent: " << command << std::endl; //REMOVE
     std::string commandName;
     std::vector<std::string> args;
     if (!Parser::parseCommand(command, commandName, args)) {

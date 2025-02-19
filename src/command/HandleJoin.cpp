@@ -3,7 +3,7 @@
 
 
 static bool isValidChannelName(const std::string& str) {
-    std::cout << str << std::endl;
+    std::cout << str << std::endl; //REMOVE
     return str.size() >= 2 && str[0] == '#';
 }
 

@@ -20,7 +20,7 @@ void handleWho(User &user, Server &server, const std::vector<std::string> &args)
         for (std::map<int, std::string>::iterator it = users.begin(); it != users.end(); ++it) {
             User *userInChannel = server.getUserManager().getUserByNick(it->second);
             if (!userInChannel) {
-                std::cerr << "Error: User not found for nickname " << it->second << std::endl;
+                std::cerr << "Error: User not found for nickname " << it->second << std::endl; //REMOVE
                 continue; // Skip this iteration if the user is not found
             }
             sendInfoOf(*userInChannel, channel, user);

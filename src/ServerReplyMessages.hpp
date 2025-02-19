@@ -14,9 +14,6 @@
 #define RPL_MYINFO(server, nick, version, usermodes, chanmodes) \
     ":" + (server) + " 004 " + (nick) + " " + (server) + " " + (version) + " " + (usermodes) + " " + (chanmodes) + CRLF
 
-#define RPL_ISUPPORT(server, nick, features) \
-    ":" + (server) + " 005 " + (nick) + " " + (features) + " :are supported by this server\r\n"
-
 #define RPL_CHANNELMODEIS(server, nick, channel, modesAndParams) \
     ":" + (server) + " 324 " + (nick) + " " + (channel) + " " + (modesAndParams) + CRLF
 
@@ -46,7 +43,6 @@
 
 #define RPL_KICK(channel, kicker, target, reason) \
     ":" + (kicker) + " KICK " + (channel) + " " + (target) + " :" + (reason) + CRLF
-
 
 #define RPL_CAP_LS(server) \
     ":" + (server) + " CAP * LS :\r\n"
@@ -147,9 +143,6 @@
 
 // Mode Replies
 
-#define RPL_MODES(server, nick, channel, sign, mode, message) \
-":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + (mode) + " " + (message) + CRLF
-
 #define RPL_MODE_OP(server, nick, channel, target, sign) \
 ":" + (nick) + "!" + (server) + " MODE " + (channel) + " " + (sign) + "o " + (target) + CRLF
 
@@ -169,21 +162,17 @@
 #define RPL_PART(nick, user, host, channel, reason) \
     ":" + (nick) + "!" + (user) + "@" + (host) + " PART " + (channel) + " :" + (reason) + CRLF
 
-
 //Quit message
 #define RPL_QUIT(usermask, message) \
     ":" + (usermask) + " QUIT :" + (message) + CRLF
 
 //Ping Pong
 
-#define RPL_PING(server, token) \
-    ":" + (server) + " PING :" + (token) + CRLF
-
 #define RPL_PONG(server, token) \
     ":" + (server) + " PONG :" + (token) + CRLF
 
-#define IRC_ERROR(nick, reason) \
-    "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n"
+#define IRC_ERROR(nick, reason) \ 
+    "ERROR :Closing Link: (" + (nick) + ") [" + (reason) + "]\r\n" //REMOVE -> never used
 
 #define RPL_DIE_SHUTDOWN(server) \
     "ERROR :" + (server) + " shutting down\r\n"
