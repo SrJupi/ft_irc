@@ -25,34 +25,35 @@ static void sendJoinResponseMessage(User &user, const std::string &channelName, 
 
 void handleJoin(User& user, Server& server, const std::vector<std::string>& args) {
     const std::string nick = user.getNickname();
+    const int fd = user.getFd();
+    const std::string channelName = args[0];
 
     // Validate arguments
     if (args.size() < 1) {
-        return sendResponse(ERR_NORECIPIENT(nick, "JOIN"), user.getFd());
-    } else if (!isValidChannelName(args[0])) {
-        return sendResponse(ERR_BADCHANMASK(SERVER_NAME, nick, args[0]), user.getFd());
+        return sendResponse(ERR_NORECIPIENT(nick, "JOIN"), fd);
+    } else if (!isValidChannelName(channelName)) {
+        return sendResponse(ERR_BADCHANMASK(SERVER_NAME, nick, channelName), fd);
     } 
-    std::string channelName = args[0];
     std::string password;
     if (args.size() >= 2) {
         password = args[1]; 
     }
-    Channel *channel = server.getChannelManager().getChannelByName(args[0]);
+    Channel *channel = server.getChannelManager().getChannelByName(channelName);
     if (channel == NULL) {
-        channel = server.getChannelManager().createChannel(args[0], user.getFd()); 
-    } else {
+        channel = server.getChannelManager().createChannel(channelName, fd); 
+    } else if (!server.isServerOperator(fd)) {
         if (!channel->getChannelPassword().empty() && password != channel->getChannelPassword()) {
-            return sendResponse(ERR_BADCHANNELKEY(SERVER_NAME, user.getNickname(), channel->getChannelName()), user.getFd());
+            return sendResponse(ERR_BADCHANNELKEY(SERVER_NAME, nick, channelName), fd);
         }
-        if (channel->getUserLimitMode() > 0 && channel->getAmountOfUsers() >= channel->getUserLimitMode() && !channel->isUserInvited(user.getFd())) {
-            return sendResponse(ERR_CHANNELISFULL(SERVER_NAME, user.getNickname(), channel->getChannelName()), user. getFd());
+        if (channel->getUserLimitMode() > 0 && channel->getAmountOfUsers() >= channel->getUserLimitMode() && !channel->isUserInvited(fd)) {
+            return sendResponse(ERR_CHANNELISFULL(SERVER_NAME, nick, channelName), fd);
         }
-        if (channel->isInviteOnly() && !channel->isUserInvited(user.getFd())) {
-            return sendResponse(ERR_INVITEONLYCHAN(SERVER_NAME, user.getNickname(), channel->getChannelName()), user.getFd());
+        if (channel->isInviteOnly() && !channel->isUserInvited(fd)) {
+            return sendResponse(ERR_INVITEONLYCHAN(SERVER_NAME, nick, channelName), fd);
         }
     }
-    user.addChannel(args[0]);
-    channel->addUser(user.getFd(), nick);
+    user.addChannel(channelName);
+    channel->addUser(fd, nick);
     channel->broadcastMessage(RPL_JOIN(nick, user.getUsername(), user.getHostname(), channel->getChannelName()));
-    sendJoinResponseMessage(user, args[0], channel);
+    sendJoinResponseMessage(user, channelName, channel);
 }
