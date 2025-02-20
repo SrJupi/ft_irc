@@ -77,11 +77,6 @@ bool    Parser::isValidPort(const char *arg) {
     if (*endptr != '\0') {
         return false;
     }
-    /*std::stringstream ss;
-    ss << port;
-    const std::string arg_str(arg);
-    if (ss.str() != arg_str)
-        return false;*/
     if (port < 1 || port > 65535) {
         return false;
     }
