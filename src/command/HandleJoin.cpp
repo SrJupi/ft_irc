@@ -23,17 +23,18 @@ static void sendJoinResponseMessage(User &user, const std::string &channelName, 
     sendResponse(response, user.getFd());
 }
 
+//TODO: Allow multiple channels?
 void handleJoin(User& user, Server& server, const std::vector<std::string>& args) {
     const std::string nick = user.getNickname();
     const int fd = user.getFd();
-    const std::string channelName = args[0];
 
     // Validate arguments
     if (args.size() < 1) {
         return sendResponse(ERR_NORECIPIENT(nick, "JOIN"), fd);
-    } else if (!isValidChannelName(channelName)) {
-        return sendResponse(ERR_BADCHANMASK(SERVER_NAME, nick, channelName), fd);
+    } else if (!isValidChannelName(args[0])) {
+        return sendResponse(ERR_BADCHANMASK(SERVER_NAME, nick, args[0]), fd);
     } 
+    const std::string channelName = args[0];
     std::string password;
     if (args.size() >= 2) {
         password = args[1]; 

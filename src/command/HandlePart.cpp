@@ -1,6 +1,7 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
 
+//TODO: Allow multiple channels?
 void handlePart(User& user, Server& server, const std::vector<std::string>& args) {
     if (args.size() < 2) {
         return sendResponse(ERR_NEEDMOREPARAMS(SERVER_NAME, user.getNickname(), "PART"), user.getFd());
