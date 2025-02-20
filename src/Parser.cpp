@@ -33,22 +33,16 @@ Parser&	Parser::operator=(const Parser& ref)
 std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 {
     std::vector<std::string> msgs;
-	std::string msg = (server.getUserManager().existsFd(userFd)) ? server.getUserManager().getUserByFd(userFd)->getStoredMsg() : "";
+	std::string msg = server.getUserManager().getUserByFd(userFd)->getStoredMsg();
     if (readMessage(userFd, msg, server)) {
 		return msgs;
 	}
-	std::size_t start = 0;
 	std::size_t pos = 0;
-	while (true) {		
-		pos = msg.find(CRLF, start);
-		if (pos == std::string::npos) { //Se não encontrou o CRLF (salva em StorageMsg)
-            msg = msg.substr(start, pos - start);
-			break;
-		}
-        msgs.push_back(msg.substr(start, pos - start));
-		start = pos + strlen(CRLF.c_str());
-	}
-	server.getUserManager().getUserByFd(userFd)->setStoredMsg(msg);
+    while ((pos = msg.find(CRLF)) != std::string::npos) {
+        msgs.push_back(msg.substr(0, pos));
+        msg.erase(0, pos + CRLF.size());
+    }
+    server.getUserManager().getUserByFd(userFd)->setStoredMsg(msg);
     return msgs;
 }
 
@@ -61,17 +55,13 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 			if (errno == EWOULDBLOCK)
 				break ; 
             else {
-                if (server.getUserManager().existsFd(userFd)) {
-                    server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection closed"));
-                }
+                server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection closed"));
             }
 			return -1;
 		}
 		if (bytes == 0) {
 			std::cout << "user " << userFd << " disconnected" << std::endl; //REMOVE
-            if (server.getUserManager().existsFd(userFd)) {
-                server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection reset by peer"));
-            }
+            server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection reset by peer"));
 			return -1;
 		}
 		fullMsg.append(std::string(buf, bytes));
