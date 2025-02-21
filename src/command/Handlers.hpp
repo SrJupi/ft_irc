@@ -23,6 +23,7 @@ void handlePart(User &user, Server &server, const std::vector<std::string> &args
 void handlePing(User &user, Server &server, const std::vector<std::string> &args);
 void handlePong(User &user, Server &server, const std::vector<std::string> &args);
 void handlePrivmsg(User &user, Server &server, const std::vector<std::string> &args);
+void handleOper(User &user, Server &server, const std::vector<std::string> &args);
 void handleQuit(User &user, Server &server, const std::vector<std::string> &args);
 void handleTopic(User &user, Server &server, const std::vector<std::string> &args);
 void handleWho(User &user, Server &server, const std::vector<std::string> &args);
