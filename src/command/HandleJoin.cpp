@@ -1,10 +1,28 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
 
+static std::string ft_trim(std::string &str) {
+    size_t start = str.find_first_not_of(" \t\r\n");
+    size_t end = str.find_last_not_of(" \t\r\n");
+
+    if (start == std::string::npos) return "";
+    return str.substr(start, end - start + 1);
+}
 
 static bool isValidChannelName(const std::string& str) {
     std::cout << str << std::endl; //REMOVE
-    return str.size() >= 2 && str[0] == '#';
+    std::string trim_str(str);
+    trim_str = ft_trim(trim_str);
+    if (trim_str.empty()) return false;
+    if (trim_str.size() < 2) return false;
+    if (trim_str[0] != '#') return false;
+    for (std::string::const_iterator it = trim_str.begin(); it != trim_str.end(); it++) {
+        char c = *it;
+        if (!isprint(c)) return false;
+        if (isspace(c)) return false;
+        if (c == ',') return false;
+    }
+    return true;
 }
 
 static void sendJoinResponseMessage(User &user, const std::string &channelName, Channel *channel){
@@ -23,7 +41,6 @@ static void sendJoinResponseMessage(User &user, const std::string &channelName, 
     sendResponse(response, user.getFd());
 }
 
-//TODO: Allow multiple channels?
 void handleJoin(User& user, Server& server, const std::vector<std::string>& args) {
     const std::string nick = user.getNickname();
     const int fd = user.getFd();
