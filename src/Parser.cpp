@@ -33,7 +33,11 @@ Parser&	Parser::operator=(const Parser& ref)
 std::vector<std::string> Parser::getCommands(int userFd, Server &server)
 {
     std::vector<std::string> msgs;
-	std::string msg = server.getUserManager().getUserByFd(userFd)->getStoredMsg();
+    User *user = server.getUserManager().getUserByFd(userFd);
+    if (!user) {
+        return msgs;
+    }
+	std::string msg = user->getStoredMsg();
     if (readMessage(userFd, msg, server)) {
 		return msgs;
 	}
@@ -42,7 +46,7 @@ std::vector<std::string> Parser::getCommands(int userFd, Server &server)
         msgs.push_back(msg.substr(0, pos));
         msg.erase(0, pos + CRLF.size());
     }
-    server.getUserManager().getUserByFd(userFd)->setStoredMsg(msg);
+    user->setStoredMsg(msg);
     return msgs;
 }
 
@@ -52,9 +56,9 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 		char buf[BUFFER_SIZE] = {};
 		ssize_t bytes = recv(userFd, buf, BUFFER_SIZE, 0);
 		if (bytes == -1) {
-			if (errno == EWOULDBLOCK)
+			if (errno == EWOULDBLOCK) {
 				break ; 
-            else {
+            } else {
                 server.removeUserFromServer(userFd, QUIT_ERROR);
             }
 			return -1;
@@ -115,8 +119,8 @@ bool Parser::parseCommand(const std::string &command, std::string &commandName, 
 
     size_t pos = command.find(':');
     if (pos != std::string::npos) {
-        std::istringstream preMessageStream(command.substr(0, pos));
         std::string arg;
+        std::istringstream preMessageStream(command.substr(0, pos));
         while (preMessageStream >> arg) {
             if (arg != commandName) {
                 args.push_back(arg);
@@ -131,3 +135,5 @@ bool Parser::parseCommand(const std::string &command, std::string &commandName, 
     }
     return true;
 }
+
+/// total heap usage: 457 allocs, 457 frees, 135,446 bytes allocated

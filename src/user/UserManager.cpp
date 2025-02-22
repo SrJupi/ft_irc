@@ -37,7 +37,11 @@ std::set<std::string> UserManager::removeUser(int userfd)
 
 User *UserManager::getUserByFd(int userfd)
 {
-    return _mapFdToUser.at(userfd);
+    std::map<int, User *>::const_iterator it = _mapFdToUser.find(userfd);
+    if (it == _mapFdToUser.end()) {
+        return NULL;
+    }
+    return it->second;
 }
 
 User *UserManager::getUserByNick(std::string const &nick)

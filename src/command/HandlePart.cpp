@@ -17,8 +17,6 @@ void handlePart(User& user, Server& server, const std::vector<std::string>& args
         server.getChannelManager().removeChannel(args[0]);
     }
     user.removeChannel(args[0]);
-    channel->listUsers(); //REMOVE
+    channel->listUsers(); //REMOVE -> SEG_FAULT
 }
-
-
 
