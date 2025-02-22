@@ -92,7 +92,10 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			if (events[i].events & EPOLLIN) { //Add send method
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
 				if (!cmd_messages.empty()) {
-					_commandManager.executeCommands(*(_userManager.getUserByFd(currentFd)), *this, cmd_messages);	
+					User *user = _userManager.getUserByFd(currentFd);
+					if (user) {
+						_commandManager.executeCommands(*user, *this, cmd_messages);
+					}
 				}
 			}
 		}

@@ -28,6 +28,9 @@ std::set<std::string> UserManager::removeUser(int userfd)
 {
     std::cout << "User Manager removeUser: " << userfd << std::endl; //REMOVE
     User *user = getUserByFd(userfd);
+    if (!user) {
+        return {};
+    }
     _mapNicknameToUser.erase(user->getNickname());
     std::set<std::string> channels = user->getChannels();
     delete _mapFdToUser.at(userfd);
