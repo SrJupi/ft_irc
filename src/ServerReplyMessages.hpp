@@ -56,6 +56,9 @@
 #define RPL_ENDOFMOTD(server, nick) \
     ":" + (server) + " 376 " + (nick) + " :End of MOTD\r\n"
 
+#define RPL_YOUREOPER(server, nick) \
+    ":" + (server) + " 381 " + (nick) + " :You are now an IRC operator\r\n"
+
 #define ERR_NOSUCHNICK(nick, receiver) \
     "401 " + (nick) + " " + (receiver) + " :No such nick/channel\r\n"
 

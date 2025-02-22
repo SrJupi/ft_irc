@@ -1,44 +1,53 @@
 #include <command/Handlers.hpp>
 
-void handleOper(User &user, Server &server, const std::vector<std::string> &args)
-{
-    for (std::vector<std::string>::const_iterator it = args.begin(); it != args.end(); it++) {
-        std::cout << *it <<std::endl;
+#include <fstream>
+#include <sstream>
+
+// Function to load a specific key from the configuration file
+std::string loadConfigValue(const std::string &key) {
+    std::ifstream configFile(OPER_CONFIG_FILE);
+    if (!configFile.is_open()) {
+        std::cerr << "Error: Could not open operator config file: " << OPER_CONFIG_FILE << std::endl;
+        return "";
     }
-
-    if (args.size() == 0) {
-        return sendResponse(ERR_NEEDMOREPARAMS(SERVER_NAME, user.getNickname(), "WHO"), user.getFd());
-    }
-
-    Channel *channel = server.getChannelManager().getChannelByName(args[0]);
-    if (!channel)
-        return sendResponse(ERR_NOSUCHCHANNEL(SERVER_NAME, user.getNickname(), args[0]), user.getFd());
-
-    std::map<int, std::string> users = channel->getUsersConnected();
-    if (!users.empty()) {
-        for (std::map<int, std::string>::iterator it = users.begin(); it != users.end(); ++it) {
-            User *userInChannel = server.getUserManager().getUserByNick(it->second);
-            if (!userInChannel) {
-                std::cerr << "Error: User not found for nickname " << it->second << std::endl; //REMOVE
-                continue; // Skip this iteration if the user is not found
+    std::string line, foundKey, value;
+    while (std::getline(configFile, line)) {
+        // std::cout << line << std::endl;
+        std::istringstream iss(line);
+        if (std::getline(iss, foundKey, '=') && std::getline(iss, value)) {
+            if (foundKey == key) {
+                configFile.close();
+                return value;
             }
-            sendInfoOf(*userInChannel, channel, user);
         }
     }
-    sendEndMessage(channel->getChannelName(), user);
-}
-void sendInfoOf(User &userInChannel, Channel *channel, User &userRequesting)
-{
-    std::string response;
-    response = RPL_WHOREPLY(SERVER_NAME, userRequesting.getNickname(), channel->getChannelName(),
-                            userInChannel.getUsername(), userInChannel.getHostname(), SERVER_NAME,
-                            userInChannel.getNickname(), "H", "0", userInChannel.getRealname());
-    send(userRequesting.getFd(), response.c_str(), response.length(), 0);
+    configFile.close();
+    return "";
 }
 
-// End of WHO list
-void sendEndMessage(std::string channelName, User &user)
+// Load operator username from the config file oper.irc
+std::string loadOperUserName() {
+    return loadConfigValue("oper_user_name");
+}
+
+// Load operator password from the config file oper.irc
+std::string loadOperPassword() {
+    return loadConfigValue("oper_password");
+}
+
+void handleOper(User &user, Server &server, const std::vector<std::string> &args)
 {
-    std::string message = RPL_ENDOFWHO(SERVER_NAME, user.getNickname(), channelName);
-    send(user.getFd(), message.c_str(), message.length(), 0);
+    if (args.size() < 2) {
+        return sendResponse(ERR_NEEDMOREPARAMS(SERVER_NAME, user.getNickname(), "OPER"), user.getFd());
+    }
+
+    std::string userName = args[0];
+    std::string passWord = args[1];
+
+    if (userName == loadOperUserName() && passWord == loadOperPassword()) {
+        server.addServerOperator(user.getFd());
+        sendResponse(RPL_YOUREOPER(SERVER_NAME, user.getNickname()), user.getFd()); 
+    } else {
+        return sendResponse(ERR_PASSWDMISMATCH(user.getNickname(), "OPER"), user.getFd());
+    }
 }

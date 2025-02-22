@@ -10,7 +10,7 @@ src/command/HandleCap.cpp   src/command/HandleKick.cpp  src/command/HandleNick.c
 src/command/HandleQuit.cpp  src/command/HandleTopic.cpp src/command/HandleJoin.cpp src/command/HandleMode.cpp \
 src/command/HandlePart.cpp  src/command/HandlePrivmsg.cpp src/command/HandleDie.cpp src/command/HandleUser.cpp \
 src/command/HandleInvite.cpp src/command/sendResponse.cpp src/command/HandleWho.cpp src/command/HandlePing.cpp \
-src/command/HandleKill.cpp
+src/command/HandleKill.cpp src/command/HandleOper.cpp
 MAIN_OBJS = $(MAIN_SRCS:.cpp=.o)
 RM = rm -f
 HEADERS = include/ft_irc/Server.hpp src/user/User.hpp src/NetworkManager.hpp \

@@ -21,6 +21,7 @@ CommandManager::CommandManager()
     _registeredCommandHandlers["MODE"] = &handleMode;
     _registeredCommandHandlers["TOPIC"] = &handleTopic;
     _registeredCommandHandlers["INVITE"] = &handleInvite;
+    _registeredCommandHandlers["OPER"] = &handleOper;
     _registeredCommandHandlers["PRIVMSG"] = &handlePrivmsg;
 
     _operatorCommandHandlers["DIE"] = &handleDie;

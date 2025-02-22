@@ -14,6 +14,7 @@ private:
     std::set<std::string> _channels;
     std::set<std::string> _privmsgs;
 	std::string _storedMsg;
+    std::string _operUserName;
 	bool    _isAuth;
     bool    _isRegistered;
     User();
@@ -42,6 +43,9 @@ public:
 
     std::string getRealname() const;
     void        setRealname(std::string realname);
+
+    std::string getOperUserName() const;
+    void        setOperUserName(std::string opername);
 
     const std::string getUserMask() const;
 

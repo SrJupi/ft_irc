@@ -7,6 +7,7 @@ void handleKill(User& user, Server& server, const std::vector<std::string>& args
     User *killedUser = server.getUserManager().getUserByNick(args[0]);
     if (!killedUser) return sendResponse(ERR_NOSUCHNICK(user.getNickname(), args[0]), user.getFd());
 
+    //load
     sendResponse(RPL_KILL_TARGET(user.getNickname(), args[1]), killedUser->getFd());
     server.getCommandManager().executeCommands(*killedUser, server, std::vector<std::string>(1, "QUIT :Killed (" + args[1] + ")"));
 }
