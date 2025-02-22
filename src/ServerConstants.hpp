@@ -33,6 +33,11 @@ const std::string SPECIAL_CHARS = "-[]\\`_^{|}";
 const int   NICKLEN = 16;
 const int   TOPICLEN = 300;
 
+//Quit messages
+const std::string QUIT_NOMSG = "Leaving";
+const std::string QUIT_CTRLC = "Connection reset by peer";
+const std::string QUIT_ERROR = "Connection closed";
+
 
 
 #endif

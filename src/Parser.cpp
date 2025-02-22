@@ -55,13 +55,13 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 			if (errno == EWOULDBLOCK)
 				break ; 
             else {
-                server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection closed"));
+                server.removeUserFromServer(userFd, QUIT_ERROR);
             }
 			return -1;
 		}
 		if (bytes == 0) {
 			std::cout << "user " << userFd << " disconnected" << std::endl; //REMOVE
-            server.getCommandManager().executeCommands(*server.getUserManager().getUserByFd(userFd), server, std::vector<std::string>(1, "QUIT :Connection reset by peer"));
+            server.removeUserFromServer(userFd, QUIT_CTRLC);
 			return -1;
 		}
 		fullMsg.append(std::string(buf, bytes));

@@ -193,7 +193,26 @@ bool Server::isServerOperator(int fd)
 	return _serverOperators.find(fd) != _serverOperators.end();
 }
 
-UserManager &Server::getUserManager() {
+void Server::removeUserFromServer(User &user, const std::string &msg)
+{
+	std::string usermask = user.getUserMask();
+    int fd = user.getFd();
+    _userManager.removeUserFromOthersList(user.getPrivMsgList(), user.getNickname());
+    std::set<std::string> channels = _userManager.removeUser(fd);
+    _channelManager.deleteDisconnectedUserFromChannels(channels, fd, RPL_QUIT(usermask, msg));
+    _epollManager.removeFromEpoll(fd);
+	removeServerOperator(fd);
+}
+
+void Server::removeUserFromServer(int fd, const std::string &msg)
+{
+	User *user = _userManager.getUserByFd(fd);
+	if (!user) return;
+	removeUserFromServer(*user, msg);
+}
+
+UserManager &Server::getUserManager()
+{
     return _userManager;
 }
 

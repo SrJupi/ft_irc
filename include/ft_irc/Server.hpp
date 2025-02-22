@@ -64,12 +64,14 @@ public:
     void    setPassword(const std::string &newPassword);
     int     setServer();
     int     startServer();
-
     void    stopServer();
 
     void    addServerOperator(int fd);
     void    removeServerOperator(int fd);
     bool    isServerOperator(int fd);
+
+    void    removeUserFromServer(User &user, const std::string &msg);
+    void    removeUserFromServer(int fd, const std::string &msg);
 
     //GETTERS
     UserManager         &getUserManager();

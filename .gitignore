@@ -7,3 +7,4 @@ runTests
 .DS_Store
 .devcontainer
 src/logger/
+*.html
