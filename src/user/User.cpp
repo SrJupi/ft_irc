@@ -1,4 +1,5 @@
 #include <user/User.hpp>
+#include "User.hpp"
 
 User::User()
 {
@@ -114,6 +115,14 @@ void User::setRealname(std::string realname)
 	_realname = realname;
 }
 
+std::string User::getOperUserName() const
+{
+    return _operUserName;
+}
+void User::setOperUserName(std::string opername)
+{
+	_operUserName = opername;
+}
 const std::string User::getUserMask() const
 {
     return _nickname + "!~" + _username + "@" + _hostname;

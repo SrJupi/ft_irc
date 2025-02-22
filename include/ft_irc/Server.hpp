@@ -37,6 +37,7 @@ private:
     std::string _port;
     std::string _password;
     std::vector<std::string> _motd;
+    std::map<std::string,std::string> _opersData;
    
     bool _isSet;
     static bool _isRunning;
@@ -51,6 +52,9 @@ private:
 
     //MOTD
     int loadMOTD();
+
+    //OpersData
+    int loadOpersData();
 
     //Signal
     static void     signalHandler(int sig);
@@ -80,6 +84,7 @@ public:
     CommandManager      &getCommandManager();
     const std::string   getServerTimestamp() const;
     const std::vector<std::string>  &getMOTD() const;
+    const std::map<std::string, std::string>  &getOpersData() const;
 };
 
 #endif

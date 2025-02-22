@@ -69,6 +69,11 @@ int Server::setServer()
 		std::cerr << "Error on loadMOTD\n";
 		return LOAD_MOTD_FAILURE;
 	}
+	if (loadOpersData()) {
+		std::cerr << "Error on loadOperatorsData\n";
+		return LOAD_OPERS_DATA_FAILURE;
+	}
+
 	if (!setSignals()) {
 		std::cerr << "Error on setting signalHandler\n";
 		return SIGNAL_FAILURE;
@@ -132,6 +137,28 @@ int Server::loadMOTD()
 	}
 	motdFile.close();
 	return 0;
+}
+
+int Server::loadOpersData() 
+{
+    std::ifstream configFile(OPER_CONFIG_FILE);
+
+    if (!configFile.is_open()) {
+        std::cerr << "Error: Could not open config file: " << OPER_CONFIG_FILE << std::endl;
+        return 1;
+    }
+
+    std::string line, key, value;
+    while (std::getline(configFile, line)) {
+        std::istringstream iss(line);
+        if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+			if (_opersData.find(key) != _opersData.end()) return 1;
+            _opersData[key] = value;
+		}
+    }
+
+    configFile.close();
+    return 0;
 }
 
 void Server::signalHandler(int sig)
@@ -240,4 +267,9 @@ const std::string Server::getServerTimestamp() const
 const std::vector<std::string> &Server::getMOTD() const
 {
 	return _motd;
+}
+
+const std::map<std::string, std::string> &Server::getOpersData() const
+{
+    return _opersData;
 }
