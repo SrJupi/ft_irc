@@ -40,10 +40,8 @@ int     ChannelManager::doesChannelExists(const std::string &channelName) {
 Channel* ChannelManager::getChannelByName(const std::string &channelName) {
     std::map<std::string, Channel*>::iterator it = _channels.find(channelName);
     if (it != _channels.end()) {
-        std::cout << "Channel retrieved: " << channelName << " at " << it->second << std::endl; //REMOVE
         return it->second;
     }
-    std::cout << "Channel not found: " << channelName << std::endl;  //REMOVE
     return NULL;
 }
 

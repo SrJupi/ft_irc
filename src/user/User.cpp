@@ -1,5 +1,4 @@
 #include <user/User.hpp>
-#include "User.hpp"
 
 User::User()
 {

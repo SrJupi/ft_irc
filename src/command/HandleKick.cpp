@@ -1,9 +1,6 @@
 #include <command/Handlers.hpp>
 #include <ServerReplyMessages.hpp>
 
-//args[0]: channel
-//args[1]: lista de usuarios
-//args[2]: comentario
 void handleKick(User& kicker, Server& server, const std::vector<std::string>& args) {
     std::string nickKicker = kicker.getNickname();
 

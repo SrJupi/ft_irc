@@ -16,7 +16,7 @@ private:
     NetworkManager(const NetworkManager& ref);
     NetworkManager&	operator=(const NetworkManager& ref);
 
-    struct addrinfo *_addrInfo; //keep it here? put as variable inside start server?
+    struct addrinfo *_addrInfo;
     int _socketfd;
     int fillAddr(std::string &port);
     int createSocket();

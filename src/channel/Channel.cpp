@@ -129,23 +129,6 @@ std::string Channel::getUsersConnectedList()
 	return (userList);
 }
 
-#include <iostream>
-
-void Channel::listUsers()
-{
-	if (_usersConnected.empty())
-	{
-		std::cout << "No users connected to " << _channelName << std::endl; //REMOVE
-		return ;
-	}
-	std::cout << "Total users in the channel " << _channelName << " (" << _usersConnected.size() << ") at address " << this << ":" << std::endl; //REMOVE
-	std::map<int, std::string>::iterator it;
-	for (it = _usersConnected.begin(); it != _usersConnected.end(); ++it)
-	{
-		std::cout << it->second << std::endl; //REMOVE
-	}
-}
-
 int Channel::getAmountOfUsers()
 {
 	return (_usersConnected.size());

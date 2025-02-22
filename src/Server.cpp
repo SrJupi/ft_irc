@@ -5,7 +5,7 @@
 #include <fstream>
 #include <csignal>
 
-bool Server::_isRunning = false; //changed for use with signal, do I like it? No!
+bool Server::_isRunning = false;
 
 Server::Server()
 {
@@ -73,7 +73,6 @@ int Server::setServer()
 		std::cerr << "Error on loadOperatorsData\n";
 		return LOAD_OPERS_DATA_FAILURE;
 	}
-
 	if (!setSignals()) {
 		std::cerr << "Error on setting signalHandler\n";
 		return SIGNAL_FAILURE;
@@ -91,10 +90,7 @@ int Server::manageEvents(int nfds, struct epoll_event events[MAX_EVENTS]) {
 			}
 		}
 		else {
-			if (events[i].events & EPOLLOUT) {
-				//ADD EPOLLOUT IN THE FUTURE
-			}
-			if (events[i].events & EPOLLIN) { //Add send method
+			if (events[i].events & EPOLLIN) {
 				std::vector<std::string> cmd_messages = Parser::getCommands(currentFd, *this);
 				if (!cmd_messages.empty()) {
 					User *user = _userManager.getUserByFd(currentFd);
@@ -117,10 +113,8 @@ int Server::addNewUser()
 	if (_epollManager.addToEpoll(EPOLLIN | EPOLLET, userInfo.userFd)) {
 		return -1;
 	}
-	//REMOVE this VVVVVV to _userManager.addNewUser(userInfo.userFd, userInfo.userIP)
-	if (_userManager.addNewUser(userInfo.userFd, userInfo.userIP)) {
-		addServerOperator(userInfo.userFd);
-	}
+	_userManager.addNewUser(userInfo.userFd, userInfo.userIP);
+	std::cout << "New user connected with fd: " << userInfo.userFd << std::endl;
 	return 0;
 }
 
@@ -128,7 +122,7 @@ int Server::loadMOTD()
 {
 	std::ifstream motdFile(MOTD_FILE);
 	if (!motdFile) {
-		std::cerr << "Error opening file: " << MOTD_FILE << std::endl;
+		std::cerr << "Error: Could not open config file: " << MOTD_FILE << std::endl;
 		return 1;
 	}
 	std::string line;
@@ -182,6 +176,7 @@ int Server::startServer()
 	if (!_isSet) { 
 		return 1;
 	}
+	std::cout << SERVER_NAME << " is running!" << std::endl;
 	_isRunning = true;
 	while (_isRunning) {
 		struct epoll_event events[MAX_EVENTS];
@@ -227,6 +222,7 @@ void Server::removeUserFromServer(User &user, const std::string &msg)
 {
 	std::string usermask = user.getUserMask();
     int fd = user.getFd();
+	std::cout << "User disconnected with fd: " << fd << std::endl;
     _userManager.removeUserFromOthersList(user.getPrivMsgList(), user.getNickname());
     std::set<std::string> channels = _userManager.removeUser(fd);
     _channelManager.deleteDisconnectedUserFromChannels(channels, fd, RPL_QUIT(usermask, msg));

@@ -25,7 +25,6 @@ public:
     
     void    addNicknameToFd(std::string nick, int fd);
 
-    bool    isMapFdToUserEmpty(); //NEVER USED - REMOVE (?)
     bool    existsNickname(const std::string &nick);
     bool    existsFd(int fd);
 

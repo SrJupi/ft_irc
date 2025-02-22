@@ -18,22 +18,17 @@ UserManager::~UserManager()
 int UserManager::addNewUser(int userfd, std::string &ip)
 {
 	_mapFdToUser[userfd] = new User(userfd, ip);
-    //REMOVE VVV
-    if (_mapFdToUser.size() == 1) return 1;
-
     return 0;
 }
 
 std::set<std::string> UserManager::removeUser(int userfd)
 {
-    std::cout << "User Manager removeUser: " << userfd << std::endl; //REMOVE
     User *user = getUserByFd(userfd);
-    std::set<std::string> channels;
     if (!user) {
-        return channels;
+        return std::set<std::string>();
     }
     _mapNicknameToUser.erase(user->getNickname());
-    channels = user->getChannels();
+    std::set<std::string> channels = user->getChannels();
     delete _mapFdToUser.at(userfd);
     _mapFdToUser.erase(userfd);
     return channels;
@@ -78,15 +73,6 @@ void UserManager::addNicknameToFd(std::string nick, int fd)
     }
     it->second->setNickname(nick);
     _mapNicknameToUser[nick] = it->second;
-    std::cout << "User added nickname. Current set:\n"; //REMOVE
-    for (std::map<std::string, User *>::iterator it = _mapNicknameToUser.begin(); it != _mapNicknameToUser.end(); it++) {
-        std::cout << it->first << std::endl; //REMOVE
-    }
-}
-
-bool UserManager::isMapFdToUserEmpty()
-{
-    return _mapFdToUser.empty();
 }
 
 bool UserManager::existsNickname(const std::string &nick)

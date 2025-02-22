@@ -64,7 +64,6 @@ int Parser::readMessage(int userFd, std::string &fullMsg, Server &server) {
 			return -1;
 		}
 		if (bytes == 0) {
-			std::cout << "user " << userFd << " disconnected" << std::endl; //REMOVE
             server.removeUserFromServer(userFd, QUIT_CTRLC);
 			return -1;
 		}
@@ -135,5 +134,3 @@ bool Parser::parseCommand(const std::string &command, std::string &commandName, 
     }
     return true;
 }
-
-/// total heap usage: 457 allocs, 457 frees, 135,446 bytes allocated

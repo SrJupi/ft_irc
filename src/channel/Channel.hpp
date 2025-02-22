@@ -4,7 +4,7 @@
 #include <set>
 #include <map>
 #include <string>
-#include <sys/socket.h> //tmp to test send, see where it fits better!
+#include <sys/socket.h>
 #include <user/User.hpp>
 #include <ctime>
 
@@ -43,7 +43,7 @@ private:
     
     
     public:
-    explicit Channel(const std::string &channelName, int fd); //@David: preciso de explicit? https://en.cppreference.com/w/cpp/language/explicit
+    explicit Channel(const std::string &channelName, int fd);
     ~Channel();
     
     void        setChannelName(const std::string &);
@@ -55,7 +55,6 @@ private:
     void        addUser(int fd, const std::string &userName);
     void        updateUser(int fd, const std::string &nick);
     bool        removeUser(int fd);
-    void        listUsers();
     void        broadcastMessage(const std::string& message, int exclude = -1);
     const std::string   &getWhoSetTopic() const;
     const std::string   getTopicTimestampAsString() const;

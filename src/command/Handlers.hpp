@@ -4,10 +4,6 @@
 #include <user/User.hpp>
 #include <ft_irc/Server.hpp>
 
-/* TODO:
-1. OPER - @David
-*/
-
 //Unregistered Commands
 void handleCap(User &user, Server &server, const std::vector<std::string> &args);
 void handleNick(User &user, Server &server, const std::vector<std::string> &args);

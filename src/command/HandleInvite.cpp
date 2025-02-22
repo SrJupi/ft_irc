@@ -42,6 +42,7 @@ void handleInvite(User &user, Server &server, const std::vector<std::string> &ar
 
     // Send confirmation to inviter
     sendResponse(RPL_INVITING(SERVER_NAME, nick, targetNickname, channelName), fd);
+    channel->inviteUser(targetUser->getFd());
 }
 
 

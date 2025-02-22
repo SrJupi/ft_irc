@@ -10,7 +10,6 @@ static std::string ft_trim(std::string &str) {
 }
 
 static bool isValidChannelName(const std::string& str) {
-    std::cout << str << std::endl; //REMOVE
     std::string trim_str(str);
     trim_str = ft_trim(trim_str);
     if (trim_str.empty()) return false;
